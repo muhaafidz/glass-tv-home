@@ -103,8 +103,19 @@ final class AppLanguage {
         if (reference != null && !reference.isEmpty()) {
             String ref = reference.trim();
             if (!ref.isEmpty()) {
-                ref = ref.substring(0, 1).toUpperCase(Locale.ROOT)
-                        + ref.substring(1).toLowerCase(Locale.ROOT);
+                StringBuilder titled = new StringBuilder(ref.length());
+                boolean cap = true;
+                for (int i = 0; i < ref.length(); i++) {
+                    char c = ref.charAt(i);
+                    if (Character.isLetter(c)) {
+                        titled.append(cap ? Character.toUpperCase(c) : Character.toLowerCase(c));
+                        cap = false;
+                    } else {
+                        titled.append(c);
+                        cap = c == ' ' || c == '-' || c == ':';
+                    }
+                }
+                ref = titled.toString();
             }
             return prefix + "  •  " + ref;
         }

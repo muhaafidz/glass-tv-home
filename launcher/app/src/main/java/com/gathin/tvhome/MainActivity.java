@@ -160,6 +160,8 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     private static final float HERO_TITLE_MAX_SP = 40f;
     /** The breathing room between the shelf's last line and the top of the app container (50dp gives airy, balanced spacing). */
     private static final float HERO_GAP_DP = 50f;
+    /** The information rail sits closer to the dock so its taller two-line ayah clears the weather row. */
+    private static final float INFO_RAIL_GAP_DP = 40f;
     private static final float HERO_TITLE_MIN_SP = 26f;
     /** The shelf's width in pixels, worked out once from the screen. */
     private int heroMaxWidth, heroNameMaxWidth;
@@ -182,6 +184,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     private Bitmap ambientShape;
     /** Where the shelf's bottom edge belongs; its top follows once the lines have been measured. */
     private float heroBottom;
+    private float infoRailBottom;
     private View btnInputs;
     private TextView btnWifi;
     private View btnAssistant;
@@ -823,7 +826,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             timeIsyak = findViewById(R.id.timeIsyak);
 
             islamicShelf.addOnLayoutChangeListener((v, l, t, r, b, ol, ot, orr, ob) -> {
-                if (heroBottom > 0) v.setY(heroBottom - v.getHeight());
+                if (infoRailBottom > 0) v.setY(infoRailBottom - v.getHeight());
             });
             updateIslamicShelf();
         }
@@ -1875,9 +1878,10 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     private void showHero(int position, float dockTopInRoot) {
         int color = adapter.ambientColorAt(position);
         heroBottom = dockTopInRoot - HERO_GAP_DP * density;
+        infoRailBottom = dockTopInRoot - INFO_RAIL_GAP_DP * density;
 
         if (islamicShelf != null) {
-            float iy = heroBottom - islamicShelf.getHeight();
+            float iy = infoRailBottom - islamicShelf.getHeight();
             islamicShelf.setY(iy);
             islamicShelf.animate().cancel();
             if (!heroShown) {
@@ -3160,7 +3164,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         }
 
         int usable = getResources().getDisplayMetrics().widthPixels - (int) ((55 + 56) * density);
-        int islamicMaxWidth = Math.round(usable * 0.38f);
+        int islamicMaxWidth = Math.round(usable * 0.50f);
         boolean is4K = (getResources().getDisplayMetrics().widthPixels >= 3840 || getResources().getDisplayMetrics().heightPixels >= 2160);
 
         if (ayahLabel != null) {
@@ -3170,29 +3174,18 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         if (ayahArabic != null) {
             String text = a.arabic.trim();
             ayahArabic.setMaxWidth(islamicMaxWidth);
-            ayahArabic.setSingleLine(true);
-            ayahArabic.setMaxLines(1);
+            ayahArabic.setSingleLine(false);
+            ayahArabic.setMaxLines(2);
             ayahArabic.setEllipsize(TextUtils.TruncateAt.END);
             ayahArabic.setTextDirection(View.TEXT_DIRECTION_RTL);
             ayahArabic.setGravity(Gravity.END);
+            ayahArabic.setIncludeFontPadding(false);
             try {
                 ayahArabic.setTypeface(androidx.core.content.res.ResourcesCompat.getFont(this, R.font.amiri_quran), Typeface.NORMAL);
             } catch (Exception ignored) {}
             ayahArabic.setTextColor(0xFFFFC56B);
-
-            float baseSp = is4K ? 18f : 14.5f;
-            android.text.TextPaint paint = new android.text.TextPaint(ayahArabic.getPaint());
-            paint.setTextSize(baseSp * getResources().getDisplayMetrics().scaledDensity);
-            float textWidth = paint.measureText(text);
-
-            float targetSp = baseSp;
-            float maxAllowed = islamicMaxWidth * 0.95f;
-            while (textWidth > maxAllowed && targetSp > 11.5f) {
-                targetSp -= 0.5f;
-                paint.setTextSize(targetSp * getResources().getDisplayMetrics().scaledDensity);
-                textWidth = paint.measureText(text);
-            }
-            ayahArabic.setTextSize(TypedValue.COMPLEX_UNIT_SP, targetSp);
+            // A fixed TV size, with two lines, rather than shrinking the verse to fit one line.
+            ayahArabic.setTextSize(TypedValue.COMPLEX_UNIT_SP, is4K ? 22f : 16f);
             ayahArabic.setText(text);
         }
         if (ayahText != null) {
@@ -3200,7 +3193,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             String lang = AppLanguage.getLanguage(this);
             String tr = a.translation(lang);
             ayahText.setText(tr != null ? tr.trim() : "");
-            ayahText.setTextSize(TypedValue.COMPLEX_UNIT_SP, is4K ? 12.5f : 10.5f);
+            ayahText.setTextSize(TypedValue.COMPLEX_UNIT_SP, is4K ? 17f : 14f);
             ayahText.setVisibility(tr != null && !tr.trim().isEmpty() ? View.VISIBLE : View.GONE);
         }
         ayahBlock.setVisibility(View.VISIBLE);
