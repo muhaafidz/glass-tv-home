@@ -15,17 +15,20 @@ powershell -ExecutionPolicy Bypass -File tools\theme.ps1 -TvHost 192.168.1.50 th
 | `default/` | The built-in look written out as JSON, as a starting point for your own |
 | `aurora/` | A dark aurora wallpaper (teal and violet on navy, darker at the bottom) with a matching background colour |
 | `quiet-canvas/` | A low-detail navy gradient with restrained teal, violet and amber light, tuned for white launcher text and glass panels |
+| `quiet-canvas-ember/` | The same Quiet Canvas composition in warm ember, rose and copper tones |
 | `six-columns/` | Six smaller tiles per row and one grid row visible under the dock |
 
-## Quiet Canvas sample
+## Quiet Canvas samples
 
 ![Quiet Canvas dark gradient sample](quiet-canvas/wallpaper.jpg)
 
-The original 1920×1080 gradient leaves calm dark space behind the clock and widgets, with a low-contrast
-teal/violet/amber wash and a thin horizon accent. The JPEG is about 38 KB; `wallpaper-source.svg` is included
-for editing. The redesigned home centers the prayer/ayat card, removes the place-caption shelf by default,
-and uses Outfit with cool glass rims—without adding dependencies or background work. Apply the sample theme
-with `TV_HOST=<tv-ip> tools/theme.sh themes/quiet-canvas`.
+![Quiet Canvas Ember warm gradient sample](quiet-canvas-ember/wallpaper.jpg)
+
+Both 1920×1080 gradients leave calm dark space behind the clock and widgets, with a low-contrast wash and a
+thin horizon accent. Each JPEG is about 38 KB; the matching `wallpaper-source.svg` is included for editing.
+The redesigned home uses a full-width information rail above the dock, removes the place-caption shelf by
+default, and uses Outfit with cool glass rims—without adding dependencies or background work. Apply a sample
+with `TV_HOST=<tv-ip> tools/theme.sh themes/quiet-canvas` or `themes/quiet-canvas-ember`.
 For a quick desktop styling mock (no emulator), open [`preview/quiet-canvas.html`](../preview/quiet-canvas.html)
 in a browser and tweak its CSS variables. It is illustrative; the Android release build remains the source of truth.
 

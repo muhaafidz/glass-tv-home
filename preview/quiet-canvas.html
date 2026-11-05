@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="ms">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,15 +10,19 @@
       src: url("../launcher/app/src/main/res/font/outfit.ttf") format("truetype");
       font-display: swap;
     }
+    @font-face {
+      font-family: "Amiri Quran";
+      src: url("../launcher/app/src/main/res/font/amiri_quran.ttf") format("truetype");
+      font-display: swap;
+    }
 
     :root {
       /* Tweak these tokens to explore the palette without rebuilding the APK. */
       --ink: #07101c;
-      --panel: rgba(9, 17, 31, .83);
+      --panel: rgba(9, 17, 31, .84);
       --panel-edge: rgba(153, 195, 213, .26);
       --teal: #54ded3;
-      --violet: #8055e8;
-      --amber: #f0a05d;
+      --amber: #ffc56b;
       --muted: #b8c8d7;
       --white: #f8fbff;
       color-scheme: dark;
@@ -69,12 +73,12 @@
 
     .clock-group { display: flex; align-items: center; gap: 1.3cqw; text-shadow: 0 2px 12px #0009; }
     .clock { font-size: clamp(34px, 5.9cqw, 86px); font-weight: 500; letter-spacing: -.055em; line-height: .95; }
-    .date { display: grid; gap: .38cqw; color: #eef3fa; font-size: clamp(12px, 1.18cqw, 20px); font-weight: 600; letter-spacing: .08em; }
+    .date { display: grid; gap: .38cqw; color: #eef3fa; font-size: clamp(12px, 1.35cqw, 22px); font-weight: 600; letter-spacing: .08em; }
     .date small { color: #d5deea; font-size: .88em; }
 
     .actions { display: flex; align-items: center; gap: .72cqw; }
     .pill, .icon-button {
-      min-height: 2.65cqw;
+      min-height: 2.8cqw;
       border: 1px solid rgba(205, 224, 239, .28);
       background: rgba(10, 20, 34, .46);
       color: var(--white);
@@ -84,27 +88,27 @@
       justify-content: center;
       backdrop-filter: blur(8px);
     }
-    .pill { padding: 0 1.2cqw; border-radius: 999px; gap: .55cqw; font-size: clamp(12px, 1.22cqw, 20px); }
-    .icon-button { width: 2.65cqw; border-radius: 50%; font-size: clamp(17px, 1.45cqw, 24px); }
-    .profile { border: 2px solid var(--teal); background: rgba(9, 20, 32, .8); font-size: clamp(21px, 1.9cqw, 30px); }
+    .pill { padding: 0 1.25cqw; border-radius: 999px; gap: .55cqw; font-size: clamp(13px, 1.45cqw, 24px); }
+    .icon-button { width: 2.8cqw; border-radius: 50%; font-size: clamp(17px, 1.55cqw, 26px); }
+    .profile { border: 2px solid var(--teal); background: rgba(9, 20, 32, .8); font-size: clamp(22px, 2cqw, 32px); }
 
     .status-row {
       position: absolute;
       top: 19.4%;
       left: 5.8%;
-      right: 13%;
+      right: 5.8%;
       display: flex;
       align-items: center;
       gap: .8cqw;
     }
     .weather, .alert {
-      min-height: 2.5cqw;
+      min-height: 2.7cqw;
       display: flex;
       align-items: center;
       gap: .7cqw;
-      padding: .4cqw 1.05cqw;
+      padding: .42cqw 1.1cqw;
       border-radius: 999px;
-      font-size: clamp(12px, 1.18cqw, 19px);
+      font-size: clamp(13px, 1.42cqw, 23px);
       white-space: nowrap;
       overflow: hidden;
     }
@@ -112,29 +116,70 @@
     .weather strong { color: var(--teal); font-weight: 650; }
     .alert { flex: 1; background: rgba(77, 26, 33, .62); border: 1px solid rgba(249, 126, 126, .42); color: #ffb3ae; }
 
+    /* Lower information rail: ayah left, prayer times right. */
     .content {
       position: absolute;
-      left: 15%;
-      right: 15%;
-      bottom: 29.5%;
-      display: flex;
-      justify-content: center;
+      left: 5.8%;
+      right: 5.8%;
+      bottom: 33.5%;
     }
-    .panel {
+    .rail {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 1px minmax(0, 1.18fr);
+      gap: 2.2cqw;
+      align-items: center;
       border: 1px solid var(--panel-edge);
-      border-radius: 1.3cqw;
-      background: linear-gradient(150deg, rgba(14, 25, 42, .9), var(--panel));
-      box-shadow: 0 14px 42px rgba(0, 0, 0, .22), inset 0 1px 0 rgba(255, 255, 255, .07);
+      border-radius: 1.35cqw;
+      background: linear-gradient(150deg, rgba(14, 25, 42, .92), var(--panel));
+      box-shadow: 0 16px 48px rgba(0, 0, 0, .24), inset 0 1px 0 rgba(255, 255, 255, .07);
       backdrop-filter: blur(10px);
+      padding: 1.5cqw 1.7cqw;
     }
-    .prayer { width: min(100%, 1100px); padding: 1.2cqw 1.5cqw 1.15cqw; text-align: right; }
-    .ayah-label, .prayer-heading { color: var(--muted); font-size: clamp(10px, .92cqw, 15px); font-weight: 650; letter-spacing: .12em; text-transform: uppercase; }
-    .ayah { margin: .62cqw 0 .35cqw; color: #ffd08b; font: 1.2cqw/1.55 serif; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .translation { max-width: 54ch; margin: 0 0 .95cqw auto; color: #e3eaf2; font-size: clamp(11px, 1cqw, 16px); line-height: 1.35; }
-    .prayer-heading { padding-top: .85cqw; border-top: 1px solid rgba(173, 204, 220, .2); letter-spacing: .1em; }
-    .times { display: grid; grid-template-columns: repeat(6, 1fr); gap: .3cqw; margin-top: .55cqw; }
-    .time { color: #c8d4e1; font-size: clamp(10px, .91cqw, 15px); text-align: center; }
-    .time b { display: block; margin-top: .22cqw; color: var(--white); font-size: clamp(12px, 1.18cqw, 19px); font-weight: 600; }
+    .ayah-panel { min-width: 0; }
+    .divider { width: 1px; height: 8cqw; justify-self: center; background: rgba(122, 155, 183, .25); }
+    .prayer-panel { min-width: 0; text-align: right; }
+
+    .ayah-label, .prayer-heading {
+      color: var(--muted);
+      font-size: clamp(11px, 1.3cqw, 21px);
+      font-weight: 650;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+    .ayah {
+      margin: .7cqw 0 .45cqw;
+      color: #ffd08b;
+      font: 2.4cqw/1.45 "Amiri Quran", "Traditional Arabic", serif;
+      text-align: right;
+      direction: rtl;
+    }
+    .translation {
+      max-width: 52ch;
+      margin: 0;
+      color: #e6eef6;
+      font-size: clamp(13px, 1.55cqw, 25px);
+      line-height: 1.4;
+    }
+    .prayer-heading { padding-top: .9cqw; border-top: 1px solid rgba(173, 204, 220, .2); letter-spacing: .055em; }
+    .times {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: .55cqw;
+      margin-top: .75cqw;
+    }
+    .time {
+      color: #c8d4e1;
+      font-size: clamp(11px, 1.35cqw, 22px);
+      text-align: center;
+      white-space: nowrap;
+    }
+    .time b {
+      display: block;
+      margin-top: .32cqw;
+      color: var(--white);
+      font-size: clamp(14px, 1.9cqw, 30px);
+      font-weight: 600;
+    }
     .time.next, .time.next b { color: var(--amber); }
 
     .dock {
@@ -162,25 +207,49 @@
       background: rgba(243, 247, 252, .94);
       color: #172334;
       text-align: center;
-      font-size: clamp(12px, 1.1cqw, 18px);
+      font-size: clamp(13px, 1.5cqw, 24px);
       font-weight: 650;
       transition: transform .15s ease, box-shadow .15s ease;
     }
-    .app span { font-size: clamp(20px, 2.3cqw, 36px); }
+    .app span { font-size: clamp(22px, 2.4cqw, 38px); }
     .app.focused { outline: 3px solid #a9f4ec; box-shadow: 0 0 0 5px rgba(84, 222, 211, .28); transform: scale(1.025); }
-    .footnote { position: fixed; right: 14px; bottom: 10px; color: #8491a1; font: 12px/1.4 "Segoe UI", sans-serif; }
+
+    .preview-controls {
+      position: fixed;
+      right: 14px;
+      bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #8491a1;
+      font: 12px/1.4 "Segoe UI", sans-serif;
+    }
+    .preview-controls button {
+      border: 1px solid #3c4b5d;
+      border-radius: 999px;
+      background: #111b28;
+      color: #dbe6f2;
+      padding: 4px 10px;
+      font: inherit;
+      cursor: pointer;
+    }
+    .preview-controls button:hover { border-color: var(--teal); }
 
     @media (max-width: 700px) {
-      .content { left: 5.8%; right: 5.8%; bottom: 27%; }
+      .content { left: 5.8%; right: 5.8%; bottom: 30%; }
+      .rail { grid-template-columns: 1fr; gap: 1.2cqw; }
+      .divider { display: none; }
       .translation, .alert { display: none; }
-      .dock { grid-template-columns: repeat(5, 1fr); }
+      .prayer-panel { text-align: left; }
+      .prayer-heading { border-top: 0; }
+      .time { font-size: 1.1cqw; }
     }
     @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; } }
   </style>
 </head>
 <body>
   <main class="stage" aria-label="Quiet Canvas launcher mock preview">
-    <img class="wallpaper" src="../themes/quiet-canvas/wallpaper.jpg" alt="Dark navy gradient with teal and violet light">
+    <img class="wallpaper" id="wallpaper" src="../themes/quiet-canvas/wallpaper.jpg" alt="Dark navy gradient with teal and violet light">
     <div class="shade"></div>
 
     <header class="topbar">
@@ -191,7 +260,7 @@
       <nav class="actions" aria-label="TV controls">
         <span class="pill">⇥ &nbsp; Inputs</span>
         <span class="pill">⌁ &nbsp; Wi‑Fi</span>
-        <span class="icon-button" aria-label="Voice search">♩</span>
+        <span class="icon-button" aria-label="Voice search">🎙</span>
         <span class="icon-button profile" aria-label="Profile">🐼</span>
         <span class="icon-button" aria-label="Settings">⚙</span>
       </nav>
@@ -203,18 +272,23 @@
     </section>
 
     <section class="content">
-      <article class="panel prayer">
-        <div class="ayah-label">Doa Harian &nbsp;·&nbsp; Taha 20:114</div>
-        <div class="ayah" lang="ar" dir="rtl">وَقُل رَّبِّ زِدْنِي عِلْمًا</div>
-        <p class="translation">“My Lord, increase me in knowledge.”</p>
-        <div class="prayer-heading">Prayer times &nbsp;·&nbsp; Shah Alam &nbsp;·&nbsp; 25 Jamadilawal 1448H</div>
-        <div class="times">
-          <div class="time next">Subuh<b>05:48</b></div>
-          <div class="time">Syuruk<b>06:56</b></div>
-          <div class="time">Zohor<b>13:00</b></div>
-          <div class="time">Asar<b>16:20</b></div>
-          <div class="time">Maghrib<b>18:58</b></div>
-          <div class="time">Isyak<b>20:09</b></div>
+      <article class="rail">
+        <div class="ayah-panel">
+          <div class="ayah-label">Doa Harian &nbsp;·&nbsp; Taha 20:114</div>
+          <div class="ayah" lang="ar" dir="rtl">وَقُل رَّبِّ زِدْنِي عِلْمًا</div>
+          <p class="translation">“Tuhanku, tambahkanlah ilmu kepadaku.”</p>
+        </div>
+        <div class="divider"></div>
+        <div class="prayer-panel">
+          <div class="prayer-heading">Waktu Solat &nbsp;·&nbsp; Petaling Jaya &nbsp;·&nbsp; 25 Jamadilawal 1448H</div>
+          <div class="times">
+            <div class="time next">Subuh<b>05:48</b></div>
+            <div class="time">Syuruk<b>06:56</b></div>
+            <div class="time">Zohor<b>13:00</b></div>
+            <div class="time">Asar<b>16:20</b></div>
+            <div class="time">Maghrib<b>18:58</b></div>
+            <div class="time">Isyak<b>20:09</b></div>
+          </div>
         </div>
       </article>
     </section>
@@ -227,6 +301,17 @@
       <div class="app"><span>▶</span>YouTube</div>
     </nav>
   </main>
-  <p class="footnote">Static styling mock · Outfit type · edit the CSS variables in this file; not a live Android render.</p>
+  <div class="preview-controls">
+    <span>Wallpaper:</span>
+    <button type="button" data-wallpaper="../themes/quiet-canvas/wallpaper.jpg">Cool</button>
+    <button type="button" data-wallpaper="../themes/quiet-canvas-ember/wallpaper.jpg">Ember</button>
+    <span>· static mock, not Android</span>
+  </div>
+  <script>
+    const wallpaper = document.getElementById("wallpaper");
+    document.querySelectorAll("[data-wallpaper]").forEach((button) => {
+      button.addEventListener("click", () => { wallpaper.src = button.dataset.wallpaper; });
+    });
+  </script>
 </body>
 </html>

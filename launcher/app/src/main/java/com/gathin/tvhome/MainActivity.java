@@ -209,6 +209,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     private NowPlayingManager.Listener nowPlayingListener;
     private View islamicShelf;
     private View ayahBlock;
+    private View prayerBlock;
     private TextView ayahLabel, ayahArabic, ayahText, prayerHeader;
     private boolean ayahRunning;
     private boolean homeWeatherRunning;
@@ -735,13 +736,11 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
                 });
                 ayahBlock.setOnFocusChangeListener((v, hasFocus) -> {
                     if (hasFocus) SoundEffects.playNav();
-                    float scale = hasFocus ? 1.03f : 1.0f;
-                    v.animate().scaleX(scale).scaleY(scale).setDuration(150).start();
                 });
                 ayahBlock.setOnKeyListener((v, keyCode, event) -> {
                     if (event.getAction() != KeyEvent.ACTION_DOWN) return false;
                     if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
-                        focusTile(Math.min(adapter != null ? adapter.getItemCount() - 1 : 3, 3));
+                        focusTile(0);
                         return true;
                     }
                     if (keyCode == KeyEvent.KEYCODE_DPAD_UP) {
@@ -757,6 +756,46 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
                             return true;
                         }
                     }
+                    if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
+                        if (isInfoRailVisible()) {
+                            prayerBlock.requestFocus();
+                            return true;
+                        }
+                    }
+                    return false;
+                });
+            }
+            prayerBlock = findViewById(R.id.prayerBlock);
+            if (prayerBlock != null) {
+                prayerBlock.setFocusable(true);
+                prayerBlock.setClickable(true);
+                prayerBlock.setOnClickListener(v -> showPrayerPopup());
+                prayerBlock.setOnFocusChangeListener((v, hasFocus) -> {
+                    if (hasFocus) SoundEffects.playNav();
+                });
+                prayerBlock.setOnKeyListener((v, keyCode, event) -> {
+                    if (event.getAction() != KeyEvent.ACTION_DOWN) return false;
+                    if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
+                        if (ayahBlock != null && ayahBlock.getVisibility() == View.VISIBLE) {
+                            ayahBlock.requestFocus();
+                            return true;
+                        }
+                    }
+                    if (keyCode == KeyEvent.KEYCODE_DPAD_UP) {
+                        View settings = findViewById(R.id.btnSettings);
+                        if (settings != null) {
+                            settings.requestFocus();
+                            return true;
+                        }
+                    }
+                    if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
+                        focusTile(COLUMNS - 1);
+                        return true;
+                    }
+                    if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER || keyCode == KeyEvent.KEYCODE_ENTER) {
+                        showPrayerPopup();
+                        return true;
+                    }
                     return false;
                 });
             }
@@ -766,7 +805,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             prayerHeader = findViewById(R.id.prayerHeader);
 
             int uWidth = getResources().getDisplayMetrics().widthPixels - (int) ((55 + 56) * density);
-            int iMaxWidth = Math.round(uWidth * 0.38f);
+            int iMaxWidth = Math.round(uWidth * 0.50f);
             if (ayahArabic != null) ayahArabic.setMaxWidth(iMaxWidth);
             if (ayahText != null) ayahText.setMaxWidth(iMaxWidth);
 
@@ -1004,6 +1043,10 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             if (keyCode == KeyEvent.KEYCODE_DPAD_UP) return true;
             if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
                 if (v.getId() == R.id.btnSettings || v.getId() == R.id.btnCandyBox) {
+                    if (isInfoRailVisible()) {
+                        prayerBlock.requestFocus();
+                        return true;
+                    }
                     if (ayahBlock != null && ayahBlock.getVisibility() == View.VISIBLE) {
                         ayahBlock.requestFocus();
                         return true;
@@ -1955,6 +1998,12 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         return id == R.id.btnInputs || id == R.id.btnWifi || id == R.id.btnAssistant || id == R.id.btnCandyBox || id == R.id.btnSettings;
     }
 
+    /** True when the information rail is enabled and its prayer side can take focus. */
+    private boolean isInfoRailVisible() {
+        return islamicShelf != null && islamicShelf.getVisibility() == View.VISIBLE
+                && prayerBlock != null && prayerBlock.getVisibility() == View.VISIBLE;
+    }
+
     /** Sends the focus shape onto a pill: from a tile it glides up and narrows into the pill. */
     private void moveTopHighlight(View pill) {
         if (resuming) return;
@@ -2239,7 +2288,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         }
     }
 
-    /** Focus has left the apps altogether: both the shelf and the glow go. */
+    /** Focus has left the apps altogether: the shelves and glow go. */
     private void hideHero() {
         hideShelf();
         if (!ambientShown) return;
@@ -2252,6 +2301,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         if (!heroShown) return;
         heroShown = false;
         if (heroShelf != null) heroShelf.animate().alpha(0f).setDuration(reducedMotion ? 100 : 160).start();
+        // The rail belongs to the home shelf: fade it before grid rows scroll into the same band.
         if (islamicShelf != null) islamicShelf.animate().alpha(0f).setDuration(reducedMotion ? 100 : 160).start();
     }
 

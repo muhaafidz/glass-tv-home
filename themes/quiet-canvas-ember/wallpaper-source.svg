@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080">
+  <defs>
+    <linearGradient id="base" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#120A11"/>
+      <stop offset="0.52" stop-color="#1B0F1A"/>
+      <stop offset="1" stop-color="#211318"/>
+    </linearGradient>
+    <radialGradient id="rose" cx="76%" cy="18%" r="68%">
+      <stop offset="0" stop-color="#D45A8A" stop-opacity="0.34"/>
+      <stop offset="0.38" stop-color="#8E3C63" stop-opacity="0.2"/>
+      <stop offset="1" stop-color="#261424" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="ember" cx="16%" cy="82%" r="67%">
+      <stop offset="0" stop-color="#F0A05D" stop-opacity="0.3"/>
+      <stop offset="0.4" stop-color="#A85A4B" stop-opacity="0.17"/>
+      <stop offset="1" stop-color="#1B1017" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="gold" cx="88%" cy="82%" r="48%">
+      <stop offset="0" stop-color="#FFD08A" stop-opacity="0.18"/>
+      <stop offset="0.42" stop-color="#B36A67" stop-opacity="0.1"/>
+      <stop offset="1" stop-color="#1A1018" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="lower-haze" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#150C13" stop-opacity="0"/>
+      <stop offset="1" stop-color="#0C070D" stop-opacity="0.55"/>
+    </linearGradient>
+    <radialGradient id="vignette" cx="50%" cy="46%" r="73%">
+      <stop offset="0.5" stop-color="#080407" stop-opacity="0"/>
+      <stop offset="1" stop-color="#080407" stop-opacity="0.48"/>
+    </radialGradient>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#base)"/>
+  <rect width="1920" height="1080" fill="url(#rose)"/>
+  <rect width="1920" height="1080" fill="url(#ember)"/>
+  <rect width="1920" height="1080" fill="url(#gold)"/>
+  <path d="M0 798C296 708 468 858 746 838c279-20 409-181 675-140 192 30 326 140 499 91v291H0Z" fill="#170D14" fill-opacity="0.25"/>
+  <path d="M0 875c254-93 430 47 715 28s459-155 720-112c181 30 320 112 485 80v209H0Z" fill="url(#lower-haze)"/>
+  <path d="M-40 823c294-104 455 42 737 20s432-155 703-112c205 33 353 120 564 79" fill="none" stroke="#FFD3A1" stroke-opacity="0.11" stroke-width="2"/>
+  <rect width="1920" height="1080" fill="url(#vignette)"/>
+</svg>
