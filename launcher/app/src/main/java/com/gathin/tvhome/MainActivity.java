@@ -3218,13 +3218,13 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         }
 
         int usable = getResources().getDisplayMetrics().widthPixels - (int) ((55 + 56) * density);
-        int islamicMaxWidth = Math.round(usable * 0.38f);
+        int islamicMaxWidth = Math.round(usable * 0.50f);
         boolean is4K = (getResources().getDisplayMetrics().widthPixels >= 3840 || getResources().getDisplayMetrics().heightPixels >= 2160);
 
         if (ayahLabel != null) {
-            String datePart = (k.date != null && !k.date.isEmpty()) ? "  •  " + k.date.toUpperCase(Locale.ROOT) : "";
-            ayahLabel.setText("KHUTBAH MINBAR • " + k.authority.toUpperCase(Locale.ROOT) + datePart);
-            ayahLabel.setTextSize(TypedValue.COMPLEX_UNIT_SP, is4K ? 11.5f : 9.5f);
+            String datePart = (k.date != null && !k.date.isEmpty()) ? "  •  " + k.date : "";
+            ayahLabel.setText("Khutbah Minbar  •  " + k.authority + datePart);
+            ayahLabel.setTextSize(TypedValue.COMPLEX_UNIT_SP, is4K ? 15f : 12.5f);
         }
         if (ayahArabic != null) {
             String text = k.title.trim();
