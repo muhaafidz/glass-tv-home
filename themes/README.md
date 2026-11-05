@@ -35,9 +35,13 @@ powershell -ExecutionPolicy Bypass -File tools\theme.ps1 -TvHost 192.168.1.50 th
 
 The `quiet-canvas` theme now rotates through five 1920×1080 colourways: cool, ember, forest, graphite and sand.
 Each leaves calm dark space behind the clock and widgets, with a low-contrast wash and a thin horizon accent.
-Every JPEG is about 38–39 KB; editable SVGs for the new colourways are in
+Every JPEG is about 38–39 KB at quality 88; editable SVGs for the new colourways are in
 `quiet-canvas/wallpapers/*-source.svg`. The collection changes every 30 minutes by default; change
-`wallpaper_minutes` in its `config.json` to taste. The redesigned home uses a full-width information rail above
+`wallpaper_minutes` in its `config.json` to taste.
+
+These files are already small enough: further JPEG compression would save only a few kilobytes and does not
+reduce the decoded `RGB_565` bitmap (about 4 MiB at 1080p), while it risks visible banding in the gradients.
+The launcher decodes only the current wallpaper; the other four files are just paths on disk. The redesigned home uses a full-width information rail above
 the dock, removes the place-caption shelf by default, and uses Outfit with quiet surfaces—without adding
 dependencies or background work. Apply it with `TV_HOST=<tv-ip> tools/theme.sh themes/quiet-canvas`.
 For a quick desktop styling mock (no emulator), open [`preview/quiet-canvas.html`](../preview/quiet-canvas.html)
