@@ -2,7 +2,7 @@
   "background_color": "#07101C",
   "wallpaper": true,
   "places": false,
-  "wallpaper_minutes": 0,
+  "wallpaper_minutes": 30,
   "columns": 5,
   "rows_below_dock": 0
 }
