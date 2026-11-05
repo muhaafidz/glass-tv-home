@@ -43,7 +43,7 @@ public class HourlyWeatherGraphView extends View {
 
     private float animProgress = 1.0f;
     private ValueAnimator animator;
-    private Typeface interTypeface;
+    private Typeface outfitTypeface;
 
     public HourlyWeatherGraphView(Context context) {
         super(context);
@@ -62,9 +62,9 @@ public class HourlyWeatherGraphView extends View {
 
     private void init(Context context) {
         try {
-            interTypeface = ResourcesCompat.getFont(context, R.font.inter);
+            outfitTypeface = ResourcesCompat.getFont(context, R.font.outfit);
         } catch (Exception ignored) {
-            interTypeface = Typeface.DEFAULT;
+            outfitTypeface = Typeface.DEFAULT;
         }
 
         float density = getResources().getDisplayMetrics().density;
@@ -84,13 +84,13 @@ public class HourlyWeatherGraphView extends View {
         tempTextPaint.setColor(0xFFFFFFFF);
         tempTextPaint.setTextSize(13.5f * density);
         tempTextPaint.setTextAlign(Paint.Align.CENTER);
-        tempTextPaint.setTypeface(interTypeface != null ? Typeface.create(interTypeface, Typeface.BOLD) : Typeface.DEFAULT_BOLD);
+        tempTextPaint.setTypeface(outfitTypeface != null ? Typeface.create(outfitTypeface, Typeface.BOLD) : Typeface.DEFAULT_BOLD);
         tempTextPaint.setShadowLayer(3.0f * density, 0, 1.0f * density, 0x80000000);
 
         timeTextPaint.setColor(0xFF94A3B8); // Slate 400
         timeTextPaint.setTextSize(11.5f * density);
         timeTextPaint.setTextAlign(Paint.Align.CENTER);
-        timeTextPaint.setTypeface(interTypeface != null ? interTypeface : Typeface.DEFAULT);
+        timeTextPaint.setTypeface(outfitTypeface != null ? outfitTypeface : Typeface.DEFAULT);
 
         baselinePaint.setColor(0x1AFFFFFF); // Subtle dotted/soft guide
         baselinePaint.setStrokeWidth(1.0f * density);

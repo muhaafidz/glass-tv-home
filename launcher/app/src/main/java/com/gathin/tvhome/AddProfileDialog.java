@@ -38,7 +38,7 @@ public class AddProfileDialog {
         tvTitle.setText("＋ Tambah Profil Baharu");
         tvTitle.setTextSize(21);
         tvTitle.setTextColor(0xFFFFFFFF);
-        tvTitle.setTypeface(context.getResources().getFont(R.font.inter), android.graphics.Typeface.BOLD);
+        tvTitle.setTypeface(context.getResources().getFont(R.font.outfit), android.graphics.Typeface.BOLD);
         root.addView(tvTitle);
 
         TextView tvSub = new TextView(context);
@@ -53,7 +53,7 @@ public class AddProfileDialog {
         tvNameLabel.setText("NAMA PROFIL");
         tvNameLabel.setTextSize(11.5f);
         tvNameLabel.setTextColor(0xFF38BDF8);
-        tvNameLabel.setTypeface(context.getResources().getFont(R.font.inter), android.graphics.Typeface.BOLD);
+        tvNameLabel.setTypeface(context.getResources().getFont(R.font.outfit), android.graphics.Typeface.BOLD);
         root.addView(tvNameLabel);
 
         EditText etName = new EditText(context);

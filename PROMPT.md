@@ -22,7 +22,7 @@ When an AI assistant receives this prompt, it **MUST** perform the following 4-P
    - Siasat Rangkaian LAN/Wi-Fi: `adb shell ip -f inet addr show wlan0` (Sahkan IP dalam subnet sama untuk muat naik wallpaper telefon QR tanpa masalah).
    - Kenal pasti Pelancar Asal: `adb shell cmd package resolve-activity -c android.intent.category.HOME -a android.intent.action.MAIN`.
 2. **Fasa 2: Penyesuaian Kendiri APK (Self-Adapting Capabilities)**:
-   - APK v4.0 menyesuaikan diri secara automatik: dp-scaling bebas herotan pada 720p/1080p/4K, downsampling memori selamat (inSampleSize & RGB_565) untuk foto 48MP/8K, failover port HTTP automatik (8080 -> 8888 -> dynamic port 0), serta fon moden Inter di seluruh UI.
+   - Quiet Canvas mengekalkan dp-scaling, downsampling memori selamat (inSampleSize & RGB_565), dan failover port HTTP, dengan fon Outfit di seluruh UI serta Amiri Quran untuk teks Arab.
 3. **Fasa 3: Pemasangan & Kunci Butang Home**:
    - Sandarkan pakej: `adb shell pm list packages -f > backup_packages.txt`.
    - Pasang APK: `adb install -r release/glass-tv-home.apk`.
@@ -31,7 +31,7 @@ When an AI assistant receives this prompt, it **MUST** perform the following 4-P
    - Tetapkan lokasi Malaysia (JAS IPU & JAKIM solat): `adb shell am broadcast -a com.gathin.tvhome.SET_LOCATION -p com.gathin.tvhome --es query "<LOCATION>"`.
 4. **Fasa 4: Pengesahan Skrin TV (Visual Verification)**:
    - Ambil screenshot (`adb shell screencap -p /sdcard/tv.png && adb pull /sdcard/tv.png`).
-   - Sahkan fon Inter aktif, ikon avatar pengguna bulat terpapar di bar atas, dan butang Home remote berfungsi 100%.
+   - Sahkan fon Outfit aktif, ikon avatar pengguna bulat terpapar di bar atas, dan butang Home remote berfungsi.
 
 ---
 

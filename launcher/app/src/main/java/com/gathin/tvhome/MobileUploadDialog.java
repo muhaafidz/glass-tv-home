@@ -42,7 +42,7 @@ public class MobileUploadDialog {
         tvTitle.setText("📲 Muat Naik Avatar Dari Telefon");
         tvTitle.setTextSize(20);
         tvTitle.setTextColor(0xFFFFFFFF);
-        tvTitle.setTypeface(context.getResources().getFont(R.font.inter), android.graphics.Typeface.BOLD);
+        tvTitle.setTypeface(context.getResources().getFont(R.font.outfit), android.graphics.Typeface.BOLD);
         root.addView(tvTitle);
 
         TextView tvSub = new TextView(context);
@@ -71,14 +71,14 @@ public class MobileUploadDialog {
         tvUrlLabel.setText("🌐 BUKA PAUTAN INI DI TELEFON ANDA:");
         tvUrlLabel.setTextSize(12);
         tvUrlLabel.setTextColor(0xFF67E8F9);
-        tvUrlLabel.setTypeface(context.getResources().getFont(R.font.inter), android.graphics.Typeface.BOLD);
+        tvUrlLabel.setTypeface(context.getResources().getFont(R.font.outfit), android.graphics.Typeface.BOLD);
         urlBox.addView(tvUrlLabel);
 
         TextView tvUrl = new TextView(context);
         tvUrl.setText(url);
         tvUrl.setTextSize(24);
         tvUrl.setTextColor(0xFFFFFFFF);
-        tvUrl.setTypeface(context.getResources().getFont(R.font.inter), android.graphics.Typeface.BOLD);
+        tvUrl.setTypeface(context.getResources().getFont(R.font.outfit), android.graphics.Typeface.BOLD);
         tvUrl.setPadding(0, (int) (6 * density), 0, (int) (6 * density));
         urlBox.addView(tvUrl);
 

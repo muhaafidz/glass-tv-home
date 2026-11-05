@@ -121,7 +121,7 @@ public final class ChildModeManager {
      */
     public static void promptPin(Context ctx, String title, String subtitle, PinCallback callback) {
         float density = ctx.getResources().getDisplayMetrics().density;
-        Typeface outfit = ctx.getResources().getFont(R.font.inter);
+        Typeface outfit = ctx.getResources().getFont(R.font.outfit);
 
         AlertDialog[] dialogHolder = new AlertDialog[1];
         StringBuilder pinBuilder = new StringBuilder();

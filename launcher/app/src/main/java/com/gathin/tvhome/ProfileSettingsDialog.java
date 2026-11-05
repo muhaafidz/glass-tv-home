@@ -52,7 +52,7 @@ public class ProfileSettingsDialog {
         tvTitle.setText("⚙️ Tetapan Profil: " + profile.name);
         tvTitle.setTextSize(20);
         tvTitle.setTextColor(0xFFFFFFFF);
-        tvTitle.setTypeface(context.getResources().getFont(R.font.inter), android.graphics.Typeface.BOLD);
+        tvTitle.setTypeface(context.getResources().getFont(R.font.outfit), android.graphics.Typeface.BOLD);
         root.addView(tvTitle);
 
         TextView tvSub = new TextView(context);
@@ -85,7 +85,7 @@ public class ProfileSettingsDialog {
         tvNameLabel.setText("NAMA PROFIL");
         tvNameLabel.setTextSize(11);
         tvNameLabel.setTextColor(0xFF94A3B8);
-        tvNameLabel.setTypeface(context.getResources().getFont(R.font.inter), android.graphics.Typeface.BOLD);
+        tvNameLabel.setTypeface(context.getResources().getFont(R.font.outfit), android.graphics.Typeface.BOLD);
         inputCol.addView(tvNameLabel);
 
         EditText etName = new EditText(context);
@@ -118,7 +118,7 @@ public class ProfileSettingsDialog {
         tvAvatarSection.setText("PILIH JENIS AVATAR (3 PILIHAN)");
         tvAvatarSection.setTextSize(11.5f);
         tvAvatarSection.setTextColor(0xFF38BDF8); // Cyan
-        tvAvatarSection.setTypeface(context.getResources().getFont(R.font.inter), android.graphics.Typeface.BOLD);
+        tvAvatarSection.setTypeface(context.getResources().getFont(R.font.outfit), android.graphics.Typeface.BOLD);
         tvAvatarSection.setPadding(0, (int) (4 * density), 0, (int) (8 * density));
         root.addView(tvAvatarSection);
 
@@ -181,7 +181,7 @@ public class ProfileSettingsDialog {
             btnDelete.setText("🗑️ Padam Profil");
             btnDelete.setTextColor(0xFFEF4444); // Red
             btnDelete.setTextSize(13);
-            btnDelete.setTypeface(context.getResources().getFont(R.font.inter), android.graphics.Typeface.BOLD);
+            btnDelete.setTypeface(context.getResources().getFont(R.font.outfit), android.graphics.Typeface.BOLD);
             btnDelete.setGravity(Gravity.CENTER);
             btnDelete.setPadding((int) (12 * density), (int) (8 * density), (int) (12 * density), (int) (8 * density));
             btnDelete.setFocusable(true);
@@ -205,7 +205,7 @@ public class ProfileSettingsDialog {
         btnCancel.setText("Batal");
         btnCancel.setTextColor(0xFF94A3B8);
         btnCancel.setTextSize(13.5f);
-        btnCancel.setTypeface(context.getResources().getFont(R.font.inter), android.graphics.Typeface.NORMAL);
+        btnCancel.setTypeface(context.getResources().getFont(R.font.outfit), android.graphics.Typeface.NORMAL);
         btnCancel.setGravity(Gravity.CENTER);
         btnCancel.setPadding((int) (16 * density), (int) (8 * density), (int) (16 * density), (int) (8 * density));
         btnCancel.setFocusable(true);
@@ -219,7 +219,7 @@ public class ProfileSettingsDialog {
         btnSave.setText("Simpan Perubahan");
         btnSave.setTextColor(0xFFFFFFFF);
         btnSave.setTextSize(13.5f);
-        btnSave.setTypeface(context.getResources().getFont(R.font.inter), android.graphics.Typeface.BOLD);
+        btnSave.setTypeface(context.getResources().getFont(R.font.outfit), android.graphics.Typeface.BOLD);
         btnSave.setGravity(Gravity.CENTER);
         btnSave.setIncludeFontPadding(false);
         btnSave.setBackgroundResource(R.drawable.bg_dialog_btn);
@@ -284,7 +284,7 @@ public class ProfileSettingsDialog {
         tvT.setText(title);
         tvT.setTextSize(14f);
         tvT.setTextColor(0xFFFFFFFF);
-        tvT.setTypeface(context.getResources().getFont(R.font.inter), android.graphics.Typeface.BOLD);
+        tvT.setTypeface(context.getResources().getFont(R.font.outfit), android.graphics.Typeface.BOLD);
         textCol.addView(tvT);
 
         TextView tvS = new TextView(context);
@@ -300,7 +300,7 @@ public class ProfileSettingsDialog {
         btn.setText(btnText);
         btn.setTextSize(12.5f);
         btn.setTextColor(0xFFFFFFFF);
-        btn.setTypeface(context.getResources().getFont(R.font.inter), android.graphics.Typeface.BOLD);
+        btn.setTypeface(context.getResources().getFont(R.font.outfit), android.graphics.Typeface.BOLD);
         btn.setGravity(Gravity.CENTER);
         btn.setIncludeFontPadding(false);
         btn.setBackgroundResource(R.drawable.bg_dialog_btn);

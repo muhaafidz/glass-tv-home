@@ -6,8 +6,8 @@
   <title>Quiet Canvas — Glass TV preview</title>
   <style>
     @font-face {
-      font-family: Inter;
-      src: url("../launcher/app/src/main/res/font/inter.ttf") format("truetype");
+      font-family: Outfit;
+      src: url("../launcher/app/src/main/res/font/outfit.ttf") format("truetype");
       font-display: swap;
     }
 
@@ -22,7 +22,7 @@
       --muted: #b8c8d7;
       --white: #f8fbff;
       color-scheme: dark;
-      font-family: Inter, "Segoe UI", sans-serif;
+      font-family: Outfit, "Segoe UI", sans-serif;
     }
 
     * { box-sizing: border-box; }
@@ -114,13 +114,11 @@
 
     .content {
       position: absolute;
-      left: 5.8%;
-      right: 5.8%;
+      left: 15%;
+      right: 15%;
       bottom: 29.5%;
-      display: grid;
-      grid-template-columns: minmax(0, 1.02fr) minmax(0, .98fr);
-      align-items: end;
-      gap: 3.2%;
+      display: flex;
+      justify-content: center;
     }
     .panel {
       border: 1px solid var(--panel-edge);
@@ -129,12 +127,7 @@
       box-shadow: 0 14px 42px rgba(0, 0, 0, .22), inset 0 1px 0 rgba(255, 255, 255, .07);
       backdrop-filter: blur(10px);
     }
-    .place { padding: 1.6cqw 1.75cqw; }
-    .place h1 { margin: 0 0 .42cqw; font-size: clamp(24px, 3.1cqw, 48px); font-weight: 600; letter-spacing: -.035em; line-height: 1.08; }
-    .place .where { color: #d0dce9; font-size: clamp(11px, 1.1cqw, 18px); letter-spacing: .18em; text-transform: uppercase; }
-    .place p { max-width: 50ch; margin: .8cqw 0 0; color: #dbe4ef; font-size: clamp(12px, 1.12cqw, 18px); line-height: 1.4; }
-
-    .prayer { padding: 1.2cqw 1.5cqw 1.15cqw; text-align: right; }
+    .prayer { width: min(100%, 1100px); padding: 1.2cqw 1.5cqw 1.15cqw; text-align: right; }
     .ayah-label, .prayer-heading { color: var(--muted); font-size: clamp(10px, .92cqw, 15px); font-weight: 650; letter-spacing: .12em; text-transform: uppercase; }
     .ayah { margin: .62cqw 0 .35cqw; color: #ffd08b; font: 1.2cqw/1.55 serif; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .translation { max-width: 54ch; margin: 0 0 .95cqw auto; color: #e3eaf2; font-size: clamp(11px, 1cqw, 16px); line-height: 1.35; }
@@ -178,9 +171,8 @@
     .footnote { position: fixed; right: 14px; bottom: 10px; color: #8491a1; font: 12px/1.4 "Segoe UI", sans-serif; }
 
     @media (max-width: 700px) {
-      .content { grid-template-columns: 1fr; bottom: 27%; gap: 1.4cqw; }
-      .place p, .alert { display: none; }
-      .prayer { display: none; }
+      .content { left: 5.8%; right: 5.8%; bottom: 27%; }
+      .translation, .alert { display: none; }
       .dock { grid-template-columns: repeat(5, 1fr); }
     }
     @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; } }
@@ -211,17 +203,11 @@
     </section>
 
     <section class="content">
-      <article class="panel place">
-        <h1>Masjid Selat Melaka</h1>
-        <div class="where">Melaka, Malaysia</div>
-        <p>Masjid terapung tersohor di pesisir Selat Melaka, disinari cahaya senja.</p>
-      </article>
-
       <article class="panel prayer">
         <div class="ayah-label">Doa Harian &nbsp;·&nbsp; Taha 20:114</div>
         <div class="ayah" lang="ar" dir="rtl">وَقُل رَّبِّ زِدْنِي عِلْمًا</div>
         <p class="translation">“My Lord, increase me in knowledge.”</p>
-        <div class="prayer-heading">Waktu solat &nbsp;·&nbsp; Shah Alam &nbsp;·&nbsp; 25 Jamadilawal 1448H</div>
+        <div class="prayer-heading">Prayer times &nbsp;·&nbsp; Shah Alam &nbsp;·&nbsp; 25 Jamadilawal 1448H</div>
         <div class="times">
           <div class="time next">Subuh<b>05:48</b></div>
           <div class="time">Syuruk<b>06:56</b></div>
@@ -241,6 +227,6 @@
       <div class="app"><span>▶</span>YouTube</div>
     </nav>
   </main>
-  <p class="footnote">Static styling mock · edit the CSS variables in this file; not a live Android render.</p>
+  <p class="footnote">Static styling mock · Outfit type · edit the CSS variables in this file; not a live Android render.</p>
 </body>
 </html>

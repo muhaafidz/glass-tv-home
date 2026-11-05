@@ -94,7 +94,7 @@ public final class ModernSettingsDialog {
 
         float density = activity.getResources().getDisplayMetrics().density;
         DisplayMetrics dm = activity.getResources().getDisplayMetrics();
-        Typeface outfit = activity.getResources().getFont(R.font.inter);
+        Typeface outfit = activity.getResources().getFont(R.font.outfit);
 
         AlertDialog[] dialogHolder = new AlertDialog[1];
         int[] activeTab = new int[]{TAB_PROFILE};

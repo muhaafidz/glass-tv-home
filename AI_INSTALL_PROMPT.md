@@ -44,7 +44,7 @@ Glass TV v4.0 dilengkapi dengan enjin penyesuaian kendiri (self-adapting) secara
 - Resolusi & DPI: Menggunakan vektor dinamik dan dp-scaling yang menyesuaikan saiz UI secara automatik pada TV 720p, 1080p, dan 4K tanpa terpotong (zero clipping).
 - Pengurusan Memori Wallpaper: Foto telefon beresolusi tinggi (48MP/8K) yang dimuat naik akan dikecilkan mengikut saiz paparan menggunakan inSampleSize dan RGB_565 supaya TV dengan RAM 1GB / 2GB tidak mengalami Out-Of-Memory.
 - Dynamic Port Failover HTTP Server: Pelayan muat naik wallpaper QR cuba port 8080 -> 8888 -> 8081 -> dynamic OS port 0 jika port tertentu disekat oleh aplikasi lain pada TV.
-- Universal Typography: Antara muka v4.0 menggunakan fon moden "Inter" sepenuhnya.
+- Universal Typography: Quiet Canvas menggunakan fon Outfit yang dibundel; teks Arab kekal menggunakan fon Amiri Quran.
 
 ========================================================================
 FASA 3: PEMASANGAN, SYSTEM DEBLOAT & KUNCI BUTANG HOME REMOTE
@@ -81,7 +81,7 @@ FASA 4: PELANCARAN & PENGESAHAN VISUAL (VERIFICATION)
 
 2. Ambil tangkapan skrin (screenshot) dari TV dan periksa secara visual:
    adb shell screencap -p /sdcard/tv_verify.png && adb pull /sdcard/tv_verify.png ./tv_verify.png
-   - Pastikan muka jam, tarikh, widget cuaca, dan ayat harian dipaparkan dengan fon Inter.
+   - Pastikan muka jam, tarikh, widget cuaca, dan ayat harian dipaparkan dengan fon Outfit.
    - Pastikan butang profil pengguna di bar atas memaparkan ikon avatar haiwan bulat aktif.
    - Pastikan dock aplikasi tersusun rapi.
 

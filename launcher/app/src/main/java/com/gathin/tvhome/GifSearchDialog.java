@@ -65,7 +65,7 @@ public class GifSearchDialog {
         tvTitle.setText("🔍 Cari Animasi GIF Avatar");
         tvTitle.setTextSize(20);
         tvTitle.setTextColor(0xFFFFFFFF);
-        tvTitle.setTypeface(context.getResources().getFont(R.font.inter), android.graphics.Typeface.BOLD);
+        tvTitle.setTypeface(context.getResources().getFont(R.font.outfit), android.graphics.Typeface.BOLD);
         root.addView(tvTitle);
 
         TextView tvSub = new TextView(context);
@@ -102,7 +102,7 @@ public class GifSearchDialog {
         btnSearch.setText("Cari 🚀");
         btnSearch.setTextColor(0xFFFFFFFF);
         btnSearch.setTextSize(13.5f);
-        btnSearch.setTypeface(context.getResources().getFont(R.font.inter), android.graphics.Typeface.BOLD);
+        btnSearch.setTypeface(context.getResources().getFont(R.font.outfit), android.graphics.Typeface.BOLD);
         btnSearch.setGravity(Gravity.CENTER);
         btnSearch.setIncludeFontPadding(false);
         btnSearch.setBackgroundResource(R.drawable.bg_dialog_btn);
@@ -137,7 +137,7 @@ public class GifSearchDialog {
             chip.setText(tag);
             chip.setTextSize(12.5f);
             chip.setTextColor(0xFFE2E8F0);
-            chip.setTypeface(context.getResources().getFont(R.font.inter), android.graphics.Typeface.BOLD);
+            chip.setTypeface(context.getResources().getFont(R.font.outfit), android.graphics.Typeface.BOLD);
             chip.setGravity(Gravity.CENTER);
             chip.setIncludeFontPadding(false);
             chip.setFocusable(true);
@@ -197,7 +197,7 @@ public class GifSearchDialog {
         btnClose.setText("Tutup");
         btnClose.setTextColor(0xFF94A3B8);
         btnClose.setTextSize(13.5f);
-        btnClose.setTypeface(context.getResources().getFont(R.font.inter), android.graphics.Typeface.BOLD);
+        btnClose.setTypeface(context.getResources().getFont(R.font.outfit), android.graphics.Typeface.BOLD);
         btnClose.setGravity(Gravity.CENTER);
         btnClose.setFocusable(true);
         btnClose.setClickable(true);

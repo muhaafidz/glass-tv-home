@@ -69,7 +69,7 @@ public final class WhoIsWatchingDialog {
         tvTitle.setText(AppLanguage.strWhosWatchingTitle(activity));
         tvTitle.setTextSize(38);
         tvTitle.setTextColor(0xFFFFFFFF);
-        tvTitle.setTypeface(activity.getResources().getFont(R.font.inter), android.graphics.Typeface.BOLD);
+        tvTitle.setTypeface(activity.getResources().getFont(R.font.outfit), android.graphics.Typeface.BOLD);
         tvTitle.setGravity(Gravity.CENTER);
         tvTitle.setPadding(0, 0, 0, (int) (6 * density));
         contentCol.addView(tvTitle);
@@ -264,7 +264,7 @@ public final class WhoIsWatchingDialog {
             tvName.setText(prof.name);
             tvName.setTextSize(17);
             tvName.setTextColor(0xFF94A3B8);
-            tvName.setTypeface(activity.getResources().getFont(R.font.inter), android.graphics.Typeface.BOLD);
+            tvName.setTypeface(activity.getResources().getFont(R.font.outfit), android.graphics.Typeface.BOLD);
             tvName.setGravity(Gravity.CENTER);
             tvName.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
             tvName.setSingleLine(true);
@@ -283,7 +283,7 @@ public final class WhoIsWatchingDialog {
             tvRole.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
             tvRole.setTextSize(11);
             tvRole.setLetterSpacing(0.12f);
-            tvRole.setTypeface(activity.getResources().getFont(R.font.inter), android.graphics.Typeface.BOLD);
+            tvRole.setTypeface(activity.getResources().getFont(R.font.outfit), android.graphics.Typeface.BOLD);
 
             if (prof.isPrimary) {
                 tvRole.setText(AppLanguage.strProfileRolePrimary(activity));
@@ -365,7 +365,7 @@ public final class WhoIsWatchingDialog {
         tvPlus.setText("+");
         tvPlus.setTextColor(0xFF94A3B8);
         tvPlus.setTextSize(36);
-        tvPlus.setTypeface(activity.getResources().getFont(R.font.inter), android.graphics.Typeface.NORMAL);
+        tvPlus.setTypeface(activity.getResources().getFont(R.font.outfit), android.graphics.Typeface.NORMAL);
         tvPlus.setGravity(Gravity.CENTER);
         tvPlus.setIncludeFontPadding(false);
         plusRing.addView(tvPlus, new FrameLayout.LayoutParams(
@@ -384,7 +384,7 @@ public final class WhoIsWatchingDialog {
         tvAddLabel.setText(AppLanguage.strAddProfile(activity));
         tvAddLabel.setTextSize(17);
         tvAddLabel.setTextColor(0xFF94A3B8);
-        tvAddLabel.setTypeface(activity.getResources().getFont(R.font.inter), android.graphics.Typeface.BOLD);
+        tvAddLabel.setTypeface(activity.getResources().getFont(R.font.outfit), android.graphics.Typeface.BOLD);
         tvAddLabel.setGravity(Gravity.CENTER);
         tvAddLabel.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         tvAddLabel.setSingleLine(true);
