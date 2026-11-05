@@ -25,6 +25,8 @@ The original 1920×1080 gradient leaves calm dark space behind the clock and wid
 teal/violet/amber wash and a thin horizon accent. The JPEG is about 38 KB; `wallpaper-source.svg` is included
 for editing. The home screen uses matching cool glass rims and a quiet prayer/weather panel without adding
 dependencies or background work. Apply the sample theme with `TV_HOST=<tv-ip> tools/theme.sh themes/quiet-canvas`.
+For a quick desktop styling mock (no emulator), open [`preview/quiet-canvas.html`](../preview/quiet-canvas.html)
+in a browser and tweak its CSS variables. It is illustrative; the Android release build remains the source of truth.
 
 ## Keys
 

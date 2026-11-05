@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Quiet Canvas — Glass TV preview</title>
+  <style>
+    @font-face {
+      font-family: Inter;
+      src: url("../launcher/app/src/main/res/font/inter.ttf") format("truetype");
+      font-display: swap;
+    }
+
+    :root {
+      /* Tweak these tokens to explore the palette without rebuilding the APK. */
+      --ink: #07101c;
+      --panel: rgba(9, 17, 31, .83);
+      --panel-edge: rgba(153, 195, 213, .26);
+      --teal: #54ded3;
+      --violet: #8055e8;
+      --amber: #f0a05d;
+      --muted: #b8c8d7;
+      --white: #f8fbff;
+      color-scheme: dark;
+      font-family: Inter, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: grid;
+      place-items: center;
+      background: #050812;
+      color: var(--white);
+    }
+
+    .stage {
+      width: min(1920px, calc(100vw - 32px), calc((100vh - 32px) * 1.7778));
+      aspect-ratio: 16 / 9;
+      position: relative;
+      overflow: hidden;
+      isolation: isolate;
+      background: var(--ink);
+      box-shadow: 0 24px 100px rgba(0, 0, 0, .48);
+      container-type: inline-size;
+    }
+
+    .wallpaper, .shade { position: absolute; inset: 0; width: 100%; height: 100%; }
+    .wallpaper { object-fit: cover; z-index: -2; }
+    .shade {
+      z-index: -1;
+      background:
+        linear-gradient(180deg, rgba(4, 8, 17, .1) 0%, rgba(4, 8, 17, .08) 42%, rgba(4, 8, 17, .42) 100%),
+        linear-gradient(90deg, rgba(4, 8, 17, .22), transparent 48%, rgba(4, 8, 17, .12));
+    }
+
+    .topbar {
+      position: absolute;
+      top: 5.3%;
+      left: 5.8%;
+      right: 5.8%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2cqw;
+    }
+
+    .clock-group { display: flex; align-items: center; gap: 1.3cqw; text-shadow: 0 2px 12px #0009; }
+    .clock { font-size: clamp(34px, 5.9cqw, 86px); font-weight: 500; letter-spacing: -.055em; line-height: .95; }
+    .date { display: grid; gap: .38cqw; color: #eef3fa; font-size: clamp(12px, 1.18cqw, 20px); font-weight: 600; letter-spacing: .08em; }
+    .date small { color: #d5deea; font-size: .88em; }
+
+    .actions { display: flex; align-items: center; gap: .72cqw; }
+    .pill, .icon-button {
+      min-height: 2.65cqw;
+      border: 1px solid rgba(205, 224, 239, .28);
+      background: rgba(10, 20, 34, .46);
+      color: var(--white);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(8px);
+    }
+    .pill { padding: 0 1.2cqw; border-radius: 999px; gap: .55cqw; font-size: clamp(12px, 1.22cqw, 20px); }
+    .icon-button { width: 2.65cqw; border-radius: 50%; font-size: clamp(17px, 1.45cqw, 24px); }
+    .profile { border: 2px solid var(--teal); background: rgba(9, 20, 32, .8); font-size: clamp(21px, 1.9cqw, 30px); }
+
+    .status-row {
+      position: absolute;
+      top: 19.4%;
+      left: 5.8%;
+      right: 13%;
+      display: flex;
+      align-items: center;
+      gap: .8cqw;
+    }
+    .weather, .alert {
+      min-height: 2.5cqw;
+      display: flex;
+      align-items: center;
+      gap: .7cqw;
+      padding: .4cqw 1.05cqw;
+      border-radius: 999px;
+      font-size: clamp(12px, 1.18cqw, 19px);
+      white-space: nowrap;
+      overflow: hidden;
+    }
+    .weather { background: rgba(9, 17, 31, .78); border: 1px solid rgba(151, 185, 205, .28); }
+    .weather strong { color: var(--teal); font-weight: 650; }
+    .alert { flex: 1; background: rgba(77, 26, 33, .62); border: 1px solid rgba(249, 126, 126, .42); color: #ffb3ae; }
+
+    .content {
+      position: absolute;
+      left: 5.8%;
+      right: 5.8%;
+      bottom: 29.5%;
+      display: grid;
+      grid-template-columns: minmax(0, 1.02fr) minmax(0, .98fr);
+      align-items: end;
+      gap: 3.2%;
+    }
+    .panel {
+      border: 1px solid var(--panel-edge);
+      border-radius: 1.3cqw;
+      background: linear-gradient(150deg, rgba(14, 25, 42, .9), var(--panel));
+      box-shadow: 0 14px 42px rgba(0, 0, 0, .22), inset 0 1px 0 rgba(255, 255, 255, .07);
+      backdrop-filter: blur(10px);
+    }
+    .place { padding: 1.6cqw 1.75cqw; }
+    .place h1 { margin: 0 0 .42cqw; font-size: clamp(24px, 3.1cqw, 48px); font-weight: 600; letter-spacing: -.035em; line-height: 1.08; }
+    .place .where { color: #d0dce9; font-size: clamp(11px, 1.1cqw, 18px); letter-spacing: .18em; text-transform: uppercase; }
+    .place p { max-width: 50ch; margin: .8cqw 0 0; color: #dbe4ef; font-size: clamp(12px, 1.12cqw, 18px); line-height: 1.4; }
+
+    .prayer { padding: 1.2cqw 1.5cqw 1.15cqw; text-align: right; }
+    .ayah-label, .prayer-heading { color: var(--muted); font-size: clamp(10px, .92cqw, 15px); font-weight: 650; letter-spacing: .12em; text-transform: uppercase; }
+    .ayah { margin: .62cqw 0 .35cqw; color: #ffd08b; font: 1.2cqw/1.55 serif; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .translation { max-width: 54ch; margin: 0 0 .95cqw auto; color: #e3eaf2; font-size: clamp(11px, 1cqw, 16px); line-height: 1.35; }
+    .prayer-heading { padding-top: .85cqw; border-top: 1px solid rgba(173, 204, 220, .2); letter-spacing: .1em; }
+    .times { display: grid; grid-template-columns: repeat(6, 1fr); gap: .3cqw; margin-top: .55cqw; }
+    .time { color: #c8d4e1; font-size: clamp(10px, .91cqw, 15px); text-align: center; }
+    .time b { display: block; margin-top: .22cqw; color: var(--white); font-size: clamp(12px, 1.18cqw, 19px); font-weight: 600; }
+    .time.next, .time.next b { color: var(--amber); }
+
+    .dock {
+      position: absolute;
+      left: 5.8%;
+      right: 5.8%;
+      bottom: 9%;
+      min-height: 15.4%;
+      padding: .75cqw;
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: .9cqw;
+      align-items: stretch;
+      border: 1px solid rgba(153, 195, 213, .34);
+      border-radius: 1.5cqw;
+      background: rgba(8, 18, 31, .54);
+      box-shadow: 0 18px 56px #0005, inset 0 1px 0 #ffffff18;
+      backdrop-filter: blur(12px);
+    }
+    .app {
+      display: grid;
+      place-content: center;
+      gap: .35cqw;
+      border-radius: 1cqw;
+      background: rgba(243, 247, 252, .94);
+      color: #172334;
+      text-align: center;
+      font-size: clamp(12px, 1.1cqw, 18px);
+      font-weight: 650;
+      transition: transform .15s ease, box-shadow .15s ease;
+    }
+    .app span { font-size: clamp(20px, 2.3cqw, 36px); }
+    .app.focused { outline: 3px solid #a9f4ec; box-shadow: 0 0 0 5px rgba(84, 222, 211, .28); transform: scale(1.025); }
+    .footnote { position: fixed; right: 14px; bottom: 10px; color: #8491a1; font: 12px/1.4 "Segoe UI", sans-serif; }
+
+    @media (max-width: 700px) {
+      .content { grid-template-columns: 1fr; bottom: 27%; gap: 1.4cqw; }
+      .place p, .alert { display: none; }
+      .prayer { display: none; }
+      .dock { grid-template-columns: repeat(5, 1fr); }
+    }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; } }
+  </style>
+</head>
+<body>
+  <main class="stage" aria-label="Quiet Canvas launcher mock preview">
+    <img class="wallpaper" src="../themes/quiet-canvas/wallpaper.jpg" alt="Dark navy gradient with teal and violet light">
+    <div class="shade"></div>
+
+    <header class="topbar">
+      <div class="clock-group">
+        <time class="clock">10:28</time>
+        <div class="date"><span>MLM</span><small>5 NOV 2026</small></div>
+      </div>
+      <nav class="actions" aria-label="TV controls">
+        <span class="pill">⇥ &nbsp; Inputs</span>
+        <span class="pill">⌁ &nbsp; Wi‑Fi</span>
+        <span class="icon-button" aria-label="Voice search">♩</span>
+        <span class="icon-button profile" aria-label="Profile">🐼</span>
+        <span class="icon-button" aria-label="Settings">⚙</span>
+      </nav>
+    </header>
+
+    <section class="status-row" aria-label="Weather and air quality">
+      <div class="weather"><span>☁</span><span>25° &nbsp; Mendung</span><span>·</span><strong>IPU 66 Sederhana</strong></div>
+      <div class="alert">△ &nbsp; Ribut petir · Amaran angin kencang dan laut bergelora</div>
+    </section>
+
+    <section class="content">
+      <article class="panel place">
+        <h1>Masjid Selat Melaka</h1>
+        <div class="where">Melaka, Malaysia</div>
+        <p>Masjid terapung tersohor di pesisir Selat Melaka, disinari cahaya senja.</p>
+      </article>
+
+      <article class="panel prayer">
+        <div class="ayah-label">Doa Harian &nbsp;·&nbsp; Taha 20:114</div>
+        <div class="ayah" lang="ar" dir="rtl">وَقُل رَّبِّ زِدْنِي عِلْمًا</div>
+        <p class="translation">“My Lord, increase me in knowledge.”</p>
+        <div class="prayer-heading">Waktu solat &nbsp;·&nbsp; Shah Alam &nbsp;·&nbsp; 25 Jamadilawal 1448H</div>
+        <div class="times">
+          <div class="time next">Subuh<b>05:48</b></div>
+          <div class="time">Syuruk<b>06:56</b></div>
+          <div class="time">Zohor<b>13:00</b></div>
+          <div class="time">Asar<b>16:20</b></div>
+          <div class="time">Maghrib<b>18:58</b></div>
+          <div class="time">Isyak<b>20:09</b></div>
+        </div>
+      </article>
+    </section>
+
+    <nav class="dock" aria-label="App dock">
+      <div class="app focused"><span>▣</span>Live TV</div>
+      <div class="app"><span>◉</span>Movies</div>
+      <div class="app"><span>▶</span>HDMI 1</div>
+      <div class="app"><span>▶</span>HDMI 2</div>
+      <div class="app"><span>▶</span>YouTube</div>
+    </nav>
+  </main>
+  <p class="footnote">Static styling mock · edit the CSS variables in this file; not a live Android render.</p>
+</body>
+</html>

@@ -553,6 +553,12 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             } else if (cfg.wallpaperOnline && wallpapers.isEmpty()) {
                 wallpapers = OnlineWallpapers.list(this);
             }
+        } else if (!cfg.places && !cfg.wallpaperOnline
+                && (cfg.wallpaper != null || !wallpapers.isEmpty())) {
+            // An offline theme's own wallpaper is an explicit choice: do not replace it with a
+            // previously cached online category or start a network refresh in the background.
+            placesMode = false;
+            if (wallpapers.isEmpty()) wallpapers = Collections.singletonList(cfg.wallpaper);
         } else {
             placesMode = false;
             List<File> catFiles = OnlineWallpapers.listByCategory(this, activeCat);
