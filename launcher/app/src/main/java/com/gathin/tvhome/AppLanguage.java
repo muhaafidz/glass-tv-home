@@ -78,12 +78,12 @@ final class AppLanguage {
         String lang = getLanguage(ctx);
         switch (lang) {
             case LANG_EN:
-                return "PRAYER TIMES";
+                return "Prayer times";
             case LANG_ID:
-                return "WAKTU SHOLAT";
+                return "Waktu sholat";
             case LANG_MS:
             default:
-                return "WAKTU SOLAT";
+                return "Waktu solat";
         }
     }
 
@@ -92,24 +92,29 @@ final class AppLanguage {
         String prefix;
         switch (lang) {
             case LANG_EN:
-                prefix = "DAILY PRAYER";
+                prefix = "Daily prayer";
                 break;
             case LANG_ID:
             case LANG_MS:
             default:
-                prefix = "DOA HARIAN";
+                prefix = "Doa harian";
                 break;
         }
         if (reference != null && !reference.isEmpty()) {
-            return prefix + "  •  " + reference.toUpperCase(Locale.ROOT);
+            String ref = reference.trim();
+            if (!ref.isEmpty()) {
+                ref = ref.substring(0, 1).toUpperCase(Locale.ROOT)
+                        + ref.substring(1).toLowerCase(Locale.ROOT);
+            }
+            return prefix + "  •  " + ref;
         }
         switch (lang) {
             case LANG_EN:
-                return prefix + "  •  VERSE OF THE DAY";
+                return prefix + "  •  Verse of the day";
             case LANG_ID:
             case LANG_MS:
             default:
-                return prefix + "  •  AYAT PILIHAN";
+                return prefix + "  •  Ayat pilihan";
         }
     }
 

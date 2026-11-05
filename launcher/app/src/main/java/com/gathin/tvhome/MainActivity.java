@@ -629,8 +629,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
                 return false;
             });
             weatherAirQualityView.setOnFocusChangeListener((v, hasFocus) -> {
-                float scale = hasFocus ? 1.05f : 1.0f;
-                v.animate().scaleX(scale).scaleY(scale).setDuration(150).start();
+                if (hasFocus) SoundEffects.playNav();
             });
         }
         setupWeatherWarningPill();
@@ -2708,11 +2707,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
                 showWeatherWarningDialog();
             });
             weatherWarningContent.setOnFocusChangeListener((v, hasFocus) -> {
-                float scale = hasFocus ? 1.03f : 1.0f;
-                v.animate().scaleX(scale).scaleY(scale).setDuration(140).start();
-                if (weatherWarningText != null) {
-                    weatherWarningText.setSelected(hasFocus);
-                }
+                if (hasFocus) SoundEffects.playNav();
             });
             weatherWarningContent.setOnKeyListener((v, keyCode, event) -> {
                 if (event.getAction() != KeyEvent.ACTION_DOWN) return false;
@@ -2763,8 +2758,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
                 dismissWeatherWarning();
             });
             btnWarningDismiss.setOnFocusChangeListener((v, hasFocus) -> {
-                float scale = hasFocus ? 1.15f : 1.0f;
-                v.animate().scaleX(scale).scaleY(scale).setDuration(120).start();
+                if (hasFocus) SoundEffects.playNav();
             });
             btnWarningDismiss.setOnKeyListener((v, keyCode, event) -> {
                 if (event.getAction() != KeyEvent.ACTION_DOWN) return false;
@@ -3104,10 +3098,10 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         }
 
         Location.Zone currentZone = Location.chosen(this);
-        String zoneTitle = (currentZone != null && currentZone.town != null) ? currentZone.town.toUpperCase(Locale.ROOT) : PrayerTimes.getShortZoneName(this);
+        String zoneTitle = (currentZone != null && currentZone.town != null) ? currentZone.town : PrayerTimes.getShortZoneName(this);
         if (prayerHeader != null) {
             String pPrefix = AppLanguage.getPrayerHeaderPrefix(this);
-            prayerHeader.setText(pPrefix + " " + zoneTitle + "  •  " + PrayerTimes.getHijriDate(this).toUpperCase(Locale.ROOT));
+            prayerHeader.setText(pPrefix + "  •  " + zoneTitle + "  •  " + PrayerTimes.getHijriDate(this));
         }
 
         PrayerTimes.PrayerItem[] items = PrayerTimes.getPrayerItems(this);
@@ -3171,7 +3165,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
 
         if (ayahLabel != null) {
             ayahLabel.setText(AppLanguage.getAyahLabel(this, a.reference));
-            ayahLabel.setTextSize(TypedValue.COMPLEX_UNIT_SP, is4K ? 12f : 10f);
+            ayahLabel.setTextSize(TypedValue.COMPLEX_UNIT_SP, is4K ? 15f : 12.5f);
         }
         if (ayahArabic != null) {
             String text = a.arabic.trim();

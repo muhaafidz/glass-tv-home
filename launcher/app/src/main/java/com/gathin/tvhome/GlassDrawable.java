@@ -51,7 +51,7 @@ final class GlassDrawable extends Drawable {
         this.highlight = highlight;
         this.radius = radius;
         veil.setColor(0xFFFFFF | VEIL_ALPHA << 24);
-        rim = new GlassRim(1.25f * density, 0xB5D6F5F2, 0x1F51C9C1, reach);
+        rim = new GlassRim(1.25f * density, 0xB5D7E2EC, 0x1F8CA6B8, reach);
     }
 
     @Override

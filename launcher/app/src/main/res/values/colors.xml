@@ -7,5 +7,6 @@
     <color name="canvas_teal">#54DED3</color>
     <color name="canvas_teal_focus">#FFB9FBF5</color>
     <color name="canvas_text_muted">#B8C8D7</color>
+    <color name="canvas_amber">#FFD08B</color>
     <color name="canvas_divider">#337A9BB7</color>
 </resources>

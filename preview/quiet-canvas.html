@@ -99,22 +99,27 @@
       right: 5.8%;
       display: flex;
       align-items: center;
-      gap: .8cqw;
+      gap: 1.4cqw;
     }
     .weather, .alert {
-      min-height: 2.7cqw;
       display: flex;
       align-items: center;
-      gap: .7cqw;
-      padding: .42cqw 1.1cqw;
-      border-radius: 999px;
-      font-size: clamp(13px, 1.42cqw, 23px);
+      gap: .6cqw;
+      padding: 0;
+      border: 0;
+      background: none;
+      font-size: clamp(13px, 1.35cqw, 22px);
       white-space: nowrap;
       overflow: hidden;
     }
-    .weather { background: rgba(9, 17, 31, .78); border: 1px solid rgba(151, 185, 205, .28); }
-    .weather strong { color: var(--teal); font-weight: 650; }
-    .alert { flex: 1; background: rgba(77, 26, 33, .62); border: 1px solid rgba(249, 126, 126, .42); color: #ffb3ae; }
+    .weather { color: #dde7f2; }
+    .weather strong { color: #dde7f2; font-weight: 600; }
+    .alert {
+      flex: 0 1 55%;
+      padding-left: 1.4cqw;
+      border-left: 1px solid rgba(208, 226, 240, .22);
+      color: var(--amber);
+    }
 
     /* Lower information rail: ayah left, prayer times right. */
     .content {
@@ -128,11 +133,9 @@
       grid-template-columns: minmax(0, 1fr) 1px minmax(0, 1.18fr);
       gap: 2.2cqw;
       align-items: center;
-      border: 1px solid var(--panel-edge);
-      border-radius: 1.35cqw;
-      background: linear-gradient(150deg, rgba(14, 25, 42, .92), var(--panel));
-      box-shadow: 0 16px 48px rgba(0, 0, 0, .24), inset 0 1px 0 rgba(255, 255, 255, .07);
-      backdrop-filter: blur(10px);
+      border: 1px solid rgba(138, 166, 190, .24);
+      border-radius: 1.1cqw;
+      background: rgba(9, 16, 27, .94);
       padding: 1.5cqw 1.7cqw;
     }
     .ayah-panel { min-width: 0; }
@@ -142,9 +145,8 @@
     .ayah-label, .prayer-heading {
       color: var(--muted);
       font-size: clamp(11px, 1.3cqw, 21px);
-      font-weight: 650;
-      letter-spacing: .1em;
-      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: .03em;
     }
     .ayah {
       margin: .7cqw 0 .45cqw;
@@ -152,6 +154,7 @@
       font: 2.4cqw/1.45 "Amiri Quran", "Traditional Arabic", serif;
       text-align: right;
       direction: rtl;
+      padding-bottom: 1.4cqw;
     }
     .translation {
       max-width: 52ch;
@@ -160,7 +163,7 @@
       font-size: clamp(13px, 1.55cqw, 25px);
       line-height: 1.4;
     }
-    .prayer-heading { padding-top: .9cqw; border-top: 1px solid rgba(173, 204, 220, .2); letter-spacing: .055em; }
+    .prayer-heading { padding-top: .9cqw; border-top: 1px solid rgba(173, 204, 220, .2); }
     .times {
       display: grid;
       grid-template-columns: repeat(6, minmax(0, 1fr));
@@ -203,16 +206,20 @@
       display: grid;
       place-content: center;
       gap: .35cqw;
+      border: 1px solid rgba(225, 238, 248, .1);
       border-radius: 1cqw;
-      background: rgba(243, 247, 252, .94);
-      color: #172334;
+      background: rgba(240, 245, 250, .055);
+      color: var(--white);
       text-align: center;
       font-size: clamp(13px, 1.5cqw, 24px);
-      font-weight: 650;
-      transition: transform .15s ease, box-shadow .15s ease;
+      font-weight: 600;
+      transition: background .15s ease, outline-color .15s ease;
     }
-    .app span { font-size: clamp(22px, 2.4cqw, 38px); }
-    .app.focused { outline: 3px solid #a9f4ec; box-shadow: 0 0 0 5px rgba(84, 222, 211, .28); transform: scale(1.025); }
+    .app span { color: #dbe7f2; font-size: clamp(22px, 2.4cqw, 38px); }
+    .app.focused {
+      outline: 2px solid #a9f4ec;
+      background: rgba(240, 245, 250, .09);
+    }
 
     .preview-controls {
       position: fixed;

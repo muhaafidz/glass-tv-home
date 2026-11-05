@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Quiet lower-third surface: near-solid, one hairline, no glass gradient. -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
-    <gradient
-        android:angle="270"
-        android:startColor="@color/canvas_panel_top"
-        android:endColor="@color/canvas_panel_bottom" />
-    <stroke android:width="1dp" android:color="@color/canvas_panel_stroke" />
-    <corners android:radius="22dp" />
+    <solid android:color="#F20B1220" />
+    <stroke android:width="1dp" android:color="#2E43566B" />
+    <corners android:radius="16dp" />
 </shape>
