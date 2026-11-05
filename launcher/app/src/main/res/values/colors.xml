@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="canvas_ink">#07101C</color>
+    <color name="canvas_panel_top">#D9111B2A</color>
+    <color name="canvas_panel_bottom">#C60A1220</color>
+    <color name="canvas_panel_stroke">#397A9BB7</color>
+    <color name="canvas_teal">#54DED3</color>
+    <color name="canvas_teal_focus">#FFB9FBF5</color>
+    <color name="canvas_text_muted">#B8C8D7</color>
+</resources>

@@ -14,7 +14,17 @@ powershell -ExecutionPolicy Bypass -File tools\theme.ps1 -TvHost 192.168.1.50 th
 |---|---|
 | `default/` | The built-in look written out as JSON, as a starting point for your own |
 | `aurora/` | A dark aurora wallpaper (teal and violet on navy, darker at the bottom) with a matching background colour |
+| `quiet-canvas/` | A low-detail navy gradient with restrained teal, violet and amber light, tuned for white launcher text and glass panels |
 | `six-columns/` | Six smaller tiles per row and one grid row visible under the dock |
+
+## Quiet Canvas sample
+
+![Quiet Canvas dark gradient sample](quiet-canvas/wallpaper.jpg)
+
+The original 1920×1080 gradient leaves calm dark space behind the clock and widgets, with a low-contrast
+teal/violet/amber wash and a thin horizon accent. The JPEG is about 38 KB; `wallpaper-source.svg` is included
+for editing. The home screen uses matching cool glass rims and a quiet prayer/weather panel without adding
+dependencies or background work. Apply the sample theme with `TV_HOST=<tv-ip> tools/theme.sh themes/quiet-canvas`.
 
 ## Keys
 

@@ -1,0 +1,8 @@
+{
+  "background_color": "#07101C",
+  "wallpaper": true,
+  "places": false,
+  "wallpaper_seconds": 86400,
+  "columns": 5,
+  "rows_below_dock": 0
+}

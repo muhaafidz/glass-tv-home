@@ -100,7 +100,7 @@ final class Glider extends View {
         this.reducedMotion = reducedMotion;
         float density = context.getResources().getDisplayMetrics().density;
         veil.setColor(0x14FFFFFF);
-        rim = new GlassRim(1.5f * density, 0xD9FFFFFF, 0x1AFFFFFF);
+        rim = new GlassRim(1.25f * density, 0xB5D6F5F2, 0x1F51C9C1);
         shadowBlur = 22f * density;
         shadowDrop = 8f * density;
         Backdrop.watch(this);

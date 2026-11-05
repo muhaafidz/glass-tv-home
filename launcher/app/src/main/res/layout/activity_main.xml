@@ -24,6 +24,11 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="55dp"
         android:orientation="vertical"
+        android:background="@drawable/bg_hud_panel"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="13dp"
+        android:paddingBottom="13dp"
         android:alpha="0">
 
         <TextView
@@ -93,6 +98,11 @@
         android:layout_marginEnd="56dp"
         android:orientation="vertical"
         android:gravity="end"
+        android:background="@drawable/bg_hud_panel"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
         android:alpha="1">
 
         <!-- Ayat / Doa Harian (WeeklyAyah) matching bravia-glass-tv UI -->
@@ -176,7 +186,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="0dp"
-            android:textColor="#B3FFFFFF"
+            android:textColor="@color/canvas_text_muted"
             android:textSize="11.5sp"
             android:fontFamily="@font/inter"
             android:fontVariationSettings="'wght' 600"
