@@ -1,12 +1,12 @@
-# 🤖 Glass TV v4.0 — Dedicated AI Agent Installation & Environment Audit Prompt
+# 🤖 Glass TV v4.1.0 — Dedicated AI Agent Installation & Environment Audit Prompt
 
 > Salin dan tampal (copy & paste) keseluruhan prompt di bawah ke mana-mana pembantu AI coding (**Google Antigravity**, **Claude Code**, **Cursor**, atau **Copilot**) yang disambungkan ke rangkaian Wi-Fi yang sama dengan Android TV anda.
 
 ---
 
 ```text
-Saya mahu pasang Glass TV Home v4.0 pada Android TV rumah saya daripada repositori:
-https://github.com/aqmangge/glass-tv-home
+Saya mahu pasang Glass TV Home v4.1.0 pada Android TV rumah saya daripada repositori:
+https://github.com/muhaafidz/glass-tv-home
 
 PANDUAN KHAS KEPADA AI:
 Jangan pasang APK secara melulu tanpa mengkaji persekitaran TV terlebih dahulu. Sila ikuti 4 Fasa terperinci di bawah langkah demi langkah:
@@ -38,9 +38,9 @@ FASA 1: KAJI PERSEKITARAN TV SECARA MENDALAM (DEEP TV ENVIRONMENT AUDIT)
    - Catat package name pelancar asal (contohnya: com.google.android.apps.tv.launcherx, com.google.android.tvlauncher, com.xiaomi.mitv.tvhome, dsb).
 
 ========================================================================
-FASA 2: PENGESAHAN KEUPAYAAN SYSTEM SELF-ADAPTATION (GLASS TV v4.0)
+FASA 2: PENGESAHAN KEUPAYAAN SYSTEM SELF-ADAPTATION (GLASS TV v4.1.0)
 ========================================================================
-Glass TV v4.0 dilengkapi dengan enjin penyesuaian kendiri (self-adapting) secara automatik:
+Glass TV v4.1.0 dilengkapi dengan enjin penyesuaian kendiri (self-adapting) secara automatik:
 - Resolusi & DPI: Menggunakan vektor dinamik dan dp-scaling yang menyesuaikan saiz UI secara automatik pada TV 720p, 1080p, dan 4K tanpa terpotong (zero clipping).
 - Pengurusan Memori Wallpaper: Foto telefon beresolusi tinggi (48MP/8K) yang dimuat naik akan dikecilkan mengikut saiz paparan menggunakan inSampleSize dan RGB_565 supaya TV dengan RAM 1GB / 2GB tidak mengalami Out-Of-Memory.
 - Dynamic Port Failover HTTP Server: Pelayan muat naik wallpaper QR cuba port 8080 -> 8888 -> 8081 -> dynamic OS port 0 jika port tertentu disekat oleh aplikasi lain pada TV.

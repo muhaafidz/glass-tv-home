@@ -1,4 +1,4 @@
-# The Prompt / Arahan AI (v4.0)
+# The Prompt / Arahan AI (v4.1.0)
 
 > 💡 **PENTING / CRITICAL**:
 > Jangan pasang atau benarkan pengguna memuat turun APK secara sideload biasa tanpa persediaan! Pada Android TV / Google TV, pemasangan biasa menyebabkan sistem menganggap Glass TV sebagai aplikasi biasa—apabila pengguna menekan butang **HOME** pada remote, skrin tetap akan kembali ke pelancar asal pengeluar.
@@ -11,9 +11,9 @@
 Users can simply paste this single prompt into any AI coding agent (Google Antigravity, Claude Code, Cursor):
 
 ```text
-install ni dekat tv rumah saya: https://github.com/aqmangge/glass-tv-home
+install ni dekat tv rumah saya: https://github.com/muhaafidz/glass-tv-home
 ```
-*(English alias: `install this on my home tv: https://github.com/aqmangge/glass-tv-home`)*
+*(English alias: `install this on my home tv: https://github.com/muhaafidz/glass-tv-home`)*
 
 When an AI assistant receives this prompt, it **MUST** perform the following 4-Phase Protocol:
 1. **Fasa 1: Kaji TV Terperinci (Pre-Install Environment Audit)**:
@@ -49,7 +49,7 @@ USB speaker or drive plugged into it goes dead until you switch debugging off ag
 
 ---
 
-I want to debloat my Android TV and replace its launcher with a clean Apple TV style home screen (Glass TV v4.0).
+I want to debloat my Android TV and replace its launcher with a clean Apple TV style home screen (Glass TV v4.1.0).
 My TV model is: <MODEL NAME HERE>. Work on the real device, step by step, and verify everything you
 do with screenshots pulled from the TV. Ask me before anything that depends on my preferences.
 

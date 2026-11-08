@@ -1,18 +1,27 @@
-# Glass TV
+# Glass TV — Quiet Canvas
 
-**Make your Android TV or Google TV fast and ad-free again: strip out the bloat and ads, free up memory,
-and come home to just your apps, with a new place to visit behind them every week.**
+**Make your Android TV or Google TV fast and ad-free again, then come home to a calmer screen: Quiet Canvas
+folds the weather, daily ayah and prayer times into one glass rail above the dock.**
+
+> A fork of [Glass TV](https://github.com/aqmangge/glass-tv-home) by [@aqmangge](https://github.com/aqmangge).
+> The launcher engine and every feature from Glass TV v4.1.0 are here; the home screen, typography and
+> wallpaper set are rebuilt in this fork. The fork's own home is
+> [muhaafidz/glass-tv-home](https://github.com/muhaafidz/glass-tv-home).
 
 <p align="center">
-  <img src="docs/screenshots/glass_tv_os_showcase_poster.jpg" width="100%" alt="Glass TV OS Presentation Poster">
+  <img src="docs/screenshots/quiet-canvas-home.jpg" width="100%" alt="Quiet Canvas home: clock, quiet weather and air-quality line, full-width ayah and prayer rail, and app dock">
 </p>
 
 <p align="center">
-  <a href="https://github.com/aqmangge/glass-tv-home/raw/main/release/glass-tv-home.apk">
+  <em>Quiet Canvas home — rendered from <a href="preview/quiet-canvas.html">the repo's web preview</a>; the Android build remains the source of truth.</em>
+</p>
+
+<p align="center">
+  <a href="https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-home.apk">
     <img src="https://img.shields.io/badge/Download_TV_Launcher-glass--tv--home.apk_(v4.1.0)-success?style=for-the-badge&logo=android" alt="Download Glass TV Home">
   </a>
   &nbsp;
-  <a href="https://github.com/aqmangge/glass-tv-home/raw/main/release/glass-tv-installer.apk">
+  <a href="https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-installer.apk">
     <img src="https://img.shields.io/badge/Download_Phone_Installer-glass--tv--installer.apk_(v1.0.0)-007ACC?style=for-the-badge&logo=android" alt="Download Glass TV Installer">
   </a>
 </p>
@@ -25,11 +34,11 @@ and come home to just your apps, with a new place to visit behind them every wee
 > 
 > 👉 **GUNAKAN 2 KAEDAH PALING PRAKTIKAL & MUDAH DI BAWAH:**
 > 1. 🤖 **Kaedah 1 (Paling Disyorkan — 1-Baris Prompt AI)**: Salin prompt di [AI_INSTALL_PROMPT.md](AI_INSTALL_PROMPT.md) ke pembantu AI (Google Antigravity, Claude Code, Cursor). AI akan mengaudit versi TV, resolusi 1080p vs 4K, DPI, dan mengunci butang Home secara automatik!
-> 2. 📱 **Kaedah 2 (Tanpa PC — Aplikasi Telefon Android)**: Pasang [**`release/glass-tv-installer.apk`**](https://github.com/aqmangge/glass-tv-home/raw/main/release/glass-tv-installer.apk) di telefon pintar anda. Sambung ke Wi-Fi sama, dan tekan *Pasang Terus ke TV* untuk kunci butang Home dalam 1-klik tanpa komputer!
+> 2. 📱 **Kaedah 2 (Tanpa PC — Aplikasi Telefon Android)**: Pasang [**`release/glass-tv-installer.apk`**](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-installer.apk) di telefon pintar anda. Sambung ke Wi-Fi sama, dan tekan *Pasang Terus ke TV* untuk kunci butang Home dalam 1-klik tanpa komputer!
 
 > 📦 **Official APK Downloads**:
-> - 📺 **Android TV / Google TV Launcher**: [**`release/glass-tv-home.apk`**](https://github.com/aqmangge/glass-tv-home/raw/main/release/glass-tv-home.apk) (**v4.1.0** • ~2.0 MB)
-> - 📱 **Phone / Tablet Companion Installer**: [**`release/glass-tv-installer.apk`**](https://github.com/aqmangge/glass-tv-home/raw/main/release/glass-tv-installer.apk) (**v1.0.0** • ~6.8 MB) — Kunci butang Home TV terus dari telefon tanpa sebarang PC!
+> - 📺 **Android TV / Google TV Launcher**: [**`release/glass-tv-home.apk`**](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-home.apk) (**v4.1.0** • ~2.0 MB)
+> - 📱 **Phone / Tablet Companion Installer**: [**`release/glass-tv-installer.apk`**](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-installer.apk) (**v1.0.0** • ~6.8 MB) — Kunci butang Home TV terus dari telefon tanpa sebarang PC!
 >
 > 🤖 **AI Prompt & Audit Guide**:
 > - ⚡ **[AI_INSTALL_PROMPT.md](AI_INSTALL_PROMPT.md)**: Arahan lengkap AI untuk audit TV (1080p vs 4K, DPI, IP LAN, stock launcher), debloat, dan kunci butang Home.
@@ -40,21 +49,43 @@ and come home to just your apps, with a new place to visit behind them every wee
 > - 🇲🇾 **Panduan Bahasa Melayu**: Panduan lengkap langkah demi langkah untuk pengguna baru di [PANDUAN_PENGGUNA.md](PANDUAN_PENGGUNA.md).
 
 Glass TV debloats any Android TV or Google TV over Wi-Fi, with no root and nothing that can't be undone, then
-swaps the ad-filled home screen for a light one in frosted glass, with a new set of places behind your apps
-every week.
+swaps the ad-filled home screen for a calm one in frosted glass. This fork keeps the debloat tools and the
+v4.1.0 launcher features, and rebuilds the home around one information rail: a quiet weather and air-quality
+line, a daily ayah or Khutbah Minbar shelf, all six prayer times, and the app dock. The old place caption is
+off by default, so your wallpaper stays unobstructed.
+
+## What's New in This Fork — Quiet Canvas
+
+- **One full-width information rail.** The ayah/minbar shelf and prayer timetable now sit together in a single
+  glass rail above the dock, instead of separate stacked cards.
+- **A quieter status line.** Weather, temperature and the IPU/AQI reading share one line; long weather alerts
+  sit beside them in amber without a second row of pills.
+- **Outfit throughout.** The whole launcher uses the bundled **Outfit** typeface for a softer, modern TV UI.
+  Arabic Quran and sermon text keep their dedicated **Amiri Quran** font.
+- **Five rotating Quiet Canvas wallpapers.** A new `quiet-canvas` theme ships cool, ember, forest, graphite and
+  sand colourways, each tuned for white launcher text and rotated every 30 minutes. Prefer one still? Apply
+  `themes/quiet-canvas-ember`.
+- **No place caption by default.** The weekly Bing wallpaper still arrives, but the caption shelf is hidden so
+  the picture stays clean. Turn it back on from wallpaper settings if you want it.
+- **Preview without a TV or emulator.** [`preview/quiet-canvas.html`](preview/quiet-canvas.html) is a static
+  desktop mock of this layout with a wallpaper switcher. The Android release build is the source of truth.
+- **Everything from Glass TV v4.1.0 is inherited.** Khutbah Minbar, the weather and air-quality hub, multi-user
+  profiles, child mode, recent apps, the StandBy screensaver and the debloat tools are all still here.
 
 <p align="center">
-  <img src="docs/screenshots/khutbah-minbar-live.png" width="32%" alt="Live Khutbah Minbar W.P. Putrajaya">
-  <img src="docs/screenshots/khutbah-detail-dialog.png" width="32%" alt="Interactive Glass Khutbah Dialog">
-  <img src="docs/screenshots/khutbah-settings-toggle.png" width="32%" alt="Display Mode Choice Dialog">
+  <img src="docs/screenshots/quiet-canvas-ember.jpg" width="49%" alt="Quiet Canvas ember colourway">
+  <img src="docs/screenshots/quiet-canvas-forest.jpg" width="49%" alt="Quiet Canvas forest colourway">
 </p>
 <p align="center">
-  <img src="docs/screenshots/khutbah-selangor-jais.png" width="32%" alt="JAIS Selangor Khutbah">
-  <img src="docs/screenshots/khutbah-johor-jainj.png" width="32%" alt="JAINJ Johor Khutbah">
-  <img src="docs/screenshots/khutbah-singapore-muis.png" width="32%" alt="MUIS Singapore Khutbah">
+  <img src="docs/screenshots/quiet-canvas-graphite.jpg" width="49%" alt="Quiet Canvas graphite colourway">
+  <img src="docs/screenshots/quiet-canvas-sand.jpg" width="49%" alt="Quiet Canvas sand colourway">
+</p>
+<p align="center">
+  <em>The Quiet Canvas collection: cool, ember, forest, graphite and sand. Apply it with
+  <code>TV_HOST=&lt;tv-ip&gt; tools/theme.sh themes/quiet-canvas</code>.</em>
 </p>
 
-## What's New in Version 4.1 (Khutbah Minbar, Weather Hub & Profile Security Edition)
+## What's New in Version 4.1 (Inherited from Glass TV)
 
 - **🕌 Localized Weekly Friday Sermons (Khutbah Minbar Tempatan)**:
   - Automatically fetches and displays official localized Friday sermon excerpts based on the selected TV prayer zone / state.
@@ -83,28 +114,8 @@ every week.
 
 ---
 
-### 📸 Live Screen Showcase (v4.1.0)
-
-<p align="center">
-  <img src="docs/screenshots/home-live.png" width="49%" alt="Glass TV Home v4.1.0 Live Screen">
-  <img src="docs/screenshots/weather-live.png" width="49%" alt="Widescreen Leanback Weather Hub">
-</p>
-<p align="center">
-  <img src="docs/screenshots/settings-dropdown.jpg" width="49%" alt="Modern 2-Column Frosted Glass Settings">
-  <img src="docs/screenshots/child-mode-live.png" width="49%" alt="Child Mode PIN Lock & App Blocker">
-</p>
-<p align="center">
-  <img src="docs/screenshots/avatar-customizer-live.png" width="49%" alt="Animated Lottie Character Avatar Customizer">
-  <img src="docs/screenshots/profile-dialog-live.png" width="49%" alt="Multi-User Family Profile Manager">
-</p>
-<p align="center">
-  <img src="docs/screenshots/khutbah-minbar-live.png" width="49%" alt="Live Khutbah Minbar Shelf">
-  <img src="docs/screenshots/khutbah-detail-dialog.png" width="49%" alt="Interactive Frosted Glass Khutbah Modal">
-</p>
-
 ## What's New in Version 4.0
 
-- **Quiet Canvas typography**: This fork uses the bundled **Outfit** typeface throughout the launcher for a softer, modern TV UI; Arabic Quran text keeps its dedicated Amiri Quran font.
 - **Top Bar Active User Avatar Switcher**: The top bar user button dynamically displays the currently active user's **animal avatar icon** (Fox, Panda, Tiger, Lion, Frog, Koala, Octopus) inside a circular accent status ring (Cyan for adult, Amber for child mode). Users immediately see which family ID is currently active.
 - **Multi-User Profile & Child Mode Engine**: Create up to 10 independent family profiles with custom names and animal avatars. Features dedicated **Child Mode** with PIN protection, individual app locking, and hidden app management.
 - **Self-Adapting 1080p & 4K UHD Hardware Engine**: Automatically audits display modes (`Display.getMode()`), supporting 4K UHD 60Hz panels with smooth 1080p 60fps UI framebuffers. Safely downsamples 48MP/8K phone camera wallpapers using `inSampleSize` and `RGB_565` to prevent Out-Of-Memory crashes on 1GB/2GB TVs.
@@ -151,7 +162,7 @@ every week.
 - **OTA In-App Auto Update & 1-Line AI Patching.**
   - **In-App OTA Check (`⚙️ Check for Updates`)**: Check, download, and install latest APK patches directly on the TV without a PC.
   - **Background Launch Check**: Glass TV silently checks for new releases on startup and prompts when a new update is ready to install.
-  - **1-Line AI Update Prompt**: Paste `update patch latest glass tv dekat tv rumah saya: https://github.com/aqmangge/glass-tv-home` to any AI coding assistant to upgrade via ADB in 5 seconds without touching existing user data.
+  - **1-Line AI Update Prompt**: Paste `update patch latest glass tv dekat tv rumah saya: https://github.com/muhaafidz/glass-tv-home` to any AI coding assistant to upgrade via ADB in 5 seconds without touching existing user data.
 
 - **Keeps itself clean.** Every 15 days, while Home sits idle, the TV clears its app caches, where the Play
   Store leaves gigabytes of download leftovers that can make apps open to a blank screen. No computer needed,
@@ -163,9 +174,10 @@ every week.
   bar and in the menus it is dark. It glides and changes shape from one to the next, never jumps.
 - **Places to visit that renew themselves.** Once a week the TV takes the pictures Bing has shown on its home
   page over the past days — landmarks, landscapes, wildlife — deletes last week's and rotates through them,
-  dimmed so the clock and tiles stay readable. The shelf above the dock names each one, its country and a few
-  lines about it. Pictures with people in them are skipped: by the words in their caption, and by Android's
-  own face detector on the TV. No key, no account, nothing to set up.
+  dimmed so the clock and tiles stay readable. Quiet Canvas hides the place caption by default, so the picture
+  stays clean; turn it back on in wallpaper settings if you want the name and country. Pictures with people in
+  them are skipped: by the words in their caption, and by Android's own face detector on the TV. No key, no
+  account, nothing to set up.
 - **Every app tints the room.** The glow behind Home, and the glass with it, blends to the colour of whichever
   app is selected.
 - **Arrange your apps from the remote.** Hold OK on an app for a glass menu with **Move** and **App info**.
@@ -182,14 +194,7 @@ every week.
   button can be hidden (`show_network_pill`).
 - **Rotating wallpapers of your own** instead, with `"places": false`: put pictures in a theme's `wallpapers/`
   folder and choose how often they change, down to every 5 seconds. Each picture is decoded in the background
-  and cross-faded.
-
-| | |
-|---|---|
-| ![Home with Masjid Negeri Shah Alam, Selangor, story caption and glass dock](docs/screenshots/home.jpg) | ![The app grid scrolled down over the wallpaper, rows feathering out under the top bar](docs/screenshots/grid.jpg) |
-| *Home, with this week's place* | *Every app, feathering out under the top bar* |
-| ![The glass menu and quick controls over Jambatan Angkat Terengganu](docs/screenshots/inputs.jpg) | ![The StandBy clock screensaver with large 110sp digits, Hijri date, and prayer countdown](docs/screenshots/clock.jpg) |
-| *Inputs, in glass* | *The StandBy clock screensaver* |
+  and cross-faded. The bundled `quiet-canvas` theme is a ready-made five-image example.
 
 Still light: on a Xiaomi Mi TV with 1.8 GB of RAM the launcher uses about 80–100 MB and stays there over hours
 of use, one wallpaper is in memory at a time, the week's places take about 2 MB of storage, and nothing runs
@@ -202,7 +207,7 @@ Choose the setup method based on your available devices:
 ### ⭐ Priority 1: Android Phone (Primary Focus — 1-Click Wireless & Zero PC)
 Install directly from your Android phone or tablet without any computer or cables:
 1. Turn ON **USB debugging** on TV (*Settings ⚙️ $\rightarrow$ About $\rightarrow$ click Build 7 times $\rightarrow$ Developer options*).
-2. Install [**`release/glass-tv-installer.apk`**](https://github.com/aqmangge/glass-tv-home/raw/main/release/glass-tv-installer.apk) on your Android phone.
+2. Install [**`release/glass-tv-installer.apk`**](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-installer.apk) on your Android phone.
 3. Open the app, tap **`🔍 Imbas Android TV di Rangkaian Wi-Fi`**, then tap **`🚀 Pasang Terus ke Android TV`** and press **Allow** on your TV screen!
 
 ### 💻 Priority 2: If No Android Phone — Use Laptop or PC (1-Line AI Setup)
@@ -210,15 +215,15 @@ Using a computer with an AI assistant (**Google Antigravity** [Free], **Claude C
 1. Enable **USB debugging** on your TV and connect to the same Wi-Fi.
 2. Paste this single line to your AI assistant:
    ```text
-   install ni dekat tv rumah saya: https://github.com/aqmangge/glass-tv-home
+   install ni dekat tv rumah saya: https://github.com/muhaafidz/glass-tv-home
    ```
-   *(Or in English: `install this on my home tv: https://github.com/aqmangge/glass-tv-home`)*
+   *(Or in English: `install this on my home tv: https://github.com/muhaafidz/glass-tv-home`)*
 3. The AI connects over Wi-Fi, creates a backup, removes sluggish ads & bloatware, and installs Glass TV Home automatically!
 
 ### 🍏 Priority 3: If No Android & No PC (iPhone Users) — Use iPhone & Muse.ai Assistance
 Only have an iPhone/iPad?
 1. Open Safari on iPhone and visit [**muse.ai**](https://muse.ai) for interactive AI assistance:
-   > *"I have an iPhone and an Android TV [model]. Guide me step-by-step to install https://github.com/aqmangge/glass-tv-home and give me a debloat list of useless apps to disable on my TV."*
+   > *"I have an iPhone and an Android TV [model]. Guide me step-by-step to install https://github.com/muhaafidz/glass-tv-home and give me a debloat list of useless apps to disable on my TV."*
 2. Install the APK via TV's **Downloader** app or **LocalSend**, then disable manufacturer bloatware from TV Settings following Muse.ai's recommendations.
 
 ---
@@ -226,9 +231,9 @@ Only have an iPhone/iPad?
 ### 🔄 1-Line AI Update / Patch Prompt (For Existing Users)
 Already have Glass TV installed and want to update to the latest release or patch? Paste this single line to your AI:
 ```text
-update patch latest glass tv dekat tv rumah saya: https://github.com/aqmangge/glass-tv-home
+update patch latest glass tv dekat tv rumah saya: https://github.com/muhaafidz/glass-tv-home
 ```
-*(Or in English: `update glass tv to the latest patch on my tv: https://github.com/aqmangge/glass-tv-home`)*
+*(Or in English: `update glass tv to the latest patch on my tv: https://github.com/muhaafidz/glass-tv-home`)*
 
 > 🚨 **AI Update Rule / Arahan Khas AI Kemas Kini**:
 > When a user requests to update/patch Glass TV:
@@ -297,12 +302,34 @@ the launcher offline, make a theme folder with a `config.json` like this and pus
 All keys are listed in [themes/README.md](themes/README.md). With `"places": false`, the launcher never goes
 online.
 
+### Quiet Canvas themes
+
+This fork ships two ready-made themes:
+
+| Theme | What it is |
+|---|---|
+| `themes/quiet-canvas/` | Five 1920×1080 colourways — cool, ember, forest, graphite and sand — rotating every 30 minutes |
+| `themes/quiet-canvas-ember/` | The warm ember still on its own, if you prefer a single colourway |
+
+Apply the collection without rebuilding:
+
+```bash
+TV_HOST=<tv-ip> tools/theme.sh themes/quiet-canvas
+```
+
+To preview the layout and switch wallpapers without a TV or emulator, open
+[`preview/quiet-canvas.html`](preview/quiet-canvas.html) in a browser.
+
 ## Credits and licence
 
 - Built on [CleanYourTV](https://github.com/Gathin23/cleanyourtv) © 2026 Gathin, MIT licence — see
   [LICENSE](LICENSE). Its debloat lists, tools and launcher are the foundation of this project.
+- Glass TV is maintained upstream by [@aqmangge](https://github.com/aqmangge); this Quiet Canvas fork is
+  maintained by [@muhaafidz](https://github.com/muhaafidz).
 - The Outfit typeface is under the SIL Open Font License (`launcher/FONT-LICENSE-OFL.txt`).
 - The Inputs icon is from Google's Material Icons (Apache 2.0).
+- The Quiet Canvas wallpapers are generated gradients that live in `themes/quiet-canvas/`; the editable SVGs
+  are included.
 - Pictures of places and their captions are Bing's daily images (Microsoft). The launcher fetches them on your
-  own TV; the promo pictures above show three of them.
-- Gotham, used in the promo pictures only, is a Hoefler&Co. typeface and is not part of this repository.
+  own TV when `places` is on.
+- Gotham, used in the legacy promo pictures only, is a Hoefler&Co. typeface and is not part of this repository.

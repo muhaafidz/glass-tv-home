@@ -3,7 +3,7 @@
 Welcome to **Glass TV Home**! This guide is crafted specifically for everyday users and beginners so you can easily install, debloat your TV for blazing-fast performance without ads, navigate seamlessly with your TV remote, and enjoy all smart ambient features effortlessly.
 
 <p align="center">
-  <img src="docs/screenshots/glass_tv_os_showcase_poster.jpg" width="100%" alt="Glass TV OS Showcase Poster">
+  <img src="docs/screenshots/quiet-canvas-home.jpg" width="100%" alt="Quiet Canvas home layout — glass information rail above the app dock">
 </p>
 
 ---
@@ -12,8 +12,8 @@ Welcome to **Glass TV Home**! This guide is crafted specifically for everyday us
 
 Glass TV Home is a modern, lightweight home launcher replacement for Android TV and Google TV (compatible with Xiaomi Mi Box S, Mi TV Stick, Sony Bravia, TCL, Sharp, Philips, Mecool, Chromecast with Google TV, and more):
 
-* 🚀 **Zero Ads & Ultralight**: Only ~453 KB in size. Saves over 400 MB of RAM compared to sluggish stock manufacturer launchers.
-* 🪟 **Frosted Glass Aesthetic (tvOS Style)**: Modern Apple TV-inspired interface with fluid focus animations and a floating glass dock.
+* 🚀 **Zero Ads & Ultralight**: About 2.0 MB in size. Saves over 400 MB of RAM compared to sluggish stock manufacturer launchers.
+* 🪟 **Quiet Canvas Aesthetic (tvOS Style)**: Modern Apple TV-inspired interface with a full-width glass information rail, calm weather and air-quality status line, Outfit typography, and a floating glass dock.
 * 🕌 **Islamic Prayer Timetable & Daily Ayat**: Accurate 6-phase prayer timetable (Subuh, Syuruk, Zohor, Asar, Maghrib, Isyak) with active prayer emerald highlighting and daily Quranic verses.
 * ⛅ **Weather & Air Quality (API / AQI) Dashboard**: Live ambient temperature, "feels like", humidity, UV index, wind speed, sunrise/sunset, 12-hour forecast, 7-day outlook, and official Air Quality Index readings (APIMS).
 * 🌙 **StandBy Screensaver & 2-Hour Auto Power-Off**: Enters ambient black nightstand screensaver after 10 minutes of inactivity (burn-in safe for OLED/LED), and automatically turns off the TV display after 2 hours of sleep standby to save electricity.
@@ -24,9 +24,9 @@ Glass TV Home is a modern, lightweight home launcher replacement for Android TV 
 
 Download the official release APKs based on your setup:
 * 📱 **For Android Phones & Tablets (Companion Installer App — Recommended)**:  
-  [**`glass-tv-installer.apk`** (5.2 MB)](https://github.com/aqmangge/glass-tv-home/raw/main/release/glass-tv-installer.apk) — **Primary Recommendation!** Install directly to your TV and permanently lock the remote HOME button over Wi-Fi without needing a PC or cables.
+  [**`glass-tv-installer.apk`** (6.8 MB)](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-installer.apk) — **Primary Recommendation!** Install directly to your TV and permanently lock the remote HOME button over Wi-Fi without needing a PC or cables.
 * 📺 **For Android TV & Google TV (Main Launcher v4.1)**:  
-  [**`glass-tv-home.apk`** (2.0 MB)](https://github.com/aqmangge/glass-tv-home/raw/main/release/glass-tv-home.apk) — Latest release `v4.1.0` (Localized Khutbah Minbar, Doa Harian switch, frosted glass detail dialog, bi-directional DPAD remote focus).
+  [**`glass-tv-home.apk`** (2.0 MB)](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-home.apk) — Latest release `v4.1.0` (Localized Khutbah Minbar, Doa Harian switch, frosted glass detail dialog, bi-directional DPAD remote focus).
 
 > [!CAUTION]
 > ### ⚠️ DO NOT RAW-SIDELOAD THE APK WITHOUT PROPER LAUNCHER SETUP!
@@ -51,7 +51,7 @@ Follow the guide based on what device you have, prioritized for simplicity:
 If you have an Android smartphone or tablet, this is the **easiest, fastest, and most convenient** method without needing any computer or cables!
 
 1. **Install Companion APK on Your Android Phone**:
-   - Download [**`glass-tv-installer.apk`**](https://github.com/aqmangge/glass-tv-home/raw/main/release/glass-tv-installer.apk) (~5.2 MB) directly onto your Android device and install it.
+   - Download [**`glass-tv-installer.apk`**](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-installer.apk) (~6.8 MB) directly onto your Android device and install it.
 2. **Quick TV Setup (One-Time)**:
    - On your TV remote: Open **Settings ⚙️** $\rightarrow$ **About** $\rightarrow$ Scroll to **Build (Android TV OS Build)**.
    - Click the **OK button 7 times rapidly** until *"You are now a developer!"* pops up.
@@ -81,9 +81,9 @@ If you **do not have an Android smartphone** (e.g., you only have a laptop or co
 2. **Automatic AI Assistance (1-Line Prompt - Zero Coding)**:
    Open your AI assistant (**Google Antigravity** [Free / Recommended], **Claude Code**, or **Cursor**). Paste this single prompt:
    ```text
-   install ni dekat tv rumah saya: https://github.com/aqmangge/glass-tv-home
+   install ni dekat tv rumah saya: https://github.com/muhaafidz/glass-tv-home
    ```
-   *(English: `install this on my home tv: https://github.com/aqmangge/glass-tv-home`)*
+   *(English: `install this on my home tv: https://github.com/muhaafidz/glass-tv-home`)*
    - The AI connects over Wi-Fi (`adb connect <ip>:5555`), creates a backup, removes sluggish bloatware, enables AdGuard DNS, and installs Glass TV Home automatically!
    - Press **Allow** on your TV screen when prompted.
 3. **Manual Terminal Setup (Developer Alternative)**:
@@ -103,12 +103,12 @@ If you **do not have an Android phone and do not have a computer** (only an iPho
    - Open Safari on your iPhone and visit [**muse.ai**](https://muse.ai) (or your preferred web AI assistant).
    - Prompt Muse.ai with your TV setup:
      ```text
-     I am using an iPhone and have an Android TV (Model: [insert TV model, e.g. Xiaomi Mi Box S / TCL / Sony]). I want to install this lightweight launcher: https://github.com/aqmangge/glass-tv-home
+     I am using an iPhone and have an Android TV (Model: [insert TV model, e.g. Xiaomi Mi Box S / TCL / Sony]). I want to install this lightweight launcher: https://github.com/muhaafidz/glass-tv-home
      Please guide me step-by-step on how to install this APK from iPhone to TV, and provide a list of useless manufacturer apps (bloatware) safe to disable or remove on my TV model to make it fast and ad-free.
      ```
 2. **Transfer & Install APK (AI-Guided Steps)**:
    - **Method A (Downloader App on TV)**: On your Android TV, open Google Play Store and install **Downloader by AFTVnews**. Enter the direct APK URL:  
-     `https://github.com/aqmangge/glass-tv-home/raw/main/release/glass-tv-home.apk`  
+     `https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-home.apk`  
      Your TV will download and install Glass TV Home directly without extra hardware.
    - **Method B (LocalSend from iPhone)**: Install the free **LocalSend** app on both your iPhone (App Store) and TV (Play Store). Download `glass-tv-home.apk` on iPhone Safari, send it to TV over Wi-Fi, and click **Install**.
 3. **Remove Unwanted Apps (Debloat) & Block Ads**:
@@ -125,13 +125,13 @@ If you **do not have an Android phone and do not have a computer** (only an iPho
 ### 🔄 For Existing Users: 1-Line AI Patching Prompt
 Already running Glass TV Home and want to update to the latest patch or version? Send this single line to your AI assistant:
 ```text
-update patch latest glass tv dekat tv rumah saya: https://github.com/aqmangge/glass-tv-home
+update patch latest glass tv dekat tv rumah saya: https://github.com/muhaafidz/glass-tv-home
 ```
-*(English: `update glass tv to the latest patch on my tv: https://github.com/aqmangge/glass-tv-home`)*
+*(English: `update glass tv to the latest patch on my tv: https://github.com/muhaafidz/glass-tv-home`)*
 
 > [!IMPORTANT]
 > **🚨 Mandatory Instruction For AI Assistants (AI Assistant Rule)**:
-> When a user gives you the prompt `install ni dekat tv rumah saya: https://github.com/aqmangge/glass-tv-home`, the AI **MUST** ask the user:
+> When a user gives you the prompt `install ni dekat tv rumah saya: https://github.com/muhaafidz/glass-tv-home`, the AI **MUST** ask the user:
 > 1. *"What is your TV's IP address under Settings -> Network & Internet (or your TV brand)?"* (if not auto-discovered)
 > 2. *"Where are you located in Malaysia (e.g. Putrajaya, Cheras, Shah Alam, Melaka, Johor Bahru, Penang, Kuantan, Kuching, Kota Kinabalu, etc.) so that official Jabatan Alam Sekitar (DOE / APIMS) haze / IPU readings and JAKIM prayer times can be configured automatically?"*
 > 
@@ -349,7 +349,7 @@ You do **not** need a computer to install Glass TV Home.
 ### Method 1: Official 'Glass TV Installer' App (Zero-Config & Easiest) 🌟
 We built a dedicated companion installer app for Android phones and tablets that embeds the launcher and installs it over Wi-Fi:
 
-* **Download Companion App**: [**`glass-tv-installer.apk`**](https://github.com/aqmangge/glass-tv-home/raw/main/release/glass-tv-installer.apk) (~5.2 MB)
+* **Download Companion App**: [**`glass-tv-installer.apk`**](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-installer.apk) (~6.8 MB)
 
 1. **Enable Debugging on TV**:
    - Go to TV **Settings ⚙️** $\rightarrow$ **About** $\rightarrow$ Click **Android TV OS Build** 7 times.
@@ -392,11 +392,11 @@ Because Apple App Store sandbox policies do not permit direct ADB shell apps on 
 
 #### 1. Ask Muse.ai in iPhone Safari:
 Prompt Muse.ai:
-> *"I use an iPhone and have an Android TV [insert TV model, e.g. Xiaomi / TCL / Sony]. Give me the easiest instructions to install https://github.com/aqmangge/glass-tv-home on my TV, and tell me which bloatware apps are safe to disable so my TV runs fast and ad-free."*
+> *"I use an iPhone and have an Android TV [insert TV model, e.g. Xiaomi / TCL / Sony]. Give me the easiest instructions to install https://github.com/muhaafidz/glass-tv-home on my TV, and tell me which bloatware apps are safe to disable so my TV runs fast and ad-free."*
 
 #### 2. Install APK to TV:
 * **Option A (Downloader on TV)**: Install **Downloader by AFTVnews** from your TV's Play Store and type the direct APK link:  
-  `https://github.com/aqmangge/glass-tv-home/raw/main/release/glass-tv-home.apk`
+  `https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-home.apk`
 * **Option B (LocalSend from iPhone)**: Use **LocalSend** (free on iOS App Store & Android TV Play Store) to beam `glass-tv-home.apk` over Wi-Fi and install.
 
 #### 3. Debloat Unwanted Apps & Block Ads:
@@ -414,7 +414,7 @@ Prompt Muse.ai:
 ## 🛠️ 6. Alternative: Manual Installation via USB Flash Drive
 
 If you prefer using a physical USB drive:
-1. Download [**glass-tv-home.apk**](https://github.com/aqmangge/glass-tv-home/raw/main/release/glass-tv-home.apk) (also in [`release/glass-tv-home.apk`](release/glass-tv-home.apk)) onto your USB drive.
+1. Download [**glass-tv-home.apk**](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-home.apk) (also in [`release/glass-tv-home.apk`](release/glass-tv-home.apk)) onto your USB drive.
 2. Plug the USB flash drive into your Android TV or Xiaomi Mi Box.
 3. Open any file explorer app on the TV (e.g., *File Commander* or *FX File Explorer* from Google Play Store).
 4. Click `app-release.apk` and select **Install** (allow *"Install unknown apps"* if prompted).

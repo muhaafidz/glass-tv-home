@@ -7,13 +7,13 @@ Fail pemasangan rasmi (*Official Release APK*) untuk **Glass TV Home** dan aplik
 ## ⬇️ Muat Turun Fail APK (Official Direct Downloads)
 
 ### 1. 📺 Glass TV Home (Untuk Android TV & Google TV)
-Pelancar skrin utama (*home screen launcher*) ultra-ringan dengan rekaan *frosted glass* Apple TV, cuaca dinamik APIMS Malaysia, waktu solat automatik, RAM cleaner 2-klik, dan bebas iklan.
+Pelancar skrin utama (*home screen launcher*) ultra-ringan dengan rekaan *frosted glass* Apple TV dan susun atur **Quiet Canvas**, cuaca dinamik APIMS Malaysia, waktu solat automatik, RAM cleaner (tekan dua kali Home), dan bebas iklan.
 
 * **Fail APK**: [`glass-tv-home.apk`](glass-tv-home.apk)
-* **Versi Semasa**: `v3.1.4` (☕ Kad Belanja Kopi DuitNow QR `@imsomangge`, label butang Candy Box OTA terkini, sokongan paparan logo rasmi GXBank)
+* **Versi Semasa**: `v4.1.0` (Quiet Canvas: rail maklumat penuh, fon Outfit, koleksi wallpaper lima warna)
 * **Pautan Muat Turun Terus (Direct Link)**:  
-  [https://github.com/aqmangge/glass-tv-home/raw/main/release/glass-tv-home.apk](https://github.com/aqmangge/glass-tv-home/raw/main/release/glass-tv-home.apk)
-* **Saiz Fail**: ~730 KB (Ultra-ringan, muat turun dalam 1 saat & jimat memori TV)
+  [https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-home.apk](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-home.apk)
+* **Saiz Fail**: ~2.0 MB (ringan, muat turun dalam beberapa saat & jimat memori TV)
 * **Keserasian**: Android TV & Google TV (Android 8.0 Oreo ke atas, API 26+)
 
 ---
@@ -24,8 +24,8 @@ Aplikasi pembantu telefon pintar untuk memasang Glass TV Home terus ke TV rumah 
 * **Fail APK**: [`glass-tv-installer.apk`](glass-tv-installer.apk)
 * **Versi Semasa**: `v1.0.0`
 * **Pautan Muat Turun Terus (Direct Link)**:  
-  [https://github.com/aqmangge/glass-tv-home/raw/main/release/glass-tv-installer.apk](https://github.com/aqmangge/glass-tv-home/raw/main/release/glass-tv-installer.apk)
-* **Saiz Fail**: ~5.2 MB (Dah siap ada pakej APK Glass TV di dalam aplikasi)
+  [https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-installer.apk](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-installer.apk)
+* **Saiz Fail**: ~6.8 MB (Dah siap ada pakej APK Glass TV di dalam aplikasi)
 * **Keserasian**: Android 8.0 ke atas (Telefon pintar & tablet Android)
 
 ---
@@ -50,7 +50,7 @@ Tidak perlu komputer atau pendrive USB! Pasang APK pembantu terus pada peranti A
 
 #### 🚀 Cara 1: Pasang Automatik 1-Klik (Wireless ADB - Paling Disyorkan)
 1. **Pasang & Buka Aplikasi**:  
-   Muat turun dan pasang [`glass-tv-installer.apk`](https://github.com/aqmangge/glass-tv-home/raw/main/release/glass-tv-installer.apk) pada telefon Android anda.
+   Muat turun dan pasang [`glass-tv-installer.apk`](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-installer.apk) pada telefon Android anda.
 2. **Kesan TV Anda**:  
    Tekan butang **`🔍 Imbas Android TV di Rangkaian Wi-Fi`**. Aplikasi akan mencari Android TV anda secara automatik dan mengisi alamat IP (contohnya `192.168.68.110`).  
    *(Jika imbasan automatik tidak menjumpai TV, anda boleh taip alamat IP TV secara manual dari Tetapan Wi-Fi TV anda).*
@@ -76,7 +76,7 @@ Jika anda tidak mempunyai telefon Android, gunakan laptop atau komputer anda den
 1. **Bantuan AI Automatik 1-Baris Prompt**:
    Buka **Google Antigravity** [Percuma / Disyorkan], **Claude Code**, atau **Cursor** di komputer anda. Tampal satu baris ini sahaja:
    ```text
-   install ni dekat tv rumah saya: https://github.com/aqmangge/glass-tv-home
+   install ni dekat tv rumah saya: https://github.com/muhaafidz/glass-tv-home
    ```
    AI akan bersambung ke TV via Wi-Fi (`adb connect <ip>:5555`), menyahaktifkan bloatware/iklan yang melambatkan TV, dan memasang Glass TV Home secara automatik!
 2. **Terminal ADB Manual**:
@@ -94,10 +94,10 @@ Jika anda hanya mempunyai iPhone/iPad:
 
 1. **Bantuan AI Melalui Muse.ai**:
    Buka Safari di iPhone anda dan layari [**muse.ai**](https://muse.ai). Berikan soalan ini:
-   > *"Saya guna iPhone dan ada Android TV [jenama TV anda, cth: Xiaomi Mi Box / TCL / Sony]. Berikan panduan mudah pasang APK dari https://github.com/aqmangge/glass-tv-home ke TV saya, dan senaraikan aplikasi bawaan kilang yang tidak berguna (bloatware) untuk dimatikan pada TV saya."*
+   > *"Saya guna iPhone dan ada Android TV [jenama TV anda, cth: Xiaomi Mi Box / TCL / Sony]. Berikan panduan mudah pasang APK dari https://github.com/muhaafidz/glass-tv-home ke TV saya, dan senaraikan aplikasi bawaan kilang yang tidak berguna (bloatware) untuk dimatikan pada TV saya."*
 2. **Pasang APK ke TV**:
    - Di TV, buka aplikasi **Downloader by AFTVnews** dan taip pautan terus:  
-     `https://github.com/aqmangge/glass-tv-home/raw/main/release/glass-tv-home.apk`  
+     `https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-home.apk`  
      TV akan memuat turun dan memasang Glass TV Home serta-merta.
    - Atau gunakan aplikasi percuma **LocalSend** di iPhone & TV untuk hantar APK melalui Wi-Fi.
 3. **Nyahaktifkan Aplikasi Tidak Berguna & Iklan**:

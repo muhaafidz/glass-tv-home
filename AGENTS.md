@@ -7,8 +7,8 @@ before you improvise a fix.
 
 > ⚡ **Quick 1-Line User Trigger**:
 > When a user prompts you with:
-> `install ni dekat tv rumah saya: https://github.com/aqmangge/glass-tv-home`
-> (or `install this on my home tv: https://github.com/aqmangge/glass-tv-home`), they want you to automate the full deployment. Ask for their TV IP (if not auto-discovered) and their location in Malaysia (e.g. Putrajaya, Cheras, Shah Alam, Melaka, JB, Penang, Kuantan, Kuching, KK). Then connect over ADB, backup, debloat, install the prebuilt APK from `release/glass-tv-home.apk` (or build), configure the haze & prayer zone broadcast, and verify with a screenshot.
+> `install ni dekat tv rumah saya: https://github.com/muhaafidz/glass-tv-home`
+> (or `install this on my home tv: https://github.com/muhaafidz/glass-tv-home`), they want you to automate the full deployment. Ask for their TV IP (if not auto-discovered) and their location in Malaysia (e.g. Putrajaya, Cheras, Shah Alam, Melaka, JB, Penang, Kuantan, Kuching, KK). Then connect over ADB, backup, debloat, install the prebuilt APK from `release/glass-tv-home.apk` (or build), configure the haze & prayer zone broadcast, and verify with a screenshot.
 
 ## First: check the model, before anything else
 
