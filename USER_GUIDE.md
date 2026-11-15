@@ -25,8 +25,8 @@ Glass TV Home is a modern, lightweight home launcher replacement for Android TV 
 Download the official release APKs based on your setup:
 * 📱 **For Android Phones & Tablets (Companion Installer App — Recommended)**:  
   [**`glass-tv-installer.apk`** (6.8 MB)](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-installer.apk) — **Primary Recommendation!** Install directly to your TV and permanently lock the remote HOME button over Wi-Fi without needing a PC or cables.
-* 📺 **For Android TV & Google TV (Main Launcher v4.1)**:  
-  [**`glass-tv-home.apk`** (2.0 MB)](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-home.apk) — Latest release `v4.1.0` (Localized Khutbah Minbar, Doa Harian switch, frosted glass detail dialog, bi-directional DPAD remote focus).
+* 📺 **For Android TV & Google TV (Main Launcher v5.0)**:  
+  [**`glass-tv-home.apk`** (2.0 MB)](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-home.apk) — Latest release `v5.0.0` (Sinar design: flat surfaces, mint accent, app-coloured focus, no glass blur).
 
 > [!CAUTION]
 > ### ⚠️ DO NOT RAW-SIDELOAD THE APK WITHOUT PROPER LAUNCHER SETUP!

@@ -24,8 +24,8 @@ Glass TV Home ialah pengganti skrin utama (*launcher*) untuk Android TV dan Goog
 Sila muat turun fail pemasangan rasmi mengikut peranti anda:
 * 📱 **Untuk Telefon / Tablet Android (Aplikasi Pembantu Pemasangan — Disyorkan)**:  
   [**`glass-tv-installer.apk`** (6.8 MB)](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-installer.apk) — **Pilihan Utama!** Pasang terus ke TV dan kunci butang Home melalui Wi-Fi tanpa perlukan komputer (PC) atau kabel.
-* 📺 **Untuk Android TV / Google TV (Launcher Utama v4.1)**:  
-  [**`glass-tv-home.apk`** (2.0 MB)](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-home.apk) — Versi terkini `v4.1.0` (Khutbah Minbar tempatan, pilihan paparan Doa/Minbar, dialog perincian kaca, navigasi alat kawalan jauh DPAD dua hala).
+* 📺 **Untuk Android TV / Google TV (Launcher Utama v5.0)**:  
+  [**`glass-tv-home.apk`** (2.0 MB)](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-home.apk) — Versi terkini `v5.0.0` (reka bentuk Sinar: permukaan rata, aksen mint, fokus warna aplikasi, tanpa blur kaca).
 
 > [!CAUTION]
 > ### ⚠️ JANGAN PASANG APK SECARA SIDELOAD BIASA TANPA INSTALLER / AI!
