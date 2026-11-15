@@ -6,17 +6,17 @@
     <!-- Warning Triangle Outline -->
     <path
         android:fillColor="#00000000"
-        android:strokeColor="#FFFF8A80"
+        android:strokeColor="@color/sinar_coral"
         android:strokeWidth="1.8"
         android:strokeLineCap="round"
         android:strokeLineJoin="round"
         android:pathData="M12,3.5 L21.5,20 L2.5,20 Z" />
     <!-- Exclamation mark bar -->
     <path
-        android:fillColor="#FFFF8A80"
+        android:fillColor="@color/sinar_coral"
         android:pathData="M11.25,9.5 L12.75,9.5 L12.5,14.5 L11.5,14.5 Z" />
     <!-- Exclamation mark dot -->
     <path
-        android:fillColor="#FFFF8A80"
+        android:fillColor="@color/sinar_coral"
         android:pathData="M12,17.2 m-0.85,0 a0.85,0.85 0 1,0 1.7,0 a0.85,0.85 0 1,0 -1.7,0" />
 </vector>

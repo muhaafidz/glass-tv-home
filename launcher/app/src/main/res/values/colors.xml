@@ -1,12 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="canvas_ink">#07101C</color>
-    <color name="canvas_panel_top">#D9111B2A</color>
-    <color name="canvas_panel_bottom">#C60A1220</color>
-    <color name="canvas_panel_stroke">#397A9BB7</color>
-    <color name="canvas_teal">#54DED3</color>
-    <color name="canvas_teal_focus">#FFB9FBF5</color>
-    <color name="canvas_text_muted">#B8C8D7</color>
-    <color name="canvas_amber">#FFD08B</color>
-    <color name="canvas_divider">#337A9BB7</color>
+    <!-- Sinar: flat graphite surfaces, one vivid mint accent, app-coloured focus. -->
+    <color name="sinar_canvas">#0A0B0F</color>
+    <color name="sinar_surface">#14161D</color>
+    <color name="sinar_surface_raised">#1B1E27</color>
+    <color name="sinar_surface_focus">#20242E</color>
+    <color name="sinar_hairline">#262B36</color>
+    <color name="sinar_text">#F5F7FA</color>
+    <color name="sinar_text_muted">#98A2B3</color>
+    <color name="sinar_accent">#2EF2C0</color>
+    <color name="sinar_accent_soft">#1F2EF2C0</color>
+    <color name="sinar_accent_dim">#1FD9AA</color>
+    <color name="sinar_on_accent">#06120E</color>
+    <color name="sinar_cyan">#4DD8FF</color>
+    <color name="sinar_violet">#7C5CFF</color>
+    <color name="sinar_amber">#FFB84D</color>
+    <color name="sinar_coral">#FF6B6B</color>
+
+    <!-- Legacy aliases kept so themes and layouts keep resolving. -->
+    <color name="canvas_ink">@color/sinar_canvas</color>
+    <color name="canvas_panel_top">@color/sinar_surface</color>
+    <color name="canvas_panel_bottom">@color/sinar_surface</color>
+    <color name="canvas_panel_stroke">@color/sinar_hairline</color>
+    <color name="canvas_teal">@color/sinar_accent</color>
+    <color name="canvas_teal_focus">@color/sinar_accent</color>
+    <color name="canvas_text_muted">@color/sinar_text_muted</color>
+    <color name="canvas_amber">@color/sinar_amber</color>
+    <color name="canvas_divider">@color/sinar_hairline</color>
 </resources>

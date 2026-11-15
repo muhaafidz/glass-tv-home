@@ -72,10 +72,6 @@ import android.widget.Toast;
 import android.util.TypedValue;
 
 import androidx.annotation.NonNull;
-import androidx.dynamicanimation.animation.DynamicAnimation;
-import androidx.dynamicanimation.animation.FloatPropertyCompat;
-import androidx.dynamicanimation.animation.SpringAnimation;
-import androidx.dynamicanimation.animation.SpringForce;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -143,7 +139,6 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     private RecyclerView grid;
     private DockDecoration tray;
     private FrameLayout root;
-    private GlassView glass;
     private View ambient;
     /** The focus: one dark shape gliding between tiles and pills (see Glider). */
     private Glider glider;
@@ -220,11 +215,6 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     private TextView timeSubuh, timeSyuruk, timeZohor, timeAsar, timeMaghrib, timeIsyak;
     private boolean shamsi;
     private String vpnApp;
-    private SpringAnimation springX, springY;
-    private float glassTargetX, glassTargetY;
-    // How far the grid has scrolled the glass. springY works without it, in grid content space, so a
-    // scroll moves the glass in lockstep with its tile instead of becoming a moving spring target.
-    private float glassScrollShift;
     private boolean glassShown;
     // Static so they survive the activity being destroyed while another app is open (low-memory TVs,
     // or Developer options → "Don't keep activities"); they only reset when the process dies.
@@ -523,9 +513,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         wallpaperIntervalMs = getWallpaperIntervalMs();
         placesMode = cfg.places;
         mainContent = findViewById(R.id.mainContent);
-        glass = findViewById(R.id.glass);
         ambient = findViewById(R.id.ambient);
-        Backdrop.setWorker(wallDecoder, handler);
         heroShelf = findViewById(R.id.heroShelf);
         heroName = findViewById(R.id.heroName);
         heroDesc = findViewById(R.id.heroDesc);
@@ -891,9 +879,6 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         grid.addItemDecoration(tray);
         // The top-right buttons line up with the dock, which is only known once the tiles are laid out.
         grid.getViewTreeObserver().addOnGlobalLayoutListener(this::alignTopButtons);
-        // Glass shows the blurred wallpaper behind it: the dock tray (drawn by the grid) and the
-        // top-bar pills redraw when a new blurred copy is ready.
-        Backdrop.watch(grid);
         setUpGlider();
         holdFirstFrame();
         for (int i = 0; i < grid.getItemDecorationCount(); i++) {
@@ -906,10 +891,8 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         for (int id : new int[]{R.id.btnInputs, R.id.btnWifi, R.id.btnAssistant, R.id.btnCandyBox, R.id.btnSettings}) {
             View pill = findViewById(id);
             if (pill == null) continue;
-            float radius = 21f * density;
-            pill.setBackground(new GlassDrawable(pill, radius, density, glider));
+            pill.setBackgroundResource(R.drawable.pill_bg);
             glider.addCompanion(pill);
-            Backdrop.watch(pill);
             pill.setOnFocusChangeListener((v, has) -> {
                 if (has) {
                     moveTopHighlight(v);
@@ -949,6 +932,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         rowsBelowDockSetting = cfg.rowsBelowDock;
         grid.addOnLayoutChangeListener((v, l, t, r, b, ol, ot, or, ob) -> {
             parkDock();
+            parkInfoRail();
             updateTopFade();
         });
 
@@ -963,36 +947,9 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             public void onScrolled(@NonNull RecyclerView rv, int dx, int dy) {
                 updateTopFade();
                 if (!glassShown) return;
-                glassTargetY -= dy;
-                glassScrollShift -= dy;
                 glider.scrolled(dy);
             }
         });
-
-        // Liquid feel: soft springs on the highlight's position.
-        springX = new SpringAnimation(glass, DynamicAnimation.TRANSLATION_X);
-        springY = new SpringAnimation(glass, new FloatPropertyCompat<View>("glassContentY") {
-            @Override
-            public float getValue(View v) {
-                return v.getTranslationY() - glassScrollShift;
-            }
-
-            @Override
-            public void setValue(View v, float value) {
-                v.setTranslationY(value + glassScrollShift);
-            }
-        });
-        for (SpringAnimation s : new SpringAnimation[]{springX, springY}) {
-            if (reducedMotion) {
-                // Stiff and almost critically damped: settles in a few frames instead of oscillating,
-                // and stops once the highlight is within 1.5 px of its tile.
-                s.setSpring(new SpringForce().setStiffness(1400f).setDampingRatio(0.95f));
-                s.setMinimumVisibleChange(1.5f);
-            } else {
-                // Critically damped: glides onto the tile and stops there, with no bounce back.
-                s.setSpring(new SpringForce().setStiffness(900f).setDampingRatio(1.0f));
-            }
-        }
 
         btnInputs = findViewById(R.id.btnInputs);
         btnAssistant = findViewById(R.id.btnAssistant);
@@ -1239,11 +1196,6 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
 
     /** Puts a picture behind everything, cross-fading from the previous one when asked. */
     private void setWallpaper(android.graphics.Bitmap bmp, boolean fade) {
-        setWallpaper(bmp, fade, null);
-    }
-
-    /** With {@code blur} made in advance, the glass changes in step with the picture. */
-    private void setWallpaper(android.graphics.Bitmap bmp, boolean fade, android.graphics.Bitmap blur) {
         if (bmp == null) return;
         if (wallView == null) {
             wallView = new android.widget.ImageView(this);
@@ -1261,18 +1213,13 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
                     new android.graphics.drawable.BitmapDrawable(getResources(), bmp)});
             t.setCrossFadeEnabled(true);
             wallView.setImageDrawable(t);
-            t.startTransition(800);
-            // The glass fades to the new picture over the same 800 ms as the wallpaper itself.
-            if (blur != null) Backdrop.present(blur, 800);
-            else blurBackdrop(bmp);
+            t.startTransition(600);
             // Drop the old picture once the fade is done, so only one 1080p bitmap stays in memory.
             handler.postDelayed(() -> {
                 if (wallBitmap == bmp) wallView.setImageBitmap(bmp);
-            }, 900);
+            }, 700);
         } else {
             wallView.setImageBitmap(bmp);
-            if (blur != null) Backdrop.present(blur, 0);
-            else blurBackdrop(bmp);
         }
         // An opaque picture covers the whole screen, so the black window and the plain background
         // under it are never seen. Painting them anyway cost two full-screen passes on every frame,
@@ -1282,12 +1229,6 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             getWindow().setBackgroundDrawable(null);
         }
         applyDarkModeFilter();
-    }
-
-    /** Hands the picture now on screen to the glass, which blurs it once, off the main thread. */
-    private void blurBackdrop(android.graphics.Bitmap bmp) {
-        android.util.DisplayMetrics dm = getResources().getDisplayMetrics();
-        Backdrop.update(bmp, dm.widthPixels, dm.heightPixels, placesMode ? 0xFF7A7A7A : 0, wallDecoder, handler);
     }
 
     private int getWallpaperIntervalMinutes() {
@@ -1337,18 +1278,11 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         // at full size and shrank it a moment later. After that the name changes with the picture,
         // or it would name the next place over the last one's picture while that one decodes.
         if (placeName == null) setPlace(file);
-        final boolean firstPicture = wallBitmap == null;
         wallDecoder.execute(() -> {
             android.graphics.Bitmap bmp = decodeWallpaper(file);
-            // After the first picture, the blur is made here, before the picture is shown, so the glass
-            // changes with the wallpaper rather than after it. The first picture of a fresh start does
-            // not wait for its blur: Home is held for it, and the glass catches up a moment later.
-            android.util.DisplayMetrics dm = getResources().getDisplayMetrics();
-            android.graphics.Bitmap blur = firstPicture ? null
-                    : Backdrop.blur(bmp, dm.widthPixels, dm.heightPixels, placesMode ? 0xFF7A7A7A : 0);
             handler.post(() -> {
                 if (isDestroyed()) return;
-                setWallpaper(bmp, fade, blur);
+                setWallpaper(bmp, fade);
                 setPlace(file);
             });
         });
@@ -1683,7 +1617,6 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     @Override
     public void onTrimMemory(int level) {
         super.onTrimMemory(level);
-        if (level >= TRIM_MEMORY_BACKGROUND) Backdrop.trim();
     }
 
     @Override
@@ -1770,9 +1703,6 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         if (islamicShelf != null) {
             islamicShelf.animate().alpha(alpha).setDuration(duration).start();
         }
-        if (glass != null) {
-            glass.animate().alpha(alpha).setDuration(duration).start();
-        }
         if (glider != null) {
             glider.animate().alpha(alpha).setDuration(duration).start();
         }
@@ -1803,22 +1733,12 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         Rect r = tileRect;
         r.set(0, 0, card.getWidth(), card.getHeight());
         root.offsetDescendantRectToMyCoords(card, r);
-        float pad = 6f * density;        // matches GlassView's glow inset
+        float pad = 4f * density;
         float w = card.getWidth() * AppAdapter.FOCUS_SCALE + 2 * pad;
         float h = card.getHeight() * AppAdapter.FOCUS_SCALE + 2 * pad;
         float x = r.exactCenterX() - w / 2f;
         float y = r.exactCenterY() - h / 2f;
 
-        ViewGroup.LayoutParams lp = glass.getLayoutParams();
-        if (lp.width != (int) w || lp.height != (int) h) {
-            lp.width = (int) w;
-            lp.height = (int) h;
-            glass.setLayoutParams(lp);
-            // The rim is drawn inset by pad, right on the zoomed tile, so its corners use the tile's radius as is.
-            glass.setRadius(AppAdapter.cornerRadius(card.getWidth(), density) * AppAdapter.FOCUS_SCALE);
-        }
-        glassTargetX = x;
-        glassTargetY = y;
         // Exactly the zoomed card, behind it: at rest the app hides it completely, so it never lies
         // over an app and only shows while it travels between places.
         float cardRadius = AppAdapter.cornerRadius(card.getWidth(), density) * AppAdapter.FOCUS_SCALE;
@@ -1835,6 +1755,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             glider.moveTo(x + pad, y + pad, x + w - pad, y + h - pad, cardRadius);
         }
         gliderOnPill = false;
+        glider.setAccentColor(adapter.ambientColorAt(position));
         glassShown = true;
         View item = (View) card.getParent();
         if (position < COLUMNS) {
@@ -1992,8 +1913,6 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         // Behind the shelf's text, the pills and the tiles, so it never draws over any of them.
         root.addView(glider, root.indexOfChild(heroShelf), new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        // The glider replaces the glass selection outright.
-        glass.setVisibility(View.GONE);
     }
 
     private boolean isTopPill(View v) {
@@ -2018,6 +1937,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         glassShown = false;
         // Up to the top menu it is dark at once, and travels that way.
         gliderOnPill = true;
+        glider.setAccentColor(Design.ACCENT);
         glider.setStyle(Glider.DARK);
         glider.moveTo(l, t, l + pill.getWidth(), t + pill.getHeight(), pill.getHeight() / 2f);
     }
@@ -2178,6 +2098,21 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         return false;
     }
 
+    /** Puts the information rail just above the dock even when focus starts on the top bar. */
+    private void parkInfoRail() {
+        if (islamicShelf == null || grid == null || adapter == null || adapter.getItemCount() == 0) return;
+        RecyclerView.LayoutManager lm = grid.getLayoutManager();
+        if (!(lm instanceof androidx.recyclerview.widget.LinearLayoutManager)) return;
+        View item = lm.findViewByPosition(0);
+        if (item == null) return;
+        View card = item.findViewById(R.id.card);
+        if (card == null) return;
+        Rect r = new Rect(0, 0, card.getWidth(), card.getHeight());
+        root.offsetDescendantRectToMyCoords(card, r);
+        infoRailBottom = r.top - INFO_RAIL_GAP_DP * density;
+        islamicShelf.setY(infoRailBottom - islamicShelf.getHeight());
+    }
+
     /**
      * Home's first frame waits until Home is whole: tiles bound and laid out, the dock parked at the
      * bottom and the wallpaper in. Drawn as soon as the window was ready, it showed the glass tray
@@ -2213,9 +2148,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         });
     }
 
-    /** Tells the glass the glow's colour and strength, so what shows through matches around it. */
     private void syncGlassGlow() {
-        Backdrop.setGlow(ambientShape(), glowFrom, ambientColor, glowMix, ambient.getAlpha());
     }
 
     /** Runs the glass through the same colour blend as the room's TransitionDrawable. */
@@ -3112,24 +3045,25 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         if (items != null && items.length >= 6) {
             TextView[] labels = {lblSubuh, lblSyuruk, lblZohor, lblAsar, lblMaghrib, lblIsyak};
             TextView[] times = {timeSubuh, timeSyuruk, timeZohor, timeAsar, timeMaghrib, timeIsyak};
+            Typeface prayerFont = getResources().getFont(R.font.outfit);
 
             for (int i = 0; i < 6; i++) {
                 if (times[i] != null) times[i].setText(items[i].timeStr);
                 if (labels[i] != null) {
                     labels[i].setText(items[i].name);
                     if (items[i].isNext) {
-                        labels[i].setTextColor(0xFFFFB300);
-                        labels[i].setTypeface(Typeface.DEFAULT_BOLD);
+                        labels[i].setTextColor(Design.ACCENT);
+                        labels[i].setTypeface(prayerFont, Typeface.BOLD);
                         if (times[i] != null) {
-                            times[i].setTextColor(0xFFFFB300);
-                            times[i].setTypeface(Typeface.DEFAULT_BOLD);
+                            times[i].setTextColor(Design.ACCENT);
+                            times[i].setTypeface(prayerFont, Typeface.BOLD);
                         }
                     } else {
-                        labels[i].setTextColor(0xB3FFFFFF);
-                        labels[i].setTypeface(Typeface.DEFAULT);
+                        labels[i].setTextColor(Design.TEXT_MUTED);
+                        labels[i].setTypeface(prayerFont, Typeface.NORMAL);
                         if (times[i] != null) {
-                            times[i].setTextColor(0xFFFFFFFF);
-                            times[i].setTypeface(Typeface.DEFAULT);
+                            times[i].setTextColor(Design.TEXT);
+                            times[i].setTypeface(prayerFont, Typeface.NORMAL);
                         }
                     }
                 }
@@ -3183,7 +3117,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             try {
                 ayahArabic.setTypeface(androidx.core.content.res.ResourcesCompat.getFont(this, R.font.amiri_quran), Typeface.NORMAL);
             } catch (Exception ignored) {}
-            ayahArabic.setTextColor(0xFFFFC56B);
+            ayahArabic.setTextColor(0xFFFFB84D);
             // A fixed TV size, with two lines, rather than shrinking the verse to fit one line.
             ayahArabic.setTextSize(TypedValue.COMPLEX_UNIT_SP, is4K ? 22f : 16f);
             ayahArabic.setText(text);
@@ -3232,7 +3166,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             } catch (Exception e) {
                 ayahArabic.setTypeface(Typeface.create("sans-serif-medium", Typeface.BOLD));
             }
-            ayahArabic.setTextColor(0xFFFFC56B);
+            ayahArabic.setTextColor(0xFFFFB84D);
 
             float baseSp = is4K ? 16f : 13.5f;
             android.text.TextPaint paint = new android.text.TextPaint(ayahArabic.getPaint());
@@ -3301,7 +3235,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             if (iconView != null) iconView.setImageResource(R.drawable.ic_mosque);
             if (badgeView != null) {
                 badgeView.setText("KHUTBAH MINBAR");
-                badgeView.setTextColor(0xFF67E8F9);
+                badgeView.setTextColor(0xFF2EF2C0);
             }
             if (titleView != null) titleView.setText(k != null && k.title != null ? k.title : "Khutbah Jumaat");
             if (metaView != null) {
@@ -3333,7 +3267,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             if (iconView != null) iconView.setImageResource(R.drawable.ic_rehal);
             if (badgeView != null) {
                 badgeView.setText("DOA HARIAN");
-                badgeView.setTextColor(0xFFFFD54F);
+                badgeView.setTextColor(0xFFFFB84D);
             }
             if (titleView != null) titleView.setText(a != null ? a.reference : "Ayat Al-Quran");
             if (metaView != null) {
@@ -3477,21 +3411,21 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             if (indicatorDoa != null) {
                 indicatorDoa.setBackgroundResource(isDoa ? R.drawable.bg_choice_active_badge : R.drawable.bg_choice_inactive_badge);
                 indicatorDoa.setText(isDoa ? "● AKTIF" : "○ PILIH");
-                indicatorDoa.setTextColor(isDoa ? 0xFF4ADE80 : 0x80FFFFFF);
+                indicatorDoa.setTextColor(isDoa ? 0xFF2EF2C0 : 0x80FFFFFF);
             }
             if (btnDoaSelect != null) {
                 btnDoaSelect.setText(isDoa ? "✓ Sedang Dipaparkan" : "Tekan OK untuk Pilih");
-                btnDoaSelect.setTextColor(isDoa ? 0xFF4ADE80 : 0xFF94A3B8);
+                btnDoaSelect.setTextColor(isDoa ? 0xFF2EF2C0 : 0xFF98A2B3);
             }
 
             if (indicatorMinbar != null) {
                 indicatorMinbar.setBackgroundResource(!isDoa ? R.drawable.bg_choice_active_badge : R.drawable.bg_choice_inactive_badge);
                 indicatorMinbar.setText(!isDoa ? "● AKTIF" : "○ PILIH");
-                indicatorMinbar.setTextColor(!isDoa ? 0xFF4ADE80 : 0x80FFFFFF);
+                indicatorMinbar.setTextColor(!isDoa ? 0xFF2EF2C0 : 0x80FFFFFF);
             }
             if (btnMinbarSelect != null) {
                 btnMinbarSelect.setText(!isDoa ? "✓ Sedang Dipaparkan" : "Tekan OK untuk Pilih");
-                btnMinbarSelect.setTextColor(!isDoa ? 0xFF4ADE80 : 0xFF94A3B8);
+                btnMinbarSelect.setTextColor(!isDoa ? 0xFF2EF2C0 : 0xFF98A2B3);
             }
         };
 
@@ -4019,7 +3953,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         soundTag.setTextSize(12.5f);
         soundTag.setTypeface(getResources().getFont(R.font.outfit), Typeface.BOLD);
         soundTag.setFontVariationSettings("'wght' 700");
-        soundTag.setTextColor(new ColorStateList(new int[][]{{android.R.attr.state_focused}, {}}, new int[]{0xFF000000, 0xFF38BDF8}));
+        soundTag.setTextColor(new ColorStateList(new int[][]{{android.R.attr.state_focused}, {}}, new int[]{0xFF000000, 0xFF2EF2C0}));
         rightCol.addView(soundRow);
 
         // Bahagian D: Ujian Azan
@@ -4043,7 +3977,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         testTag.setTextSize(13);
         testTag.setTypeface(getResources().getFont(R.font.outfit), Typeface.BOLD);
         testTag.setFontVariationSettings("'wght' 700");
-        testTag.setTextColor(new ColorStateList(new int[][]{{android.R.attr.state_focused}, {}}, new int[]{0xFF000000, 0xFF38BDF8}));
+        testTag.setTextColor(new ColorStateList(new int[][]{{android.R.attr.state_focused}, {}}, new int[]{0xFF000000, 0xFF2EF2C0}));
         rightCol.addView(testRow);
 
         // Info Card
@@ -4171,7 +4105,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         tag.setTextSize(13);
         tag.setTypeface(getResources().getFont(R.font.outfit), Typeface.NORMAL);
         tag.setFontVariationSettings(on ? "'wght' 700" : "'wght' 600");
-        int color = on ? 0xFF38BDF8 : 0x99FFFFFF;
+        int color = on ? 0xFF2EF2C0 : 0x99FFFFFF;
         tag.setTextColor(new ColorStateList(new int[][]{{android.R.attr.state_focused}, {}}, new int[]{0xFF000000, color}));
     }
 
@@ -4180,7 +4114,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         tag.setTextSize(13);
         tag.setTypeface(getResources().getFont(R.font.outfit), Typeface.NORMAL);
         tag.setFontVariationSettings(on ? "'wght' 700" : "'wght' 600");
-        int color = on ? 0xFF38BDF8 : 0x99FFFFFF;
+        int color = on ? 0xFF2EF2C0 : 0x99FFFFFF;
         tag.setTextColor(new ColorStateList(new int[][]{{android.R.attr.state_focused}, {}}, new int[]{0xFF000000, color}));
     }
 
@@ -4188,7 +4122,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         TextView tv = new TextView(this);
         tv.setText(title);
         tv.setTextSize(11.5f);
-        tv.setTextColor(0xFF38BDF8);
+        tv.setTextColor(0xFF2EF2C0);
         tv.setTypeface(getResources().getFont(R.font.outfit), Typeface.BOLD);
         tv.setFontVariationSettings("'wght' 700");
         tv.setLetterSpacing(0.08f);
@@ -4207,10 +4141,10 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
 
         StateListDrawable bg = new StateListDrawable();
         GradientDrawable on = new GradientDrawable();
-        on.setColor(0xFFFFFFFF);
+        on.setColor(0xFF2EF2C0);
         on.setCornerRadius(9 * density);
         GradientDrawable off = new GradientDrawable();
-        off.setColor(0x1AFFFFFF);
+        off.setColor(0xFF1B1E27);
         off.setCornerRadius(9 * density);
         bg.addState(new int[]{android.R.attr.state_focused}, on);
         bg.addState(new int[]{}, off);
@@ -4242,7 +4176,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             TextView rowSub = new TextView(this);
             rowSub.setText(subtitle);
             rowSub.setTextSize(12.5f);
-            rowSub.setTextColor(new ColorStateList(new int[][]{{android.R.attr.state_focused}, {}}, new int[]{0xFF1E293B, 0xD9FFFFFF}));
+            rowSub.setTextColor(new ColorStateList(new int[][]{{android.R.attr.state_focused}, {}}, new int[]{0xFF1B1E27, 0xD9FFFFFF}));
             rowSub.setTypeface(getResources().getFont(R.font.outfit), Typeface.BOLD);
             rowSub.setFontVariationSettings("'wght' 600");
             rowSub.setShadowLayer(2 * density, 0, 1 * density, 0xAA000000);
@@ -4924,13 +4858,11 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
 
             StateListDrawable bg = new StateListDrawable();
             GradientDrawable on = new GradientDrawable();
-            on.setColor(0xFFFFFFFF);
+            on.setColor(0xFF2EF2C0);
             on.setCornerRadius(10 * density);
             GradientDrawable off = new GradientDrawable();
-            off.setColor(isActive ? 0x334A90E2 : 0x1AFFFFFF);
-            if (isActive) {
-                off.setStroke((int) (1.8f * density), 0xFF38BDF8);
-            }
+            off.setColor(isActive ? 0x1F2EF2C0 : 0xFF1B1E27);
+            off.setStroke((int) (1.2f * density), isActive ? 0xFF2EF2C0 : 0xFF262B36);
             off.setCornerRadius(10 * density);
             bg.addState(new int[]{android.R.attr.state_focused}, on);
             bg.addState(new int[]{}, off);
@@ -4955,7 +4887,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
                 activeTag = new TextView(this);
                 activeTag.setText("✓ " + AppLanguage.strNowBadge(this));
                 activeTag.setTextSize(13);
-                activeTag.setTextColor(0xFF38BDF8);
+                activeTag.setTextColor(0xFF2EF2C0);
                 activeTag.setTypeface(getResources().getFont(R.font.outfit), Typeface.BOLD);
                 activeTag.setFontVariationSettings("'wght' 700");
                 topRow.addView(activeTag);
@@ -4977,12 +4909,12 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             final TextView finalActiveTag = activeTag;
             row.setOnFocusChangeListener((v, hasFocus) -> {
                 if (hasFocus) {
-                    finalRowTitle.setTextColor(0xFF0F172A);
+                    finalRowTitle.setTextColor(0xFF06120E);
                     finalRowTitle.setShadowLayer(0, 0, 0, 0);
-                    finalRowSub.setTextColor(0xFF334155);
+                    finalRowSub.setTextColor(0xFF0A2A22);
                     finalRowSub.setShadowLayer(0, 0, 0, 0);
                     if (finalActiveTag != null) {
-                        finalActiveTag.setTextColor(0xFF0284C7);
+                        finalActiveTag.setTextColor(0xFF06120E);
                         finalActiveTag.setShadowLayer(0, 0, 0, 0);
                     }
                 } else {
@@ -4991,7 +4923,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
                     finalRowSub.setTextColor(0xD9FFFFFF);
                     finalRowSub.setShadowLayer(2 * density, 0, 1 * density, 0xAA000000);
                     if (finalActiveTag != null) {
-                        finalActiveTag.setTextColor(0xFF38BDF8);
+                        finalActiveTag.setTextColor(0xFF2EF2C0);
                         finalActiveTag.setShadowLayer(2 * density, 0, 1 * density, 0xAA000000);
                     }
                 }
@@ -5063,12 +4995,12 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
 
             if (isActive && viewToFocus[0] == null) {
                 viewToFocus[0] = row;
-                rowTitle.setTextColor(0xFF0F172A);
+                rowTitle.setTextColor(0xFF06120E);
                 rowTitle.setShadowLayer(0, 0, 0, 0);
-                rowSub.setTextColor(0xFF334155);
+                rowSub.setTextColor(0xFF0A2A22);
                 rowSub.setShadowLayer(0, 0, 0, 0);
                 if (activeTag != null) {
-                    activeTag.setTextColor(0xFF0284C7);
+                    activeTag.setTextColor(0xFF06120E);
                     activeTag.setShadowLayer(0, 0, 0, 0);
                 }
             }
@@ -5182,13 +5114,11 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
 
             StateListDrawable bg = new StateListDrawable();
             GradientDrawable on = new GradientDrawable();
-            on.setColor(0xFFFFFFFF);
+            on.setColor(0xFF2EF2C0);
             on.setCornerRadius(10 * density);
             GradientDrawable off = new GradientDrawable();
-            off.setColor(isActive ? 0x334A90E2 : 0x1AFFFFFF);
-            if (isActive) {
-                off.setStroke((int) (1.8f * density), 0xFF38BDF8);
-            }
+            off.setColor(isActive ? 0x1F2EF2C0 : 0xFF1B1E27);
+            off.setStroke((int) (1.2f * density), isActive ? 0xFF2EF2C0 : 0xFF262B36);
             off.setCornerRadius(10 * density);
             bg.addState(new int[]{android.R.attr.state_focused}, on);
             bg.addState(new int[]{}, off);
@@ -5212,7 +5142,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
                 activeTag = new TextView(this);
                 activeTag.setText("✓ " + AppLanguage.strNowBadge(this));
                 activeTag.setTextSize(13);
-                activeTag.setTextColor(0xFF38BDF8);
+                activeTag.setTextColor(0xFF2EF2C0);
                 activeTag.setTypeface(getResources().getFont(R.font.outfit), Typeface.BOLD);
                 activeTag.setFontVariationSettings("'wght' 700");
                 topRow.addView(activeTag);
@@ -5234,12 +5164,12 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             final TextView finalActiveTag = activeTag;
             row.setOnFocusChangeListener((v, hasFocus) -> {
                 if (hasFocus) {
-                    finalRowTitle.setTextColor(0xFF0F172A);
+                    finalRowTitle.setTextColor(0xFF06120E);
                     finalRowTitle.setShadowLayer(0, 0, 0, 0);
-                    finalRowSub.setTextColor(0xFF334155);
+                    finalRowSub.setTextColor(0xFF0A2A22);
                     finalRowSub.setShadowLayer(0, 0, 0, 0);
                     if (finalActiveTag != null) {
-                        finalActiveTag.setTextColor(0xFF0284C7);
+                        finalActiveTag.setTextColor(0xFF06120E);
                         finalActiveTag.setShadowLayer(0, 0, 0, 0);
                     }
                 } else {
@@ -5248,7 +5178,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
                     finalRowSub.setTextColor(0xD9FFFFFF);
                     finalRowSub.setShadowLayer(2 * density, 0, 1 * density, 0xAA000000);
                     if (finalActiveTag != null) {
-                        finalActiveTag.setTextColor(0xFF38BDF8);
+                        finalActiveTag.setTextColor(0xFF2EF2C0);
                         finalActiveTag.setShadowLayer(2 * density, 0, 1 * density, 0xAA000000);
                     }
                 }
@@ -5280,12 +5210,12 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
 
             if (isActive && viewToFocus[0] == null) {
                 viewToFocus[0] = row;
-                rowTitle.setTextColor(0xFF0F172A);
+                rowTitle.setTextColor(0xFF06120E);
                 rowTitle.setShadowLayer(0, 0, 0, 0);
-                rowSub.setTextColor(0xFF334155);
+                rowSub.setTextColor(0xFF0A2A22);
                 rowSub.setShadowLayer(0, 0, 0, 0);
                 if (activeTag != null) {
-                    activeTag.setTextColor(0xFF0284C7);
+                    activeTag.setTextColor(0xFF06120E);
                     activeTag.setShadowLayer(0, 0, 0, 0);
                 }
             }
@@ -5427,13 +5357,11 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
 
             StateListDrawable bg = new StateListDrawable();
             GradientDrawable on = new GradientDrawable();
-            on.setColor(0xFFFFFFFF);
+            on.setColor(0xFF2EF2C0);
             on.setCornerRadius(10 * density);
             GradientDrawable off = new GradientDrawable();
-            off.setColor(isActive ? 0x334A90E2 : 0x1AFFFFFF);
-            if (isActive) {
-                off.setStroke((int) (1.8f * density), 0xFF38BDF8);
-            }
+            off.setColor(isActive ? 0x1F2EF2C0 : 0xFF1B1E27);
+            off.setStroke((int) (1.2f * density), isActive ? 0xFF2EF2C0 : 0xFF262B36);
             off.setCornerRadius(10 * density);
             bg.addState(new int[]{android.R.attr.state_focused}, on);
             bg.addState(new int[]{}, off);
@@ -5456,7 +5384,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
                 activeTag = new TextView(this);
                 activeTag.setText("✓ " + (isMalay ? "AKTIF" : "ACTIVE"));
                 activeTag.setTextSize(11);
-                activeTag.setTextColor(0xFF38BDF8);
+                activeTag.setTextColor(0xFF2EF2C0);
                 activeTag.setTypeface(getResources().getFont(R.font.outfit), Typeface.BOLD);
                 activeTag.setFontVariationSettings("'wght' 700");
                 headerRow.addView(activeTag);
@@ -5477,12 +5405,12 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             final TextView fActive = activeTag;
             row.setOnFocusChangeListener((v, hasFocus) -> {
                 if (hasFocus) {
-                    fTitle.setTextColor(0xFF0F172A);
+                    fTitle.setTextColor(0xFF06120E);
                     fTitle.setShadowLayer(0, 0, 0, 0);
-                    fSub.setTextColor(0xFF334155);
+                    fSub.setTextColor(0xFF0A2A22);
                     fSub.setShadowLayer(0, 0, 0, 0);
                     if (fActive != null) {
-                        fActive.setTextColor(0xFF0284C7);
+                        fActive.setTextColor(0xFF06120E);
                         fActive.setShadowLayer(0, 0, 0, 0);
                     }
                 } else {
@@ -5491,7 +5419,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
                     fSub.setTextColor(0xD9FFFFFF);
                     fSub.setShadowLayer(2 * density, 0, 1 * density, 0xAA000000);
                     if (fActive != null) {
-                        fActive.setTextColor(0xFF38BDF8);
+                        fActive.setTextColor(0xFF2EF2C0);
                         fActive.setShadowLayer(2 * density, 0, 1 * density, 0xAA000000);
                     }
                 }
@@ -5512,12 +5440,12 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
 
             if (isActive && viewToFocus[0] == null) {
                 viewToFocus[0] = row;
-                rowTitle.setTextColor(0xFF0F172A);
+                rowTitle.setTextColor(0xFF06120E);
                 rowTitle.setShadowLayer(0, 0, 0, 0);
-                rowSub.setTextColor(0xFF334155);
+                rowSub.setTextColor(0xFF0A2A22);
                 rowSub.setShadowLayer(0, 0, 0, 0);
                 if (activeTag != null) {
-                    activeTag.setTextColor(0xFF0284C7);
+                    activeTag.setTextColor(0xFF06120E);
                     activeTag.setShadowLayer(0, 0, 0, 0);
                 }
             }
@@ -5868,10 +5796,10 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
 
         StateListDrawable bg = new StateListDrawable();
         GradientDrawable on = new GradientDrawable();
-        on.setColor(0xFFFFFFFF);
+        on.setColor(0xFF2EF2C0);
         on.setCornerRadius(12 * density);
         GradientDrawable off = new GradientDrawable();
-        off.setColor(0x1AFFFFFF);
+        off.setColor(0xFF1B1E27);
         off.setCornerRadius(12 * density);
         bg.addState(new int[]{android.R.attr.state_focused}, on);
         bg.addState(new int[]{}, off);
@@ -5994,7 +5922,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         // Subtitle instructions
         TextView sub = new TextView(this);
         sub.setText("Sambungkan telefon pada Wi-Fi yang sama, kemudian imbas kod QR di bawah:");
-        sub.setTextColor(0xFFE2E8F0);
+        sub.setTextColor(0xFFF5F7FA);
         sub.setTypeface(getResources().getFont(R.font.outfit), Typeface.BOLD);
         sub.setFontVariationSettings("'wght' 600");
         sub.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14.5f);
@@ -6027,7 +5955,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         // Web URL pill
         qrUrlText = new TextView(this);
         qrUrlText.setText("🌐 " + uploadUrl);
-        qrUrlText.setTextColor(0xFF38BDF8);
+        qrUrlText.setTextColor(0xFF2EF2C0);
         qrUrlText.setTypeface(getResources().getFont(R.font.outfit), Typeface.BOLD);
         qrUrlText.setFontVariationSettings("'wght' 700");
         qrUrlText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
@@ -6039,7 +5967,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         // Status text
         qrStatusText = new TextView(this);
         qrStatusText.setText("📡 Menunggu imbasan kamera atau fail dari telefon...");
-        qrStatusText.setTextColor(0xFFF1F5F9);
+        qrStatusText.setTextColor(0xFFF5F7FA);
         qrStatusText.setTypeface(getResources().getFont(R.font.outfit), Typeface.BOLD);
         qrStatusText.setFontVariationSettings("'wght' 600");
         qrStatusText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
@@ -6067,7 +5995,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         // Watermark credit
         TextView credit = new TextView(this);
         credit.setText("✨ Powered by @imsomangge");
-        credit.setTextColor(0xFFCBD5E1);
+        credit.setTextColor(0xFF98A2B3);
         credit.setTypeface(getResources().getFont(R.font.outfit), Typeface.BOLD);
         credit.setFontVariationSettings("'wght' 600");
         credit.setTextSize(TypedValue.COMPLEX_UNIT_SP, 13);
@@ -6153,11 +6081,11 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
 
             if (qrStatusText != null) {
                 qrStatusText.setText("🎉 Berjaya Diterima & Dipaparkan di TV!");
-                qrStatusText.setTextColor(0xFF4ADE80);
+                qrStatusText.setTextColor(0xFF2EF2C0);
             }
             if (qrUrlText != null) {
                 qrUrlText.setText("✅ Wallpaper Aktif: " + file.getName());
-                qrUrlText.setTextColor(0xFF4ADE80);
+                qrUrlText.setTextColor(0xFF2EF2C0);
             }
             if (qrImageView != null) {
                 try {
@@ -6887,9 +6815,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
      * the menu is above), or Back, closes it and the shape glides back to the anchor.
      */
     private void showMenu(FrameLayout panel, LinearLayout rows, View anchor, int width, boolean above) {
-        GlassDrawable glass = new GlassDrawable(panel, 20 * density, density, glider, 0.5f, true);
-        panel.setBackground(glass);
-        Backdrop.watch(panel);
+        panel.setBackground(new SinarPanelDrawable(panel, 20 * density, density, glider, true));
         glider.addCompanion(panel);
         anchor.getLocationInWindow(menuAt);
         root.getLocationInWindow(menuGliderAt);
@@ -6945,8 +6871,9 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             });
         }
 
-        // The glass and the rows fade in around the selection as it arrives.
-        glass.setAlpha(0);
+        // The panel and the rows fade in around the selection as it arrives.
+        final android.graphics.drawable.Drawable menuBg = panel.getBackground();
+        if (menuBg != null) menuBg.setAlpha(0);
         rows.setAlpha(0f);
         final float slide = (above ? 8 : -8) * density;
         rows.setTranslationY(slide);
@@ -6955,7 +6882,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         in.setInterpolator(new android.view.animation.DecelerateInterpolator(1.6f));
         in.addUpdateListener(an -> {
             float f = (float) an.getAnimatedValue();
-            glass.setAlpha(Math.round(255 * f));
+            if (menuBg != null) menuBg.setAlpha(Math.round(255 * f));
             rows.setAlpha(f);
             rows.setTranslationY(slide * (1f - f));
         });
@@ -7021,9 +6948,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     }
 
     private PopupWindow glassPopup(View panel, int width) {
-        // The same glass as the pills and the tray: what is behind it, softened, with a shining edge.
-        panel.setBackground(new GlassDrawable(panel, 20 * density, density, null, 0.5f));
-        Backdrop.watch(panel);
+        panel.setBackground(new SinarPanelDrawable(panel, 20 * density, density, null, false));
         final PopupWindow popup = new PopupWindow(panel, width, ViewGroup.LayoutParams.WRAP_CONTENT, true);
         popup.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));   // needed for Back to dismiss
         popup.setOutsideTouchable(true);

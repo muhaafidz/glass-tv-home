@@ -7,7 +7,6 @@ import android.media.AudioAttributes;
 import android.media.AudioFocusRequest;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -63,10 +62,9 @@ public class AzanActivity extends Activity {
         card.setGravity(Gravity.CENTER_VERTICAL);
         card.setPadding(dp(30), dp(20), dp(34), dp(20));
         GradientDrawable glass = new GradientDrawable();
-        // Safe default dark glass background tint: readable over bright content even without window blur
-        glass.setColor(0xE0141C2C);
-        glass.setCornerRadius(dp(28));
-        glass.setStroke(Math.max(1, dp(1.5f)), 0x59FFFFFF);
+        glass.setColor(0xF214161D);
+        glass.setCornerRadius(dp(24));
+        glass.setStroke(Math.max(1, dp(1f)), Design.HAIRLINE);
         card.setBackground(glass);
         card.setClipToOutline(true);
         card.setElevation(dp(16));
@@ -112,24 +110,7 @@ public class AzanActivity extends Activity {
         card.setClickable(true);
         card.setOnClickListener(v -> finish());
 
-        // CRITICAL FIX FOR ISSUE #5:
-        // Must call setContentView(card) FIRST so the Window creates and attaches its DecorView.
-        // On Android 14 (Chromecast Sabrina, etc.), calling setBackgroundBlurRadius before
-        // setContentView dereferences a null DecorView inside PhoneWindow and throws NullPointerException.
         setContentView(card);
-
-        if (Build.VERSION.SDK_INT >= 31) {
-            try {
-                WindowManager wm = getSystemService(WindowManager.class);
-                if (wm != null && wm.isCrossWindowBlurEnabled() && w.getDecorView() != null) {
-                    w.setBackgroundBlurRadius(dp(30));
-                    glass.setColor(0xB3101826);
-                }
-            } catch (Throwable t) {
-                // Graceful fallback: keep solid frosted glass tint without crashing
-                android.util.Log.w("TvHome.Azan", "Window blur unavailable or failed: " + t.getMessage());
-            }
-        }
 
         String soundChoice = Azan.getSoundChoice(this);
         if (Azan.SOUND_SILENT.equals(soundChoice)) {

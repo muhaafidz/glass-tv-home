@@ -1,28 +1,29 @@
-# Glass TV — Quiet Canvas
+# Glass TV — Sinar
 
-**Make your Android TV or Google TV fast and ad-free again, then come home to a calmer screen: Quiet Canvas
-folds the weather, daily ayah and prayer times into one glass rail above the dock.**
+**Make your Android TV or Google TV fast and ad-free again, then come home to a calmer screen: Sinar folds
+the weather, daily ayah and prayer times into one flat information rail above the dock, with one vivid accent
+and no glass, blur or heavy shadows.**
 
 > A fork of [Glass TV](https://github.com/aqmangge/glass-tv-home) by [@aqmangge](https://github.com/aqmangge).
-> The launcher engine and every feature from Glass TV v4.1.0 are here; the home screen, typography and
-> wallpaper set are rebuilt in this fork. The fork's own home is
+> The launcher engine and every feature from Glass TV v4.1.0 are here; the home screen, settings, dialogs,
+> typography and wallpaper set are rebuilt in this fork with the Sinar design language. The fork's own home is
 > [muhaafidz/glass-tv-home](https://github.com/muhaafidz/glass-tv-home).
 
 <p align="center">
-  <img src="docs/screenshots/quiet-canvas-home.jpg" width="100%" alt="Quiet Canvas home: clock, quiet weather and air-quality line, full-width ayah and prayer rail, and app dock">
+  <img src="docs/screenshots/sinar-home.jpg" width="100%" alt="Sinar home: flat graphite surfaces, mint accent, clock, weather and air-quality line, ayah and prayer rail, and app dock">
 </p>
 
 <p align="center">
-  <em>Quiet Canvas home — rendered from <a href="preview/quiet-canvas.html">the repo's web preview</a>; the Android build remains the source of truth.</em>
+  <em>Sinar home on a Xiaomi Mi TV (Android TV 10). Flat graphite surfaces, one electric-mint accent, and app-coloured focus.</em>
 </p>
 
 <p align="center">
   <a href="https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-home.apk">
-    <img src="https://img.shields.io/badge/Download_TV_Launcher-glass--tv--home.apk_(v4.1.1)-success?style=for-the-badge&logo=android" alt="Download Glass TV Home">
+    <img src="https://img.shields.io/badge/Download_TV_Launcher-glass--tv--home.apk_(v5.0.0)-success?style=for-the-badge&logo=android" alt="Download Glass TV Home">
   </a>
   &nbsp;
   <a href="https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-installer.apk">
-    <img src="https://img.shields.io/badge/Download_Phone_Installer-glass--tv--installer.apk_(v1.0.0)-007ACC?style=for-the-badge&logo=android" alt="Download Glass TV Installer">
+    <img src="https://img.shields.io/badge/Download_Phone_Installer-glass--tv--installer.apk_(v1.1.0)-007ACC?style=for-the-badge&logo=android" alt="Download Glass TV Installer">
   </a>
 </p>
 
@@ -37,8 +38,8 @@ folds the weather, daily ayah and prayer times into one glass rail above the doc
 > 2. 📱 **Kaedah 2 (Tanpa PC — Aplikasi Telefon Android)**: Pasang [**`release/glass-tv-installer.apk`**](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-installer.apk) di telefon pintar anda. Sambung ke Wi-Fi sama, dan tekan *Pasang Terus ke TV* untuk kunci butang Home dalam 1-klik tanpa komputer!
 
 > 📦 **Official APK Downloads**:
-> - 📺 **Android TV / Google TV Launcher**: [**`release/glass-tv-home.apk`**](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-home.apk) (**v4.1.1** • ~2.0 MB)
-> - 📱 **Phone / Tablet Companion Installer**: [**`release/glass-tv-installer.apk`**](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-installer.apk) (**v1.0.0** • ~6.8 MB) — Kunci butang Home TV terus dari telefon tanpa sebarang PC!
+> - 📺 **Android TV / Google TV Launcher**: [**`release/glass-tv-home.apk`**](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-home.apk) (**v5.0.0** • ~2.1 MB)
+> - 📱 **Phone / Tablet Companion Installer**: [**`release/glass-tv-installer.apk`**](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-installer.apk) (**v1.1.0** • ~7.1 MB) — Kunci butang Home TV terus dari telefon tanpa sebarang PC!
 >
 > 🤖 **AI Prompt & Audit Guide**:
 > - ⚡ **[AI_INSTALL_PROMPT.md](AI_INSTALL_PROMPT.md)**: Arahan lengkap AI untuk audit TV (1080p vs 4K, DPI, IP LAN, stock launcher), debloat, dan kunci butang Home.
@@ -49,40 +50,35 @@ folds the weather, daily ayah and prayer times into one glass rail above the doc
 > - 🇲🇾 **Panduan Bahasa Melayu**: Panduan lengkap langkah demi langkah untuk pengguna baru di [PANDUAN_PENGGUNA.md](PANDUAN_PENGGUNA.md).
 
 Glass TV debloats any Android TV or Google TV over Wi-Fi, with no root and nothing that can't be undone, then
-swaps the ad-filled home screen for a calm one in frosted glass. This fork keeps the debloat tools and the
-v4.1.0 launcher features, and rebuilds the home around one information rail: a quiet weather and air-quality
-line, a daily ayah or Khutbah Minbar shelf, all six prayer times, and the app dock. The old place caption is
-off by default, so your wallpaper stays unobstructed.
+swaps the ad-filled home screen for a calm, fast one. This fork keeps the debloat tools and the v4.1.0
+launcher features, and rebuilds the interface in **Sinar**: flat graphite surfaces, one electric-mint accent,
+app-coloured focus, and no blur or glass. The home folds a quiet weather and air-quality line, a daily ayah or
+Khutbah Minbar shelf, all six prayer times, and the app dock into one information rail. The old place caption
+is off by default, so your wallpaper stays unobstructed.
 
-## What's New in This Fork — Quiet Canvas
+## What's New in This Fork — Sinar
 
-- **One full-width information rail.** The ayah/minbar shelf and prayer timetable now sit together in a single
-  glass rail above the dock, instead of separate stacked cards.
-- **A quieter status line.** Weather, temperature and the IPU/AQI reading share one line; long weather alerts
-  sit beside them in amber without a second row of pills.
-- **Outfit throughout.** The whole launcher uses the bundled **Outfit** typeface for a softer, modern TV UI.
-  Arabic Quran and sermon text keep their dedicated **Amiri Quran** font.
-- **Five rotating Quiet Canvas wallpapers.** A new `quiet-canvas` theme ships cool, ember, forest, graphite and
-  sand colourways, each tuned for white launcher text and rotated every 30 minutes. Prefer one still? Apply
-  `themes/quiet-canvas-ember`.
-- **No place caption by default.** The weekly Bing wallpaper still arrives, but the caption shelf is hidden so
-  the picture stays clean. Turn it back on from wallpaper settings if you want it.
-- **Preview without a TV or emulator.** [`preview/quiet-canvas.html`](preview/quiet-canvas.html) is a static
-  desktop mock of this layout with a wallpaper switcher. The Android release build is the source of truth.
+- **Flat, vivid, lightweight.** The glass blur, translucent rims and heavy shadows are gone. Surfaces are flat
+  graphite, the primary accent is electric mint, and every focused tile or pill gets a crisp accent edge in the
+  app's own colour.
+- **Faster settings.** The right pane is rebuilt only when the selected tab changes, the avatar JSON is cached,
+  avatars are not rebuilt when unchanged, and focus animations switch off automatically on low-spec TVs.
+- **One information rail.** Weather, the daily ayah or Khutbah Minbar, and all six prayer times share one flat
+  rail above the dock. The next prayer is mint; the rest stay quiet.
+- **Sinar wallpapers.** `themes/sinar` ships five flat graphite gradients (mint, violet, ember, forest, sand)
+  with one vivid accent zone, tuned for white launcher text and rotated every 30 minutes.
+- **Every surface follows the language.** Settings, profile pickers, dialogs, Inputs, the weather screen and
+  recent apps are flat dark sheets with mint focus and app-coloured accents.
 - **Everything from Glass TV v4.1.0 is inherited.** Khutbah Minbar, the weather and air-quality hub, multi-user
-  profiles, child mode, recent apps, the StandBy screensaver and the debloat tools are all still here.
+  profiles, child mode, recent apps, the StandBy screensaver and the debloat tools are still here.
 
 <p align="center">
-  <img src="docs/screenshots/quiet-canvas-ember.jpg" width="49%" alt="Quiet Canvas ember colourway">
-  <img src="docs/screenshots/quiet-canvas-forest.jpg" width="49%" alt="Quiet Canvas forest colourway">
+  <img src="docs/screenshots/sinar-settings.jpg" width="49%" alt="Sinar settings: flat two-column sheet with mint focus">
+  <img src="docs/screenshots/sinar-weather.jpg" width="49%" alt="Sinar weather screen">
 </p>
 <p align="center">
-  <img src="docs/screenshots/quiet-canvas-graphite.jpg" width="49%" alt="Quiet Canvas graphite colourway">
-  <img src="docs/screenshots/quiet-canvas-sand.jpg" width="49%" alt="Quiet Canvas sand colourway">
-</p>
-<p align="center">
-  <em>The Quiet Canvas collection: cool, ember, forest, graphite and sand. Apply it with
-  <code>TV_HOST=&lt;tv-ip&gt; tools/theme.sh themes/quiet-canvas</code>.</em>
+  <em>The Sinar interface: flat graphite surfaces, one electric-mint accent, app-coloured focus. Apply the
+  wallpaper set with <code>TV_HOST=&lt;tv-ip&gt; tools/theme.sh themes/sinar</code>.</em>
 </p>
 
 ## What's New in Version 4.1 (Inherited from Glass TV)

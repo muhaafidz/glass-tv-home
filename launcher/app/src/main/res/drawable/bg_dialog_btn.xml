@@ -1,26 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ReactDrops Soap Bubble styled button: pill shape with thin-film iridescent edge & luminous focus bloom -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_focused="true">
         <shape android:shape="rectangle">
-            <gradient
-                android:type="linear"
-                android:angle="270"
-                android:startColor="#FFFFFFFF"
-                android:endColor="#E6F0FDFF" />
+            <solid android:color="@color/sinar_accent" />
             <corners android:radius="24dp" />
-            <stroke android:width="2.5dp" android:color="#FF67E8F9" />
         </shape>
     </item>
     <item>
         <shape android:shape="rectangle">
-            <gradient
-                android:type="linear"
-                android:angle="270"
-                android:startColor="#33FFFFFF"
-                android:endColor="#1F152233" />
+            <solid android:color="#14FFFFFF" />
+            <stroke android:width="1dp" android:color="@color/sinar_hairline" />
             <corners android:radius="24dp" />
-            <stroke android:width="1.2dp" android:color="#4D67E8F9" />
         </shape>
     </item>
 </selector>

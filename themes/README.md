@@ -15,6 +15,7 @@ powershell -ExecutionPolicy Bypass -File tools\theme.ps1 -TvHost 192.168.1.50 th
 | `default/` | The built-in look written out as JSON, as a starting point for your own |
 | `aurora/` | A dark aurora wallpaper (teal and violet on navy, darker at the bottom) with a matching background colour |
 | `quiet-canvas/` | A five-image rotating collection: cool, ember, forest, graphite and sand gradients tuned for white launcher text |
+| `sinar/` | Sinar: five flat graphite gradients (mint, violet, ember, forest, sand) with one vivid accent zone, tuned for the Sinar UI |
 | `quiet-canvas-ember/` | The warm ember still on its own, if you prefer a single colourway |
 | `six-columns/` | Six smaller tiles per row and one grid row visible under the dock |
 

@@ -122,7 +122,7 @@
                     android:letterSpacing="0.05"
                     android:text="AYAT AL-QURAN"
                     android:textAllCaps="true"
-                    android:textColor="#FFD54F"
+                    android:textColor="@color/sinar_amber"
                     android:textSize="9.5sp" />
 
                 <TextView
@@ -137,7 +137,7 @@
                     android:fontFamily="@font/outfit"
                     android:fontVariationSettings="'wght' 700"
                     android:text="● AKTIF"
-                    android:textColor="#4ADE80"
+                    android:textColor="@color/sinar_accent"
                     android:textSize="9.5sp" />
             </LinearLayout>
 
@@ -158,7 +158,7 @@
                 android:fontFamily="@font/outfit"
                 android:fontVariationSettings="'wght' 400"
                 android:text="Ayat pilihan berganti setiap hari &amp; terjemahan Bahasa Melayu"
-                android:textColor="#94A3B8"
+                android:textColor="@color/sinar_text_muted"
                 android:textSize="10.5sp"
                 android:maxLines="1"
                 android:ellipsize="end" />
@@ -186,7 +186,7 @@
                     android:lineSpacingExtra="2dp"
                     android:maxLines="2"
                     android:ellipsize="end"
-                    android:textColor="#FFE082"
+                    android:textColor="@color/sinar_amber"
                     android:textSize="13sp" />
 
                 <TextView
@@ -199,7 +199,7 @@
                     android:lineSpacingExtra="1dp"
                     android:maxLines="2"
                     android:ellipsize="end"
-                    android:textColor="#CBD5E1"
+                    android:textColor="@color/sinar_text_muted"
                     android:textSize="10sp" />
             </LinearLayout>
 
@@ -213,7 +213,7 @@
                 android:fontFamily="@font/outfit"
                 android:fontVariationSettings="'wght' 600"
                 android:text="✓ Sedang Dipaparkan"
-                android:textColor="#4ADE80"
+                android:textColor="@color/sinar_accent"
                 android:textSize="11sp" />
         </LinearLayout>
 
@@ -256,7 +256,7 @@
                     android:letterSpacing="0.05"
                     android:text="KHUTBAH JUMAAT"
                     android:textAllCaps="true"
-                    android:textColor="#67E8F9"
+                    android:textColor="@color/sinar_accent"
                     android:textSize="9.5sp" />
 
                 <TextView
@@ -292,7 +292,7 @@
                 android:fontFamily="@font/outfit"
                 android:fontVariationSettings="'wght' 400"
                 android:text="Intipati khutbah Jumaat mengikut zon lokasi anda"
-                android:textColor="#94A3B8"
+                android:textColor="@color/sinar_text_muted"
                 android:textSize="10.5sp"
                 android:maxLines="1"
                 android:ellipsize="end" />
@@ -319,7 +319,7 @@
                     android:letterSpacing="0.05"
                     android:singleLine="true"
                     android:ellipsize="end"
-                    android:textColor="#67E8F9"
+                    android:textColor="@color/sinar_accent"
                     android:textSize="9sp" />
 
                 <TextView
@@ -344,7 +344,7 @@
                     android:lineSpacingExtra="1dp"
                     android:maxLines="2"
                     android:ellipsize="end"
-                    android:textColor="#CBD5E1"
+                    android:textColor="@color/sinar_text_muted"
                     android:textSize="10sp" />
             </LinearLayout>
 
@@ -358,7 +358,7 @@
                 android:fontFamily="@font/outfit"
                 android:fontVariationSettings="'wght' 600"
                 android:text="Tekan OK untuk Pilih"
-                android:textColor="#94A3B8"
+                android:textColor="@color/sinar_text_muted"
                 android:textSize="11sp" />
         </LinearLayout>
     </LinearLayout>

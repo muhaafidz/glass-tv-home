@@ -87,7 +87,7 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.Holder> {
         }
     }
 
-    static final float FOCUS_SCALE = 1.07f;
+    static final float FOCUS_SCALE = 1.05f;
     /** Shared by every tile's zoom, so a focus move makes no new objects. */
     private static final DecelerateInterpolator ZOOM_REDUCED = new DecelerateInterpolator();
     private static final OvershootInterpolator ZOOM_IN = new OvershootInterpolator(1.6f);
@@ -323,16 +323,6 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.Holder> {
         h.name.setText(e.name);
         h.name.setVisibility(position < dockSize ? View.INVISIBLE : View.VISIBLE);   // the dock has no labels
         boolean focused = h.card.isFocused();   // a rebind after reload() can hit the focused tile
-        if (h.breathingBorder != null) {
-            h.breathingBorder.setReducedMotion(this.reducedMotion);
-            if (focused && !this.reducedMotion) {
-                float r = cornerRadius(h.card.getWidth(), h.card.getResources().getDisplayMetrics().density);
-                h.breathingBorder.setCornerRadiusDp(r / h.card.getResources().getDisplayMetrics().density);
-                h.breathingBorder.setVisibility(View.VISIBLE);
-            } else {
-                h.breathingBorder.setVisibility(View.GONE);
-            }
-        }
         h.name.setAlpha(focused ? 1f : 0f);
         h.card.setScaleX(focused ? FOCUS_SCALE : 1f);
         h.card.setScaleY(focused ? FOCUS_SCALE : 1f);
@@ -537,7 +527,6 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.Holder> {
         final ImageView icon;
         final TextView label;
         final TextView name;
-        final DockBreathingBorderView breathingBorder;
         boolean reducedMotion;
 
         Holder(View v, TileListener listener, boolean reducedMotion) {
@@ -547,7 +536,6 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.Holder> {
             icon = v.findViewById(R.id.icon);
             label = v.findViewById(R.id.label);
             name = v.findViewById(R.id.name);
-            breathingBorder = v.findViewById(R.id.dockBreathingBorder);
             this.reducedMotion = reducedMotion;
 
             final float density = v.getResources().getDisplayMetrics().density;
@@ -569,35 +557,26 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.Holder> {
             });
 
             card.setOnFocusChangeListener((view, focused) -> {
-                if (breathingBorder != null) {
-                    if (focused && !this.reducedMotion) {
-                        float r = cornerRadius(view.getWidth(), density);
-                        breathingBorder.setCornerRadiusDp(r / density);
-                        breathingBorder.setVisibility(View.VISIBLE);
-                    } else {
-                        breathingBorder.setVisibility(View.GONE);
-                    }
-                }
                 float s = focused ? FOCUS_SCALE : 1.0f;
                 view.animate().cancel();
                 name.animate().cancel();
                 if (reducedMotion) {
                     // No overshoot: the extra frames redraw the banner and the dock band on a weak GPU.
                     view.animate().scaleX(s).scaleY(s)
-                            .setDuration(focused ? 120 : 80)
+                            .setDuration(focused ? 100 : 70)
                             .setInterpolator(ZOOM_REDUCED)
                             .withLayer()
                             .start();
-                    name.animate().alpha(focused ? 1f : 0f).setDuration(100).withLayer().start();
+                    name.animate().alpha(focused ? 1f : 0f).setDuration(90).withLayer().start();
                 } else {
                     view.animate().scaleX(s).scaleY(s)
-                            .setDuration(focused ? 260 : 180)
+                            .setDuration(focused ? 180 : 140)
                             .setInterpolator(focused ? ZOOM_IN : ZOOM_OUT)
                             .withLayer()
                             .start();
                     name.animate().alpha(focused ? 1f : 0f)
-                            .translationY(focused ? density * 4f : -density * 6f)
-                            .setDuration(220).withLayer().start();
+                            .translationY(focused ? density * 3f : -density * 5f)
+                            .setDuration(160).withLayer().start();
                 }
                 int pos = getBindingAdapterPosition();
                 if (focused && listener != null && pos != RecyclerView.NO_POSITION) {

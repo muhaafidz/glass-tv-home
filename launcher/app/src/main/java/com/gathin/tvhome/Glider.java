@@ -2,8 +2,8 @@ package com.gathin.tvhome;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.view.View;
@@ -17,22 +17,15 @@ import java.util.List;
 
 /**
  * The focus: one rounded shape that glides from whatever had focus to whatever has it now,
- * changing only its size and corners on the way. Between apps it is a pane of glass; on the top
- * menu, and travelling between the dock and the top menu, it is dark. It switches look at once,
- * never blending, and the Inputs list has a dark one of its own.
- *
- * <p>It sits behind what it marks, so it never draws over an app, a pill's label or a row's text:
- * around a tile it shows as a dark frame, and under a pill or a row as its fill. Glass that covers
- * it gets out of the way (see {@link #coverage}) or paints the shape itself (see {@link #drawShape}).
- * Moving it only redraws a round rect; it never asks for a new layout.
+ * changing only its size and corners on the way. Around a tile it is an accent wash and edge in
+ * the app's colour; on the top menu it is a dark fill with an accent edge. It sits behind what it
+ * marks, so it never draws over an app, a pill's label or a row's text.
  */
 final class Glider extends View {
 
-    /** About 63% black: bright text reads on it, and every place that uses it matches. */
-    static final int FOCUS_ALPHA = 0xA0;
     /** The top menu's look: a dark fill. */
     static final int DARK = 0;
-    /** Between apps: a pane of glass, the same as the pills and the tray. */
+    /** Between apps: an accent wash and edge. */
     static final int GLASS = 1;
 
     private static final class Edge extends FloatPropertyCompat<Glider> {
@@ -61,28 +54,15 @@ final class Glider extends View {
     private final float[] edges = new float[5];
     private final SpringAnimation[] springs = new SpringAnimation[5];
     private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private final Backdrop.Fill glass = new Backdrop.Fill();
-    private final Paint veil = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private final GlassRim rim;
-    private final android.graphics.RectF shape = new android.graphics.RectF();
+    private final RectF shape = new RectF();
     private int style = DARK;
     private boolean paneHidden;
-    /**
-     * The selected app's drop shadow, drawn by the glass glider behind it: soft and even all round,
-     * where the system's shadow fell mostly below the tile and was trimmed at its sides. Drawn once
-     * per tile size into a bitmap, since a blur cannot be drawn live on this TV's GPU.
-     */
-    private Bitmap shadow;
-    private int shadowW, shadowH;
-    private final Paint shadowPaint = new Paint(Paint.FILTER_BITMAP_FLAG);
-    private final float shadowBlur, shadowDrop;
-    /** How far the shadow is shown: it comes in as the glider turns to glass, and goes with the dark. */
-    private float shadowMix;
-    private ValueAnimator shadowFade;
+    private int accentColor = Design.ACCENT;
+    private final float density;
     private final List<View> companions = new ArrayList<>();
     /** Per companion, the part of it the shape matters to (in its own coordinates), or null for all of it. */
     private final List<RectF> companionAreas = new ArrayList<>();
-    /** Where the shape was last drawn and where it is now, shadow included, in this view's coordinates. */
+    /** Where the shape was last drawn and where it is now, in this view's coordinates. */
     private final RectF drawn = new RectF(), dirty = new RectF(), area = new RectF();
     private final int[] gliderAt = new int[2], companionAt = new int[2];
     private final float[] target = new float[5];
@@ -99,11 +79,7 @@ final class Glider extends View {
         super(context);
         this.reducedMotion = reducedMotion;
         float density = context.getResources().getDisplayMetrics().density;
-        veil.setColor(0x14FFFFFF);
-        rim = new GlassRim(1.25f * density, 0xB5D6F5F2, 0x1F51C9C1);
-        shadowBlur = 22f * density;
-        shadowDrop = 8f * density;
-        Backdrop.watch(this);
+        this.density = density;
         setFocusable(false);
         setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);
         String[] names = {"left", "top", "right", "bottom", "radius"};
@@ -219,32 +195,26 @@ final class Glider extends View {
         for (int i = 0; i < springs.length; i++) springs[i].animateToFinalPosition(to[i]);
     }
 
-    /**
-     * While an app is being moved it wiggles, and the glass pane behind it would show at its corners:
-     * then only the app's shadow is drawn.
-     */
     void setPaneHidden(boolean hidden) {
         if (paneHidden == hidden) return;
         paneHidden = hidden;
         changed();
     }
 
-    /** Switches look at once; there is no blend between the two. The shadow eases in with the glass. */
+    /** Switches look at once; there is no blend between the two. */
     void setStyle(int style) {
         if (this.style == style) return;
         this.style = style;
-        if (shadowFade != null) shadowFade.cancel();
-        if (style == GLASS) {
-            shadowFade = ValueAnimator.ofFloat(shadowMix, 1f);
-            shadowFade.setDuration(reducedMotion ? 100 : 200);
-            shadowFade.addUpdateListener(a -> {
-                shadowMix = (float) a.getAnimatedValue();
-                changed();
-            });
-            shadowFade.start();
-        } else {
-            shadowMix = 0f;
-        }
+        changed();
+    }
+
+    /** The focused app's colour drives the ring, so every tile lights its own edge. */
+    void setAccentColor(int color) {
+        float[] hsv = new float[3];
+        Color.colorToHSV(color, hsv);
+        if (hsv[1] < 0.45f) color = Design.ACCENT;
+        if (accentColor == color) return;
+        accentColor = color;
         changed();
     }
 
@@ -297,52 +267,27 @@ final class Glider extends View {
         // Never rounder than the shape allows: a pill's ends stay round as it shrinks to a circle.
         float r = Math.min(edges[RADIUS], Math.min(b - t, edges[RIGHT] - edges[LEFT]) / 2f);
         shape.set(edges[LEFT] + dx, t + dy, edges[RIGHT] + dx, b + dy);
-        if (style == DARK) {
-            paint.setColor((int) (FOCUS_ALPHA * opacity) << 24);
-            canvas.drawRoundRect(shape, r, r, paint);
-            return;
-        }
-        // Glass: the selected app's shadow, what is behind it softened, an even veil, and the
-        // shining edge.
-        drawShadow(canvas, r);
         if (paneHidden) return;
-        glass.draw(canvas, canvasOwner, shape, r, opacity);
-        veil.setAlpha(Math.round(0x14 * opacity));
-        canvas.drawRoundRect(shape, r, r, veil);
-        float half = rim.paint.getStrokeWidth() / 2f;
-        shape.inset(half, half);
-        rim.fit(shape);
-        rim.paint.setAlpha(Math.round(255 * opacity));
-        canvas.drawRoundRect(shape, r - half, r - half, rim.paint);
-        rim.drawWindowLight(canvas, shape, r - half, opacity);
-    }
-
-    private void drawShadow(Canvas canvas, float radius) {
-        if (shadowMix <= 0f) return;
-        int w = Math.round(shape.width()), h = Math.round(shape.height());
-        if (w <= 0 || h <= 0) return;
-        int pad = (int) Math.ceil(shadowBlur * 2);
-        if (shadow != null && (w != shadowW || h != shadowH) && moving()) {
-            // Changing size mid-glide: stretch the shadow it has rather than blur a new one every
-            // frame; the right one is made once the shape comes to rest.
-            shadowPaint.setColor(0xFF000000);
-            shadowPaint.setAlpha(Math.round(0x9A * opacity * shadowMix));
-            area.set(shape.left - pad, shape.top - pad + shadowDrop, shape.right + pad, shape.bottom + pad + shadowDrop);
-            canvas.drawBitmap(shadow, null, area, shadowPaint);
+        int alpha = Math.round(255 * opacity);
+        if (style == DARK) {
+            paint.setStyle(Paint.Style.FILL);
+            paint.setColor((Math.round(0xF0 * opacity) << 24) | (Design.SURFACE_RAISED & 0x00FFFFFF));
+            canvas.drawRoundRect(shape, r, r, paint);
+            paint.setStyle(Paint.Style.STROKE);
+            paint.setStrokeWidth(1.5f * density);
+            paint.setColor((Math.round(0x99 * opacity) << 24) | (accentColor & 0x00FFFFFF));
+            canvas.drawRoundRect(shape, r, r, paint);
+            paint.setStyle(Paint.Style.FILL);
             return;
         }
-        if (shadow == null || w != shadowW || h != shadowH) {
-            shadow = Bitmap.createBitmap(w + 2 * pad, h + 2 * pad, Bitmap.Config.ALPHA_8);
-            Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
-            p.setColor(0xFF000000);
-            p.setMaskFilter(new android.graphics.BlurMaskFilter(shadowBlur, android.graphics.BlurMaskFilter.Blur.NORMAL));
-            new Canvas(shadow).drawRoundRect(pad, pad, pad + w, pad + h, radius, radius, p);
-            shadowW = w;
-            shadowH = h;
-        }
-        shadowPaint.setColor(0xFF000000);
-        shadowPaint.setAlpha(Math.round(0x9A * opacity * shadowMix));
-        canvas.drawBitmap(shadow, shape.left - pad, shape.top - pad + shadowDrop, shadowPaint);
+        paint.setStyle(Paint.Style.FILL);
+        paint.setColor((Math.round(0x1F * opacity) << 24) | (accentColor & 0x00FFFFFF));
+        canvas.drawRoundRect(shape, r, r, paint);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(2.5f * density);
+        paint.setColor((alpha << 24) | (accentColor & 0x00FFFFFF));
+        canvas.drawRoundRect(shape, r, r, paint);
+        paint.setStyle(Paint.Style.FILL);
     }
 
     private void fadeTo(float to, long ms) {
@@ -356,11 +301,6 @@ final class Glider extends View {
         fade.start();
     }
 
-    private boolean moving() {
-        for (SpringAnimation sp : springs) if (sp.isRunning()) return true;
-        return false;
-    }
-
     /**
      * Redraws the shape, and each companion it is over or has just left: a glide among the lower
      * rows of apps leaves the tray and the top-bar pills alone.
@@ -370,7 +310,7 @@ final class Glider extends View {
         if (companions.isEmpty()) return;
         dirty.set(drawn);
         if (isShowing()) {
-            float reach = 2f * shadowBlur + shadowDrop + 2f;
+            float reach = 6f * density + 2f;
             drawn.set(edges[LEFT] - reach, edges[TOP] + yShift - reach,
                     edges[RIGHT] + reach, edges[BOTTOM] + yShift + reach);
             dirty.union(drawn);

@@ -82,7 +82,8 @@ public final class ProfileAvatarHelper {
         boolean animEnabled = !context.getSharedPreferences("theme_prefs", Context.MODE_PRIVATE)
                 .getBoolean("reduced_motion", false);
 
-        if (profile == null || ProfileManager.AVATAR_TYPE_LOTTIE.equals(profile.avatarType)) {
+        if (profile == null || ProfileManager.AVATAR_TYPE_LOTTIE.equals(profile.avatarType)
+                || !hasAvatarSource(profile, context)) {
             // 1. Watak Tunggal (Lottie Animation)
             LottieAnimationView lottie = new LottieAnimationView(context);
             FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(
@@ -123,12 +124,21 @@ public final class ProfileAvatarHelper {
         GradientDrawable rimGd = new GradientDrawable();
         rimGd.setShape(GradientDrawable.OVAL);
         rimGd.setColor(Color.TRANSPARENT);
-        rimGd.setStroke(Math.max(1, Math.round(1.5f * density)), 0x5967E8F9); // Translucent Soap Bubble iridescent glass rim
+        rimGd.setStroke(Math.max(1, Math.round(1.5f * density)), 0x992EF2C0);
         glassRim.setBackground(rimGd);
         container.addView(glassRim, new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT
         ));
+    }
+
+    private static boolean hasAvatarSource(ProfileManager.UserProfile profile, Context context) {
+        String path = profile.avatarPath;
+        if (path == null || path.isEmpty()) return false;
+        if (path.startsWith("http://") || path.startsWith("https://")) return true;
+        if (new File(path).exists()) return true;
+        File cached = new File(new File(context.getFilesDir(), "avatars"), "gif_" + Math.abs(path.hashCode()) + ".gif");
+        return cached.exists();
     }
 
     public static void loadGifOrImage(ImageView iv, String path, Context context) {

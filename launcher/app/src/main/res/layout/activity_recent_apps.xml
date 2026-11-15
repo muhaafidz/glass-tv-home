@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/outfit"
             android:text="RAM 1.8 GB used of 2.3 GB"
-            android:textColor="#FFE2E8F0"
+            android:textColor="@color/sinar_text"
             android:textSize="14sp" />
 
         <ProgressBar

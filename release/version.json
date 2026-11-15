@@ -1,7 +1,7 @@
 {
-  "versionCode": 46,
-  "versionName": "4.1.1",
+  "versionCode": 60,
+  "versionName": "5.0.0",
   "apkUrl": "https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-home.apk",
-  "changelog": "✨ Glass TV v4.1.1 (Quiet Canvas — Performance Update):\n• Tetapan lebih lancar: panel tetapan tidak lagi membina semula kandungan kanan pada setiap gerakan fokus D-pad.\n• Avatar Lottie tidak lagi diproses semula (JSON 2 MB) pada setiap fokus; hasil tema kini di-cache.\n• Avatar pengguna tidak lagi dibina semula jika tidak berubah; gambar/GIF avatar dinyahkod di latar belakang.\n• Animasi fokus dimatikan secara automatik pada TV spesifikasi rendah (Mod Kelancaran).\n• Kemas kini OTA kini disemak daripada repo fork ini (muhaafidz/glass-tv-home), bukan repo asal.",
-  "releaseDate": "2026-11-15"
+  "changelog": "✨ Glass TV v5.0.0 — Sinar:\n• Reka bentuk baharu: permukaan rata grafit, satu aksen mint elektrik, dan warna fokus mengikut aplikasi.\n• Tiada lagi blur kaca, rim glass, atau bayang berat: lebih ringan dan lebih lancar pada TV 1GB–2GB.\n• Panel Tetapan lebih pantas: kandungan dibina semula hanya apabila tab bertukar; animasi fokus automatik dimatikan pada TV low-spec.\n• Koleksi wallpaper Sinar: lima gradien minimalis (mint, violet, ember, forest, sand).\n• Dialog, popup, cuaca, recent apps dan azan diselaraskan dengan bahasa reka bentuk Sinar.\n• Kemas kini OTA daripada repo fork ini.",
+  "releaseDate": "2026-11-16"
 }

@@ -50,7 +50,7 @@
                 android:includeFontPadding="false"
                 android:singleLine="true"
                 android:text="85%"
-                android:textColor="#38BDF8"
+                android:textColor="@color/sinar_accent"
                 android:textSize="8.5sp" />
         </LinearLayout>
 
@@ -64,7 +64,7 @@
             android:includeFontPadding="false"
             android:singleLine="true"
             android:text="24°"
-            android:textColor="#94A3B8"
+            android:textColor="@color/sinar_text_muted"
             android:textSize="11sp" />
 
         <com.gathin.tvhome.TempRangeBarView

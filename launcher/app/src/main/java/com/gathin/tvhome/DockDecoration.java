@@ -18,11 +18,9 @@ public class DockDecoration extends RecyclerView.ItemDecoration {
     private final int dockSize;
     private final float density;
     private final Paint band = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private final Paint trayShadowPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private final GlassRim edge;
+    private final Paint edge = new Paint(Paint.ANTI_ALIAS_FLAG);
     private Glider glider;
     private final int[] at = new int[2], gliderAt = new int[2];
-    private final Backdrop.Fill blur = new Backdrop.Fill();
 
     private final RectF rect = new RectF();
     /** The tray as last drawn, in the grid's coordinates: where the focus shape shows on it. */
@@ -31,11 +29,10 @@ public class DockDecoration extends RecyclerView.ItemDecoration {
     DockDecoration(int dockSize, float density) {
         this.dockSize = dockSize;
         this.density = density;
-        // Same glass as the top-bar pills (GlassDrawable): an even veil and a shining edge.
-        band.setColor(0x1FFFFFFF);
-        trayShadowPaint.setColor(0x38000000);
-        trayShadowPaint.setMaskFilter(new android.graphics.BlurMaskFilter(14f * density, android.graphics.BlurMaskFilter.Blur.NORMAL));
-        edge = new GlassRim(1.25f * density, 0xB5D7E2EC, 0x1F8CA6B8, 0.5f);
+        band.setColor(0xF214161D);
+        edge.setStyle(Paint.Style.STROKE);
+        edge.setStrokeWidth(1f * density);
+        edge.setColor(Design.HAIRLINE);
     }
 
     /** The focus shape: the tray's glass would hide it, so the tray paints it over the glass itself. */
@@ -77,14 +74,9 @@ public class DockDecoration extends RecyclerView.ItemDecoration {
         float pad = 14 * density;
         rect.inset(-pad, -pad);
         area.set(rect);
-        float radius = 26 * density;
-        // Soft drop shadow under the glass dock tray
-        RectF trayShadow = new RectF(rect);
-        trayShadow.offset(0, 4f * density);
-        c.drawRoundRect(trayShadow, radius, radius, trayShadowPaint);
-
-        blur.draw(c, parent, rect, radius, 1f);
+        float radius = 24 * density;
         c.drawRoundRect(rect, radius, radius, band);
+        c.drawRoundRect(rect, radius, radius, edge);
         // The focus frame of a dock tile sits on the tray's glass and under the tiles; the rest of
         // the shape, outside the tray, is the glider itself showing behind.
         if (glider != null && glider.isShowing()) {
@@ -98,11 +90,6 @@ public class DockDecoration extends RecyclerView.ItemDecoration {
             glider.drawShape(c, gliderAt[0] - at[0], gliderAt[1] - at[1], parent);
             c.restore();
         }
-        // Drawn just inside the tray, as the pills draw theirs: a stroke centred on the boundary
-        // spreads over an extra pixel and reads thicker than the pills' edge.
-        float half = edge.paint.getStrokeWidth() / 2f;
-        rect.inset(half, half);
-        edge.fit(rect);
-        c.drawRoundRect(rect, radius - half, radius - half, edge.paint);
+
     }
 }

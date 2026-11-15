@@ -6,10 +6,10 @@
     <!-- Back Storm Cloud (Slate Gray) -->
     <path
         android:pathData="M24,25 L36,25 A5,5 0 0,0 41,20 A5,5 0 0,0 36,15 L24,15 A5,5 0 0,0 19,20 A5,5 0 0,0 24,25 Z"
-        android:fillColor="#94A3B8" />
+        android:fillColor="@color/sinar_text_muted" />
     <path
         android:pathData="M30,15m-7,0a7,7 0 1,0 14,0a7,7 0 1,0 -14,0"
-        android:fillColor="#94A3B8" />
+        android:fillColor="@color/sinar_text_muted" />
 
     <!-- Front Cloud (Pure White) -->
     <path
@@ -28,7 +28,7 @@
     <!-- Electric Yellow Lightning Bolt striking down -->
     <path
         android:pathData="M22,27 L18,34 L21,34 L17,43 L25,33 L21.5,33 Z"
-        android:fillColor="#FACC15" />
+        android:fillColor="@color/sinar_amber" />
 
     <!-- Rain Drops -->
     <path

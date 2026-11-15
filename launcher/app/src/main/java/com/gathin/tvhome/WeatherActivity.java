@@ -302,7 +302,7 @@ public class WeatherActivity extends Activity {
         }
         if (humidityValText != null) {
             humidityValText.setText(w.humidity + "%");
-            humidityValText.setTextColor(0xFF38BDF8); // Water Cyan
+            humidityValText.setTextColor(0xFF2EF2C0); // Water Cyan
         }
 
         if (aqiLabel != null) {
@@ -560,7 +560,7 @@ public class WeatherActivity extends Activity {
             } else {
                 humidityValText.setText(item.rainChance + "%");
             }
-            humidityValText.setTextColor(0xFF38BDF8);
+            humidityValText.setTextColor(0xFF2EF2C0);
         }
 
         if (hourlyGraphView != null) {
@@ -583,21 +583,21 @@ public class WeatherActivity extends Activity {
 
     private int getConditionTempColor(WeatherBackgroundView.ConditionType type, int temp) {
         if (type == WeatherBackgroundView.ConditionType.THUNDERSTORM) {
-            return 0xFFFDE047; // Electric Yellow (#FDE047)
+            return 0xFFFFB84D; // Electric Yellow (#FDE047)
         } else if (type == WeatherBackgroundView.ConditionType.RAIN || type == WeatherBackgroundView.ConditionType.DRIZZLE) {
-            return 0xFF38BDF8; // Refreshing Rain Sky Blue (#38BDF8)
+            return 0xFF2EF2C0; // Refreshing Rain Sky Blue (#38BDF8)
         } else if (type == WeatherBackgroundView.ConditionType.NIGHT) {
-            return 0xFFBAE6FD; // Ice Blue Moonlight (#BAE6FD)
+            return 0xFF4DD8FF; // Ice Blue Moonlight (#BAE6FD)
         } else if (type == WeatherBackgroundView.ConditionType.CLOUDY) {
-            return (temp >= 28) ? 0xFFFBBF24 : 0xFFE2E8F0; // Amber Gold or Slate
+            return (temp >= 28) ? 0xFFFFB84D : 0xFFF5F7FA; // Amber Gold or Slate
         } else {
             // SUNNY / CERAH
             if (temp >= 33) {
-                return 0xFFFF4545; // Coral Flame Red (#FF4545) for heatwave
+                return 0xFFFF6B6B; // Coral Flame Red (#FF4545) for heatwave
             } else if (temp >= 28) {
-                return 0xFFFBBF24; // Solar Amber Gold (#FBBF24) for warm sunshine
+                return 0xFFFFB84D; // Solar Amber Gold (#FBBF24) for warm sunshine
             } else {
-                return 0xFFFACC15; // Bright Sunny Yellow (#FACC15)
+                return 0xFFFFB84D; // Bright Sunny Yellow (#FACC15)
             }
         }
     }

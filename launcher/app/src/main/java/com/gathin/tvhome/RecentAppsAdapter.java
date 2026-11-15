@@ -2,7 +2,6 @@ package com.gathin.tvhome;
 
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
-import android.os.Build;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -104,6 +103,13 @@ public class RecentAppsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         return items.size();
     }
 
+    private static int blend(int base, int accent, float amount) {
+        int r = Math.round(((base >> 16) & 0xFF) * (1 - amount) + ((accent >> 16) & 0xFF) * amount);
+        int g = Math.round(((base >> 8) & 0xFF) * (1 - amount) + ((accent >> 8) & 0xFF) * amount);
+        int b = Math.round((base & 0xFF) * (1 - amount) + (accent & 0xFF) * amount);
+        return 0xFF000000 | (r << 16) | (g << 8) | b;
+    }
+
     static class AppViewHolder extends RecyclerView.ViewHolder {
         private final LinearLayout topPill;
         private final ImageView ivSmallIcon;
@@ -129,62 +135,41 @@ public class RecentAppsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 ivCardIcon.setImageDrawable(item.icon);
             }
 
-            // CoverFlow stack elevation: earlier cards sit on top of later cards when unfocused
-            itemView.setElevation(Math.max(4f, 32f - position * 2f));
-
-            // Realistic card colors matching reference photo
-            int cardColor = 0xFFE2EDF9; // clean ice silver default (like Settings/Nuvio)
-            boolean isDarkCard = false;
+            int brand = 0xFF2EF2C0;
             String p = item.packageName.toLowerCase(Locale.US);
-            if (p.contains(".tv") || p.contains("livetv")) {
-                cardColor = 0xFFE53935; // Vibrant Red (TV)
-                isDarkCard = true;
-            } else if (p.contains("file") || p.contains("explorer")) {
-                cardColor = 0xFFF57C00; // Warm Orange (File Manager)
-                isDarkCard = true;
-            } else if (p.contains("netflix") || p.contains("prime")) {
-                cardColor = 0xFF141822; // Deep Slate/Black
-                isDarkCard = true;
-            } else if (p.contains("youtube")) {
-                cardColor = 0xFFCC0000; // Red (YouTube)
-                isDarkCard = true;
-            } else if (p.contains("settings")) {
-                cardColor = 0xFFE2EDF9; // Ice Silver (Settings)
-                isDarkCard = false;
-            }
+            if (p.contains(".tv") || p.contains("livetv")) brand = 0xFFFF6B6B;
+            else if (p.contains("file") || p.contains("explorer")) brand = 0xFFFFB84D;
+            else if (p.contains("netflix") || p.contains("prime")) brand = 0xFFFF6B6B;
+            else if (p.contains("youtube")) brand = 0xFFFF6B6B;
+            else if (p.contains("play")) brand = 0xFF4DD8FF;
 
             float density = itemView.getResources().getDisplayMetrics().density;
             GradientDrawable cardBg = new GradientDrawable();
-            cardBg.setColor(cardColor);
+            cardBg.setColor(blend(Design.SURFACE_RAISED, brand, 0.12f));
+            cardBg.setStroke(Math.round(1f * density), Design.HAIRLINE);
             cardBg.setCornerRadius(26 * density);
+            GradientDrawable cardFocus = new GradientDrawable();
+            cardFocus.setColor(blend(Design.SURFACE_RAISED, brand, 0.20f));
+            cardFocus.setStroke(Math.round(2f * density), Design.ACCENT);
+            cardFocus.setCornerRadius(26 * density);
             cardContainer.setBackground(cardBg);
 
-            // Squircle style adaptation
             GradientDrawable squircleBg = new GradientDrawable();
             squircleBg.setCornerRadius(22 * density);
-            if (isDarkCard) {
-                squircleBg.setColor(0x38FFFFFF);
-                squircleBg.setStroke(Math.round(1.5f * density), 0x55FFFFFF);
-            } else {
-                squircleBg.setColor(0xFFFFFFFF);
-                squircleBg.setStroke(Math.round(1f * density), 0x1A000000);
-            }
+            squircleBg.setColor(Design.SURFACE);
+            squircleBg.setStroke(Math.round(1f * density), Design.HAIRLINE);
             squircleContainer.setBackground(squircleBg);
-
-            // Deep realistic drop shadows on API 28+
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                cardContainer.setOutlineAmbientShadowColor(0x99000000);
-                cardContainer.setOutlineSpotShadowColor(0xCC000000);
-            }
 
             cardContainer.setOnFocusChangeListener((v, hasFocus) -> {
                 if (hasFocus) {
                     itemView.setTranslationZ(60f);
+                    v.setBackground(cardFocus);
                     v.animate().scaleX(1.06f).scaleY(1.06f).setDuration(160).start();
                     topPill.setBackgroundResource(R.drawable.bg_app_pill_focused);
-                    tvAppLabel.setTextColor(0xFF14161D);
+                    tvAppLabel.setTextColor(0xFF06120E);
                 } else {
                     itemView.setTranslationZ(0f);
+                    v.setBackground(cardBg);
                     v.animate().scaleX(0.94f).scaleY(0.94f).setDuration(160).start();
                     topPill.setBackgroundResource(R.drawable.bg_app_pill_unfocused);
                     tvAppLabel.setTextColor(0xFFFFFFFF);
@@ -219,13 +204,6 @@ public class RecentAppsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
 
         public void bind(OnRecentAppInteractionListener listener, int position) {
-            itemView.setElevation(Math.max(4f, 32f - position * 2f));
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                btnCircle.setOutlineAmbientShadowColor(0x80000000);
-                btnCircle.setOutlineSpotShadowColor(0xB3000000);
-            }
-
             btnCircle.setOnFocusChangeListener((v, hasFocus) -> {
                 if (hasFocus) {
                     itemView.setTranslationZ(60f);

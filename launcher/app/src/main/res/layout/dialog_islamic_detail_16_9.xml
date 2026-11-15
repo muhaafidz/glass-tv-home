@@ -44,7 +44,7 @@
                 android:letterSpacing="0.08"
                 android:text="KHUTBAH MINBAR"
                 android:textAllCaps="true"
-                android:textColor="#FF67E8F9"
+                android:textColor="@color/sinar_accent"
                 android:textSize="10.5sp" />
         </LinearLayout>
 
@@ -220,7 +220,7 @@
                     android:gravity="end"
                     android:textDirection="rtl"
                     android:lineSpacingExtra="4dp"
-                    android:textColor="#FFE082"
+                    android:textColor="@color/sinar_amber"
                     android:textSize="16sp"
                     android:visibility="gone" />
 
@@ -231,7 +231,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/outfit"
                     android:fontVariationSettings="'wght' 700"
-                    android:textColor="#FF67E8F9"
+                    android:textColor="@color/sinar_accent"
                     android:textSize="12.5sp"
                     android:lineSpacingExtra="2dp"
                     android:visibility="gone" />
@@ -246,7 +246,7 @@
                     android:fontVariationSettings="'wght' 400"
                     android:lineSpacingMultiplier="1.35"
                     android:justificationMode="inter_word"
-                    android:textColor="#E2E8F0"
+                    android:textColor="@color/sinar_text"
                     android:textSize="12.5sp" />
             </LinearLayout>
         </ScrollView>

@@ -43,7 +43,7 @@
                 android:letterSpacing="0.1"
                 android:text="MET MALAYSIA"
                 android:textAllCaps="true"
-                android:textColor="#FFFF8A80"
+                android:textColor="@color/sinar_coral"
                 android:textSize="10.5sp" />
         </LinearLayout>
 

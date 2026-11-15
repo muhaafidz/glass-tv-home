@@ -141,7 +141,7 @@ public final class ChildModeManager {
         // Icon
         ImageView iconView = new ImageView(ctx);
         iconView.setImageResource(R.drawable.ic_lock);
-        iconView.setColorFilter(0xFFF59E0B);
+        iconView.setColorFilter(0xFFFFB84D);
         LinearLayout.LayoutParams icLp = new LinearLayout.LayoutParams((int) (38 * density), (int) (38 * density));
         icLp.bottomMargin = (int) (10 * density);
         root.addView(iconView, icLp);
@@ -187,7 +187,7 @@ public final class ChildModeManager {
             for (int i = 0; i < 4; i++) {
                 if (i < pinBuilder.length()) {
                     dots[i].setText("●");
-                    dots[i].setTextColor(0xFFF59E0B);
+                    dots[i].setTextColor(0xFFFFB84D);
                 } else {
                     dots[i].setText("○");
                     dots[i].setTextColor(0x88FFFFFF);
@@ -214,7 +214,7 @@ public final class ChildModeManager {
 
             StateListDrawable sld = new StateListDrawable();
             GradientDrawable f = new GradientDrawable();
-            f.setColor(k.equals("OK") ? 0xFF10B981 : 0xFF38BDF8);
+            f.setColor(k.equals("OK") ? 0xFF2EF2C0 : 0xFF2EF2C0);
             f.setCornerRadius(14 * density);
             GradientDrawable u = new GradientDrawable();
             u.setColor(0x22FFFFFF);
