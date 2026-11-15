@@ -11,6 +11,8 @@ import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.Settings;
 import android.util.DisplayMetrics;
 import android.view.Display;
@@ -95,9 +97,20 @@ public final class ModernSettingsDialog {
         float density = activity.getResources().getDisplayMetrics().density;
         DisplayMetrics dm = activity.getResources().getDisplayMetrics();
         Typeface outfit = activity.getResources().getFont(R.font.outfit);
+        final boolean animateFocus = focusAnimations(activity);
 
         AlertDialog[] dialogHolder = new AlertDialog[1];
         int[] activeTab = new int[]{TAB_PROFILE};
+
+        final Handler renderHandler = new Handler(Looper.getMainLooper());
+        final int[] renderedTab = new int[]{Integer.MIN_VALUE};
+        final Runnable[] pendingRender = new Runnable[1];
+        final Runnable[] flushTab = new Runnable[1];
+        final Runnable scheduleRenderIfNeeded = () -> {
+            if (pendingRender[0] != null) renderHandler.removeCallbacks(pendingRender[0]);
+            if (activeTab[0] == renderedTab[0] || pendingRender[0] == null) return;
+            renderHandler.postDelayed(pendingRender[0], 90);
+        };
 
         // Main Horizontal Container (2 Columns)
         LinearLayout root = new LinearLayout(activity);
@@ -164,22 +177,23 @@ public final class ModernSettingsDialog {
         searchPrompt.setTypeface(outfit, Typeface.NORMAL);
         searchBox.addView(searchPrompt);
 
+        GradientDrawable searchFocusBg = new GradientDrawable(
+                GradientDrawable.Orientation.TOP_BOTTOM, new int[]{0x55384B66, 0x4428354A});
+        searchFocusBg.setCornerRadius(14 * density);
+        searchFocusBg.setStroke((int) (2f * density), 0xFF67E8F9);
+
         searchBox.setOnFocusChangeListener((v, hasFocus) -> {
-            GradientDrawable g = new GradientDrawable(
-                    GradientDrawable.Orientation.TOP_BOTTOM,
-                    hasFocus ? new int[]{0x55384B66, 0x4428354A} : new int[]{0x3328354A, 0x241C2534}
-            );
-            g.setCornerRadius(14 * density);
-            g.setStroke((int) ((hasFocus ? 2f : 1f) * density), hasFocus ? 0xFF67E8F9 : 0x2E67E8F9);
-            v.setBackground(g);
+            v.setBackground(hasFocus ? searchFocusBg : searchBg);
             searchPrompt.setTextColor(hasFocus ? 0xFFFFFFFF : 0xFF8E929E);
             searchIcon.setColorFilter(hasFocus ? 0xFF67E8F9 : 0xFF8E929E);
-            v.animate()
-                    .scaleX(hasFocus ? 1.02f : 1.0f)
-                    .scaleY(hasFocus ? 1.02f : 1.0f)
-                    .setInterpolator(hasFocus ? new OvershootInterpolator(1.4f) : new DecelerateInterpolator())
-                    .setDuration(hasFocus ? 160 : 100)
-                    .start();
+            if (animateFocus) {
+                v.animate()
+                        .scaleX(hasFocus ? 1.02f : 1.0f)
+                        .scaleY(hasFocus ? 1.02f : 1.0f)
+                        .setInterpolator(hasFocus ? new OvershootInterpolator(1.4f) : new DecelerateInterpolator())
+                        .setDuration(hasFocus ? 160 : 100)
+                        .start();
+            }
         });
 
         searchBox.setOnClickListener(v -> {
@@ -193,6 +207,7 @@ public final class ModernSettingsDialog {
                     profileCard.requestFocus();
                     return true;
                 } else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
+                    if (flushTab[0] != null) flushTab[0].run();
                     return focusRightPane(rightContent);
                 }
             }
@@ -286,6 +301,8 @@ public final class ModernSettingsDialog {
             final int iconRes;
             final int squircleBg;
             View rowView;
+            GradientDrawable bgNormal;
+            GradientDrawable bgSelected;
 
             NavItem(int tabId, String label, int iconRes, int squircleBg) {
                 this.tabId = tabId;
@@ -311,29 +328,27 @@ public final class ModernSettingsDialog {
 
         Runnable[] renderRightPane = new Runnable[1];
 
+        GradientDrawable profileSelectedBg = new GradientDrawable(
+                GradientDrawable.Orientation.TOP_BOTTOM, new int[]{0x55384B66, 0x3D28354A});
+        profileSelectedBg.setCornerRadius(14 * density);
+        profileSelectedBg.setStroke((int) (1.5f * density), 0x9967E8F9);
+        GradientDrawable profileNormalBg = new GradientDrawable(
+                GradientDrawable.Orientation.TOP_BOTTOM, new int[]{0x2A28354A, 0x1E1C2534});
+        profileNormalBg.setCornerRadius(14 * density);
+        profileNormalBg.setStroke((int) (1.5f * density), 0x2467E8F9);
+
         Runnable updateSidebarSelection = () -> {
             boolean isProfile = (activeTab[0] == TAB_PROFILE);
-            GradientDrawable pcBg = new GradientDrawable(
-                    GradientDrawable.Orientation.TOP_BOTTOM,
-                    isProfile ? new int[]{0x55384B66, 0x3D28354A} : new int[]{0x2A28354A, 0x1E1C2534}
-            );
-            pcBg.setCornerRadius(14 * density);
-            pcBg.setStroke((int) (1.5f * density), isProfile ? 0x9967E8F9 : 0x2467E8F9);
-            profileCard.setBackground(pcBg);
+            profileCard.setBackground(isProfile ? profileSelectedBg : profileNormalBg);
 
             ProfileAvatarHelper.bindAvatar(profileAvatarView, ProfileManager.getActiveProfile(activity), activity);
-            tvProfileName.setText(ProfileManager.getProfileName(activity));
+            String profileName = ProfileManager.getProfileName(activity);
+            if (!profileName.contentEquals(tvProfileName.getText())) tvProfileName.setText(profileName);
 
             for (NavItem item : navItems) {
                 if (item.rowView == null) continue;
                 boolean isSelected = (activeTab[0] == item.tabId);
-                GradientDrawable rbg = new GradientDrawable(
-                        GradientDrawable.Orientation.LEFT_RIGHT,
-                        isSelected ? new int[]{0x3D38BDF8, 0x24818CF8} : new int[]{Color.TRANSPARENT, Color.TRANSPARENT}
-                );
-                rbg.setCornerRadius(12 * density);
-                if (isSelected) rbg.setStroke((int) (1.2f * density), 0x9967E8F9);
-                item.rowView.setBackground(rbg);
+                item.rowView.setBackground(isSelected ? item.bgSelected : item.bgNormal);
             }
         };
 
@@ -349,14 +364,16 @@ public final class ModernSettingsDialog {
                 activeSidebarView[0] = profileCard;
                 activeTab[0] = TAB_PROFILE;
                 updateSidebarSelection.run();
-                if (renderRightPane[0] != null) renderRightPane[0].run();
+                scheduleRenderIfNeeded.run();
             }
-            v.animate()
-                    .scaleX(hasFocus ? 1.02f : 1.0f)
-                    .scaleY(hasFocus ? 1.02f : 1.0f)
-                    .setInterpolator(hasFocus ? new OvershootInterpolator(1.4f) : new DecelerateInterpolator())
-                    .setDuration(hasFocus ? 160 : 100)
-                    .start();
+            if (animateFocus) {
+                v.animate()
+                        .scaleX(hasFocus ? 1.02f : 1.0f)
+                        .scaleY(hasFocus ? 1.02f : 1.0f)
+                        .setInterpolator(hasFocus ? new OvershootInterpolator(1.4f) : new DecelerateInterpolator())
+                        .setDuration(hasFocus ? 160 : 100)
+                        .start();
+            }
         });
 
         profileCard.setOnKeyListener((v, keyCode, event) -> {
@@ -370,6 +387,7 @@ public final class ModernSettingsDialog {
                         return true;
                     }
                 } else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
+                    if (flushTab[0] != null) flushTab[0].run();
                     return focusRightPane(rightContent);
                 }
             }
@@ -411,6 +429,15 @@ public final class ModernSettingsDialog {
             sqLp.setMarginEnd((int) (10 * density));
             row.addView(iconSquircle, sqLp);
 
+            item.bgNormal = new GradientDrawable(
+                    GradientDrawable.Orientation.LEFT_RIGHT, new int[]{Color.TRANSPARENT, Color.TRANSPARENT});
+            item.bgNormal.setCornerRadius(12 * density);
+            item.bgSelected = new GradientDrawable(
+                    GradientDrawable.Orientation.LEFT_RIGHT, new int[]{0x3D38BDF8, 0x24818CF8});
+            item.bgSelected.setCornerRadius(12 * density);
+            item.bgSelected.setStroke((int) (1.2f * density), 0x9967E8F9);
+            row.setBackground(item.bgNormal);
+
             // Label
             TextView lbl = new TextView(activity);
             lbl.setText(item.label);
@@ -424,9 +451,11 @@ public final class ModernSettingsDialog {
                     activeSidebarView[0] = row;
                     activeTab[0] = item.tabId;
                     updateSidebarSelection.run();
-                    if (renderRightPane[0] != null) renderRightPane[0].run();
+                    scheduleRenderIfNeeded.run();
                 }
-                v.animate().scaleX(hasFocus ? 1.015f : 1.0f).scaleY(hasFocus ? 1.015f : 1.0f).setDuration(120).start();
+                if (animateFocus) {
+                    v.animate().scaleX(hasFocus ? 1.015f : 1.0f).scaleY(hasFocus ? 1.015f : 1.0f).setDuration(120).start();
+                }
             });
 
             row.setOnKeyListener((v, keyCode, event) -> {
@@ -435,6 +464,7 @@ public final class ModernSettingsDialog {
                         profileCard.requestFocus();
                         return true;
                     } else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
+                        if (flushTab[0] != null) flushTab[0].run();
                         return focusRightPane(rightContent);
                     }
                 }
@@ -457,8 +487,9 @@ public final class ModernSettingsDialog {
 
         // --- RENDER RIGHT CONTENT PANE ---
         renderRightPane[0] = () -> {
-            rightContent.removeAllViews();
+            if (pendingRender[0] != null) renderHandler.removeCallbacks(pendingRender[0]);
             int tab = activeTab[0];
+            rightContent.removeAllViews();
 
             if (tab == TAB_PROFILE) {
                 // === TAB 0: PROFILES & MULTI-USER MANAGEMENT ===
@@ -547,7 +578,9 @@ public final class ModernSettingsDialog {
                     g.setCornerRadius(12 * density);
                     if (hasFocus) g.setStroke((int) (2f * density), 0xFFFFFFFF);
                     v.setBackground(g);
-                    v.animate().scaleX(hasFocus ? 1.015f : 1.0f).scaleY(hasFocus ? 1.015f : 1.0f).setDuration(120).start();
+                    if (animateFocus) {
+                        v.animate().scaleX(hasFocus ? 1.015f : 1.0f).scaleY(hasFocus ? 1.015f : 1.0f).setDuration(120).start();
+                    }
                 });
 
                 editNameCard.setOnKeyListener((v, keyCode, event) -> {
@@ -637,7 +670,9 @@ public final class ModernSettingsDialog {
                         if (hasFocus) g.setStroke((int) (2f * density), 0xFFFFFFFF);
                         else if (isCur) g.setStroke((int) (1.5f * density), 0x77FFFFFF);
                         v.setBackground(g);
-                        v.animate().scaleX(hasFocus ? 1.015f : 1.0f).scaleY(hasFocus ? 1.015f : 1.0f).setDuration(120).start();
+                        if (animateFocus) {
+                            v.animate().scaleX(hasFocus ? 1.015f : 1.0f).scaleY(hasFocus ? 1.015f : 1.0f).setDuration(120).start();
+                        }
                     });
 
                     pRow.setOnKeyListener((v, keyCode, event) -> {
@@ -1064,6 +1099,16 @@ public final class ModernSettingsDialog {
                         "⚙️ Buka Tetapan Penuh Android TV", "Akses menu tetapan asal pengeluar peranti",
                         () -> activity.startActivity(new Intent(Settings.ACTION_SETTINGS))));
             }
+
+            renderedTab[0] = tab;
+        };
+
+        pendingRender[0] = () -> {
+            if (activeTab[0] != renderedTab[0]) renderRightPane[0].run();
+        };
+        flushTab[0] = () -> {
+            if (pendingRender[0] != null) renderHandler.removeCallbacks(pendingRender[0]);
+            if (activeTab[0] != renderedTab[0]) renderRightPane[0].run();
         };
 
         // Initial render of Tab 0 (Profile)
@@ -1080,6 +1125,7 @@ public final class ModernSettingsDialog {
         dialogHolder[0] = dialog;
         sActiveDialog = new java.lang.ref.WeakReference<>(dialog);
         dialog.setOnDismissListener(d -> {
+            if (pendingRender[0] != null) renderHandler.removeCallbacks(pendingRender[0]);
             sDpadLeftTarget = null;
             if (sActiveDialog != null && sActiveDialog.get() == d) {
                 sActiveDialog = null;
@@ -1111,7 +1157,13 @@ public final class ModernSettingsDialog {
         root.addView(tv);
     }
 
-    private static void applySoapBubbleCardBg(View v, float density, boolean hasFocus) {
+    private static boolean focusAnimations(Context ctx) {
+        if (DevicePerformance.isLowSpec(ctx)) return false;
+        return !ctx.getSharedPreferences("theme_prefs", Context.MODE_PRIVATE)
+                .getBoolean("reduced_motion", false);
+    }
+
+    private static GradientDrawable soapBubbleCardBg(float density, boolean hasFocus) {
         GradientDrawable g = new GradientDrawable(
                 GradientDrawable.Orientation.TOP_BOTTOM,
                 hasFocus ? new int[]{0x5533445C, 0x3D223042} : new int[]{0x2E1E2838, 0x22141B26}
@@ -1122,7 +1174,7 @@ public final class ModernSettingsDialog {
         } else {
             g.setStroke((int) (1f * density), 0x2E67E8F9); // Subtle iridescent rim
         }
-        v.setBackground(g);
+        return g;
     }
 
     private static LinearLayout buildCardRow(Context ctx, float density, Typeface font, String title, String subtitle, Runnable action) {
@@ -1132,7 +1184,10 @@ public final class ModernSettingsDialog {
         card.setFocusable(true);
         card.setClickable(true);
 
-        applySoapBubbleCardBg(card, density, false);
+        GradientDrawable normalBg = soapBubbleCardBg(density, false);
+        GradientDrawable focusBg = soapBubbleCardBg(density, true);
+        card.setBackground(normalBg);
+        final boolean animate = focusAnimations(ctx);
 
         TextView tvTitle = new TextView(ctx);
         tvTitle.setText(title);
@@ -1152,13 +1207,15 @@ public final class ModernSettingsDialog {
         }
 
         card.setOnFocusChangeListener((v, hasFocus) -> {
-            applySoapBubbleCardBg(v, density, hasFocus);
-            v.animate()
-                    .scaleX(hasFocus ? 1.025f : 1.0f)
-                    .scaleY(hasFocus ? 1.025f : 1.0f)
-                    .setInterpolator(hasFocus ? new OvershootInterpolator(1.4f) : new DecelerateInterpolator())
-                    .setDuration(hasFocus ? 160 : 100)
-                    .start();
+            v.setBackground(hasFocus ? focusBg : normalBg);
+            if (animate) {
+                v.animate()
+                        .scaleX(hasFocus ? 1.025f : 1.0f)
+                        .scaleY(hasFocus ? 1.025f : 1.0f)
+                        .setInterpolator(hasFocus ? new OvershootInterpolator(1.4f) : new DecelerateInterpolator())
+                        .setDuration(hasFocus ? 160 : 100)
+                        .start();
+            }
         });
 
         card.setOnKeyListener((v, keyCode, event) -> {
@@ -1189,7 +1246,10 @@ public final class ModernSettingsDialog {
         card.setFocusable(true);
         card.setClickable(true);
 
-        applySoapBubbleCardBg(card, density, false);
+        GradientDrawable normalBg = soapBubbleCardBg(density, false);
+        GradientDrawable focusBg = soapBubbleCardBg(density, true);
+        card.setBackground(normalBg);
+        final boolean animate = focusAnimations(ctx);
 
         LinearLayout textCol = new LinearLayout(ctx);
         textCol.setOrientation(LinearLayout.VERTICAL);
@@ -1236,13 +1296,15 @@ public final class ModernSettingsDialog {
         }
 
         card.setOnFocusChangeListener((v, hasFocus) -> {
-            applySoapBubbleCardBg(v, density, hasFocus);
-            v.animate()
-                    .scaleX(hasFocus ? 1.025f : 1.0f)
-                    .scaleY(hasFocus ? 1.025f : 1.0f)
-                    .setInterpolator(hasFocus ? new OvershootInterpolator(1.4f) : new DecelerateInterpolator())
-                    .setDuration(hasFocus ? 160 : 100)
-                    .start();
+            v.setBackground(hasFocus ? focusBg : normalBg);
+            if (animate) {
+                v.animate()
+                        .scaleX(hasFocus ? 1.025f : 1.0f)
+                        .scaleY(hasFocus ? 1.025f : 1.0f)
+                        .setInterpolator(hasFocus ? new OvershootInterpolator(1.4f) : new DecelerateInterpolator())
+                        .setDuration(hasFocus ? 160 : 100)
+                        .start();
+            }
         });
 
         card.setOnKeyListener((v, keyCode, event) -> {
@@ -1273,7 +1335,10 @@ public final class ModernSettingsDialog {
         card.setFocusable(true);
         card.setClickable(true);
 
-        applySoapBubbleCardBg(card, density, false);
+        GradientDrawable normalBg = soapBubbleCardBg(density, false);
+        GradientDrawable focusBg = soapBubbleCardBg(density, true);
+        card.setBackground(normalBg);
+        final boolean animate = focusAnimations(ctx);
 
         LinearLayout textCol = new LinearLayout(ctx);
         textCol.setOrientation(LinearLayout.VERTICAL);
@@ -1304,13 +1369,15 @@ public final class ModernSettingsDialog {
         card.addView(sw);
 
         card.setOnFocusChangeListener((v, hasFocus) -> {
-            applySoapBubbleCardBg(v, density, hasFocus);
-            v.animate()
-                    .scaleX(hasFocus ? 1.025f : 1.0f)
-                    .scaleY(hasFocus ? 1.025f : 1.0f)
-                    .setInterpolator(hasFocus ? new OvershootInterpolator(1.4f) : new DecelerateInterpolator())
-                    .setDuration(hasFocus ? 160 : 100)
-                    .start();
+            v.setBackground(hasFocus ? focusBg : normalBg);
+            if (animate) {
+                v.animate()
+                        .scaleX(hasFocus ? 1.025f : 1.0f)
+                        .scaleY(hasFocus ? 1.025f : 1.0f)
+                        .setInterpolator(hasFocus ? new OvershootInterpolator(1.4f) : new DecelerateInterpolator())
+                        .setDuration(hasFocus ? 160 : 100)
+                        .start();
+            }
         });
 
         card.setOnKeyListener((v, keyCode, event) -> {
@@ -1522,7 +1589,9 @@ public final class ModernSettingsDialog {
                 g.setCornerRadius(10 * density);
                 if (hasFocus) g.setStroke((int) (2f * density), 0xFFFFFFFF);
                 v.setBackground(g);
-                v.animate().scaleX(hasFocus ? 1.015f : 1.0f).scaleY(hasFocus ? 1.015f : 1.0f).setDuration(120).start();
+                if (focusAnimations(activity)) {
+                    v.animate().scaleX(hasFocus ? 1.015f : 1.0f).scaleY(hasFocus ? 1.015f : 1.0f).setDuration(120).start();
+                }
             });
 
             row.setOnClickListener(v -> {

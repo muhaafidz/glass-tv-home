@@ -76,9 +76,13 @@ public class AvatarThemeManager {
     };
 
     private static String cachedRawJson = null;
+    private static String cachedThemedKey = null;
+    private static String cachedThemedJson = null;
 
     public static synchronized void clearCache() {
         cachedRawJson = null;
+        cachedThemedKey = null;
+        cachedThemedJson = null;
     }
 
     public static int getBgColor(Context context) {
@@ -125,20 +129,25 @@ public class AvatarThemeManager {
 
     /**
      * Builds customized Lottie JSON by dynamically recoloring character bodies
-     * and canvas background. Fast O(N) string replace in ~1.5ms.
+     * and canvas background.
      */
-    public static String buildThemedJson(Context context, int bgColor, int charColor) {
+    public static synchronized String buildThemedJson(Context context, int bgColor, int charColor) {
         String raw = getRawJson(context);
         if (raw == null || raw.isEmpty()) return "";
+
+        String key = String.format(Locale.ROOT, "%08x_%08x", bgColor, charColor);
+        if (key.equals(cachedThemedKey) && cachedThemedJson != null) return cachedThemedJson;
 
         String charHex = String.format(Locale.ROOT, "#%06x", (0xFFFFFF & charColor));
         String bgHex = String.format(Locale.ROOT, "#%06x", (0xFFFFFF & bgColor));
 
-        return raw
+        cachedThemedJson = raw
                 .replace("\"#00a0ff\"", "\"" + charHex + "\"")
                 .replace("\"#00A0FF\"", "\"" + charHex + "\"")
                 .replace("\"#fafafa\"", "\"" + bgHex + "\"")
                 .replace("\"#FAFAFA\"", "\"" + bgHex + "\"");
+        cachedThemedKey = key;
+        return cachedThemedJson;
     }
 
     /**
@@ -161,7 +170,8 @@ public class AvatarThemeManager {
         String cacheKey = String.format(Locale.ROOT, "char_avatar_%08x_%08x_f%d", bgColor, charColor, faceIndex);
         String themedJson = buildThemedJson(context, bgColor, charColor);
 
-        boolean animEnabled = !context.getSharedPreferences("theme_prefs", Context.MODE_PRIVATE)
+        boolean animEnabled = !DevicePerformance.isLowSpec(context)
+                && !context.getSharedPreferences("theme_prefs", Context.MODE_PRIVATE)
                 .getBoolean("reduced_motion", false);
 
         LottieCompositionFactory.fromJsonString(themedJson, cacheKey).addListener(composition -> {

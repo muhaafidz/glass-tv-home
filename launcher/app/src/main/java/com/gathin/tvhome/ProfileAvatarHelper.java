@@ -26,6 +26,8 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Universal helper that binds a UserProfile's avatar (Watak Tunggal Lottie, Animated GIF, or Custom Image)
@@ -34,11 +36,39 @@ import java.net.URL;
 public final class ProfileAvatarHelper {
 
     private static final Handler MAIN_HANDLER = new Handler(Looper.getMainLooper());
+    private static final ExecutorService DECODE_EXECUTOR = Executors.newSingleThreadExecutor(r -> {
+        Thread t = new Thread(r, "avatar-decode");
+        t.setDaemon(true);
+        return t;
+    });
+
+    private static final class BoundAvatar {
+        final String signature;
+
+        BoundAvatar(String signature) {
+            this.signature = signature;
+        }
+    }
 
     private ProfileAvatarHelper() {}
 
+    private static String avatarSignature(ProfileManager.UserProfile profile, Context context) {
+        if (profile == null) return "null";
+        boolean animEnabled = !context.getSharedPreferences("theme_prefs", Context.MODE_PRIVATE)
+                .getBoolean("reduced_motion", false);
+        return profile.id + "|" + profile.avatarType + "|" + profile.avatarPath + "|"
+                + profile.lottieBgColor + "|" + profile.lottieCharColor + "|"
+                + profile.lottieFaceIndex + "|" + animEnabled;
+    }
+
     public static void bindAvatar(ViewGroup container, ProfileManager.UserProfile profile, Context context) {
         if (container == null || context == null) return;
+
+        String signature = avatarSignature(profile, context);
+        Object tag = container.getTag();
+        if (tag instanceof BoundAvatar && ((BoundAvatar) tag).signature.equals(signature)) return;
+        container.setTag(new BoundAvatar(signature));
+
         container.removeAllViews();
 
         container.setOutlineProvider(new ViewOutlineProvider() {
@@ -150,36 +180,51 @@ public final class ProfileAvatarHelper {
     private static void displayLocalFile(ImageView iv, File file) {
         if (iv == null || file == null || !file.exists()) return;
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            try {
-                ImageDecoder.Source src = ImageDecoder.createSource(file);
-                Drawable d = ImageDecoder.decodeDrawable(src);
-                iv.setImageDrawable(d);
-                if (d instanceof AnimatedImageDrawable) {
-                    AnimatedImageDrawable aid = (AnimatedImageDrawable) d;
-                    boolean animEnabled = !DevicePerformance.isLowSpec(iv.getContext());
-                    try {
+        final String token = file.getAbsolutePath() + "|" + file.lastModified() + "|" + file.length();
+        iv.setTag(token);
+
+        DECODE_EXECUTOR.execute(() -> {
+            Drawable drawable = null;
+            Bitmap bitmap = null;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                try {
+                    ImageDecoder.Source src = ImageDecoder.createSource(file);
+                    drawable = ImageDecoder.decodeDrawable(src);
+                } catch (Exception ignored) {}
+            }
+            if (drawable == null) {
+                try {
+                    bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+                } catch (Exception ignored) {}
+            }
+
+            final Drawable decodedDrawable = drawable;
+            final Bitmap decodedBitmap = bitmap;
+            MAIN_HANDLER.post(() -> {
+                if (!token.equals(iv.getTag())) return;
+                if (decodedDrawable != null) {
+                    iv.setImageDrawable(decodedDrawable);
+                    if (decodedDrawable instanceof AnimatedImageDrawable) {
+                        AnimatedImageDrawable aid = (AnimatedImageDrawable) decodedDrawable;
+                        boolean animEnabled = !DevicePerformance.isLowSpec(iv.getContext());
+                        try {
+                            if (animEnabled) {
+                                animEnabled = !iv.getContext().getSharedPreferences("theme_prefs", Context.MODE_PRIVATE)
+                                        .getBoolean("reduced_motion", false);
+                            }
+                        } catch (Exception ignored) {}
+
                         if (animEnabled) {
-                            animEnabled = !iv.getContext().getSharedPreferences("theme_prefs", Context.MODE_PRIVATE)
-                                    .getBoolean("reduced_motion", false);
+                            aid.setRepeatCount(AnimatedImageDrawable.REPEAT_INFINITE);
+                            aid.start();
+                        } else {
+                            aid.stop();
                         }
-                    } catch (Exception ignored) {}
-
-                    if (animEnabled) {
-                        aid.setRepeatCount(AnimatedImageDrawable.REPEAT_INFINITE);
-                        aid.start();
-                    } else {
-                        aid.stop();
                     }
+                } else if (decodedBitmap != null) {
+                    iv.setImageBitmap(decodedBitmap);
                 }
-                return;
-            } catch (Exception ignored) {}
-        }
-
-        // Fallback static bitmap
-        try {
-            Bitmap bmp = BitmapFactory.decodeFile(file.getAbsolutePath());
-            if (bmp != null) iv.setImageBitmap(bmp);
-        } catch (Exception ignored) {}
+            });
+        });
     }
 }
