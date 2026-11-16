@@ -37,14 +37,14 @@ public class AddProfileDialog {
         TextView tvTitle = new TextView(context);
         tvTitle.setText("＋ Tambah Profil Baharu");
         tvTitle.setTextSize(21);
-        tvTitle.setTextColor(0xFFFFFFFF);
+        tvTitle.setTextColor(Design.TEXT);
         tvTitle.setTypeface(context.getResources().getFont(R.font.outfit), android.graphics.Typeface.BOLD);
         root.addView(tvTitle);
 
         TextView tvSub = new TextView(context);
         tvSub.setText("Cipta profil untuk ahli keluarga atau mod kanak-kanak");
         tvSub.setTextSize(13);
-        tvSub.setTextColor(0xFF98A2B3);
+        tvSub.setTextColor(Design.TEXT_MUTED);
         tvSub.setPadding(0, (int) (3 * density), 0, (int) (18 * density));
         root.addView(tvSub);
 
@@ -52,22 +52,22 @@ public class AddProfileDialog {
         TextView tvNameLabel = new TextView(context);
         tvNameLabel.setText("NAMA PROFIL");
         tvNameLabel.setTextSize(11.5f);
-        tvNameLabel.setTextColor(0xFF2EF2C0);
+        tvNameLabel.setTextColor(Design.ACCENT);
         tvNameLabel.setTypeface(context.getResources().getFont(R.font.outfit), android.graphics.Typeface.BOLD);
         root.addView(tvNameLabel);
 
         EditText etName = new EditText(context);
         etName.setHint("Masukkan nama profil...");
-        etName.setHintTextColor(0xFF98A2B3);
-        etName.setTextColor(0xFFFFFFFF);
+        etName.setHintTextColor(Design.TEXT_MUTED);
+        etName.setTextColor(Design.TEXT);
         etName.setTextSize(15);
         etName.setSingleLine(true);
         etName.setPadding((int) (14 * density), (int) (10 * density), (int) (14 * density), (int) (10 * density));
 
         GradientDrawable etBg = new GradientDrawable();
-        etBg.setColor(0x22FFFFFF);
+        etBg.setColor(Design.ink(0x22));
         etBg.setCornerRadius(12 * density);
-        etBg.setStroke((int) (1.2f * density), 0x33FFFFFF);
+        etBg.setStroke((int) (1.2f * density), Design.ink(0x33));
         etName.setBackground(etBg);
 
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -78,7 +78,7 @@ public class AddProfileDialog {
         // Child mode checkbox
         CheckBox cbChild = new CheckBox(context);
         cbChild.setText("Jadikan Profil Kanak-kanak (Sekat aplikasi dewasa)");
-        cbChild.setTextColor(0xFFF5F7FA);
+        cbChild.setTextColor(Design.TEXT);
         cbChild.setTextSize(13.5f);
         cbChild.setPadding((int) (6 * density), 0, 0, (int) (18 * density));
         root.addView(cbChild);
@@ -90,12 +90,12 @@ public class AddProfileDialog {
 
         Button btnCancel = new Button(context, null, android.R.attr.borderlessButtonStyle);
         btnCancel.setText("Batal");
-        btnCancel.setTextColor(0xFF98A2B3);
+        btnCancel.setTextColor(Design.TEXT_MUTED);
         actionsRow.addView(btnCancel);
 
         Button btnAdd = new Button(context);
         btnAdd.setText("Tambah Profil");
-        btnAdd.setTextColor(0xFFFFFFFF);
+        btnAdd.setTextColor(Design.TEXT);
         btnAdd.setTextSize(13.5f);
         btnAdd.setBackgroundResource(R.drawable.bg_dialog_btn);
         btnAdd.setPadding((int) (22 * density), 0, (int) (22 * density), 0);

@@ -40,11 +40,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:fontFamily="@font/outfit"
-                android:fontVariationSettings="'wght' 700"
+                android:textFontWeight="700"
                 android:letterSpacing="0.08"
                 android:text="KHUTBAH MINBAR"
                 android:textAllCaps="true"
-                android:textColor="@color/sinar_accent"
+                android:textColor="?attr/tnAccent"
                 android:textSize="10.5sp" />
         </LinearLayout>
 
@@ -55,11 +55,11 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:fontFamily="@font/outfit"
-            android:fontVariationSettings="'wght' 700"
+            android:textFontWeight="700"
             android:lineSpacingExtra="2dp"
             android:maxLines="3"
             android:ellipsize="end"
-            android:textColor="#FFFFFFFF"
+            android:textColor="?attr/tnText"
             android:textSize="15.5sp" />
 
         <!-- Meta Badge (Date / Zone / Reference) -->
@@ -70,12 +70,12 @@
             android:layout_marginTop="8dp"
             android:background="@drawable/bg_warning_time_pill"
             android:fontFamily="@font/outfit"
-            android:fontVariationSettings="'wght' 500"
+            android:textFontWeight="500"
             android:paddingStart="10dp"
             android:paddingTop="4dp"
             android:paddingEnd="10dp"
             android:paddingBottom="4dp"
-            android:textColor="#E6FFFFFF"
+            android:textColor="?attr/tnMuted"
             android:textSize="11sp" />
 
         <!-- Source / Authority -->
@@ -85,8 +85,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
             android:fontFamily="@font/outfit"
-            android:fontVariationSettings="'wght' 400"
-            android:textColor="#80FFFFFF"
+            android:textFontWeight="400"
+            android:textColor="?attr/tnMuted"
             android:textSize="10sp" />
 
         <View
@@ -106,7 +106,7 @@
             android:paddingTop="9dp"
             android:paddingBottom="9dp"
             android:fontFamily="@font/outfit"
-            android:fontVariationSettings="'wght' 700"
+            android:textFontWeight="700"
             android:text="🔁 Tukar Paparan"
             android:textColor="@color/selector_dlg_btn_cyan_text"
             android:textSize="12sp" />
@@ -123,9 +123,9 @@
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
             android:fontFamily="@font/outfit"
-            android:fontVariationSettings="'wght' 600"
+            android:textFontWeight="500"
             android:text="📑 Pilihan Kandungan..."
-            android:textColor="#E6FFFFFF"
+            android:textColor="?attr/tnMuted"
             android:textSize="11.5sp" />
 
         <TextView
@@ -140,9 +140,9 @@
             android:paddingTop="6dp"
             android:paddingBottom="6dp"
             android:fontFamily="@font/outfit"
-            android:fontVariationSettings="'wght' 500"
+            android:textFontWeight="500"
             android:text="Tutup"
-            android:textColor="#B3FFFFFF"
+            android:textColor="?attr/tnMuted"
             android:textSize="11sp" />
     </LinearLayout>
 
@@ -173,11 +173,11 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:fontFamily="@font/outfit"
-                android:fontVariationSettings="'wght' 700"
+                android:textFontWeight="700"
                 android:letterSpacing="0.08"
                 android:text="KANDUNGAN PENUH"
                 android:textAllCaps="true"
-                android:textColor="#80FFFFFF"
+                android:textColor="?attr/tnMuted"
                 android:textSize="10.5sp" />
 
             <TextView
@@ -189,10 +189,10 @@
                 android:focusable="true"
                 android:gravity="center"
                 android:text="✕"
-                android:textColor="#CCFFFFFF"
+                android:textColor="?attr/tnMuted"
                 android:textSize="13sp"
                 android:fontFamily="@font/outfit"
-                android:fontVariationSettings="'wght' 700"
+                android:textFontWeight="700"
                 android:contentDescription="Tutup" />
         </LinearLayout>
 
@@ -220,7 +220,7 @@
                     android:gravity="end"
                     android:textDirection="rtl"
                     android:lineSpacingExtra="4dp"
-                    android:textColor="@color/sinar_amber"
+                    android:textColor="?attr/tnAmber"
                     android:textSize="16sp"
                     android:visibility="gone" />
 
@@ -230,8 +230,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/outfit"
-                    android:fontVariationSettings="'wght' 700"
-                    android:textColor="@color/sinar_accent"
+                    android:textFontWeight="700"
+                    android:textColor="?attr/tnAccent"
                     android:textSize="12.5sp"
                     android:lineSpacingExtra="2dp"
                     android:visibility="gone" />
@@ -243,10 +243,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:fontFamily="@font/outfit"
-                    android:fontVariationSettings="'wght' 400"
+                    android:textFontWeight="400"
                     android:lineSpacingMultiplier="1.35"
                     android:justificationMode="inter_word"
-                    android:textColor="@color/sinar_text"
+                    android:textColor="?attr/tnText"
                     android:textSize="12.5sp" />
             </LinearLayout>
         </ScrollView>

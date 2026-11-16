@@ -135,13 +135,13 @@ public class RecentAppsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 ivCardIcon.setImageDrawable(item.icon);
             }
 
-            int brand = 0xFF2EF2C0;
+            int brand = Design.ACCENT;
             String p = item.packageName.toLowerCase(Locale.US);
-            if (p.contains(".tv") || p.contains("livetv")) brand = 0xFFFF6B6B;
-            else if (p.contains("file") || p.contains("explorer")) brand = 0xFFFFB84D;
-            else if (p.contains("netflix") || p.contains("prime")) brand = 0xFFFF6B6B;
-            else if (p.contains("youtube")) brand = 0xFFFF6B6B;
-            else if (p.contains("play")) brand = 0xFF4DD8FF;
+            if (p.contains(".tv") || p.contains("livetv")) brand = Design.CORAL;
+            else if (p.contains("file") || p.contains("explorer")) brand = Design.AMBER;
+            else if (p.contains("netflix") || p.contains("prime")) brand = Design.CORAL;
+            else if (p.contains("youtube")) brand = Design.CORAL;
+            else if (p.contains("play")) brand = Design.CYAN;
 
             float density = itemView.getResources().getDisplayMetrics().density;
             GradientDrawable cardBg = new GradientDrawable();
@@ -166,13 +166,13 @@ public class RecentAppsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     v.setBackground(cardFocus);
                     v.animate().scaleX(1.06f).scaleY(1.06f).setDuration(160).start();
                     topPill.setBackgroundResource(R.drawable.bg_app_pill_focused);
-                    tvAppLabel.setTextColor(0xFF06120E);
+                    tvAppLabel.setTextColor(Design.ON_ACCENT);
                 } else {
                     itemView.setTranslationZ(0f);
                     v.setBackground(cardBg);
                     v.animate().scaleX(0.94f).scaleY(0.94f).setDuration(160).start();
                     topPill.setBackgroundResource(R.drawable.bg_app_pill_unfocused);
-                    tvAppLabel.setTextColor(0xFFFFFFFF);
+                    tvAppLabel.setTextColor(Design.TEXT);
                 }
             });
 

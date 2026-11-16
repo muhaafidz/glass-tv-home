@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The next prayer's cell: a faint top-lit fill and an accent outline. Its glow breathes (alpha only). -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <corners android:radius="12dp" />
+            <solid android:color="?attr/tnAccentSoft" />
+            <stroke android:width="1.5dp" android:color="?attr/tnAccent" />
+        </shape>
+    </item>
+</layer-list>

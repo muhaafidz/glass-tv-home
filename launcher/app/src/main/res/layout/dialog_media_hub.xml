@@ -32,10 +32,10 @@
             android:layout_weight="1"
             android:layout_marginStart="10dp"
             android:text="NOW PLAYING"
-            android:textColor="#FFFFFFFF"
+            android:textColor="?attr/tnText"
             android:textSize="15sp"
             android:fontFamily="@font/outfit"
-            android:fontVariationSettings="'wght' 700"
+            android:textFontWeight="700"
             android:textStyle="bold"
             android:letterSpacing="0.08" />
 
@@ -51,7 +51,7 @@
             android:textColor="#1DB954"
             android:textSize="12sp"
             android:fontFamily="@font/outfit"
-            android:fontVariationSettings="'wght' 700"
+            android:textFontWeight="700"
             android:textStyle="bold"
             android:letterSpacing="0.04" />
     </LinearLayout>
@@ -80,10 +80,10 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="Lagu Dimainkan"
-        android:textColor="#FFFFFFFF"
+        android:textColor="?attr/tnText"
         android:textSize="20sp"
         android:fontFamily="@font/outfit"
-        android:fontVariationSettings="'wght' 700"
+        android:textFontWeight="700"
         android:textStyle="bold"
         android:singleLine="true"
         android:ellipsize="marquee"
@@ -97,10 +97,10 @@
         android:layout_marginTop="4dp"
         android:gravity="center"
         android:text="Artis"
-        android:textColor="#B3FFFFFF"
+        android:textColor="?attr/tnMuted"
         android:textSize="14sp"
         android:fontFamily="@font/outfit"
-        android:fontVariationSettings="'wght' 500"
+        android:textFontWeight="500"
         android:singleLine="true" />
 
     <!-- Playback Status Capsule -->
@@ -114,7 +114,7 @@
         android:textColor="#1DB954"
         android:textSize="12sp"
         android:fontFamily="@font/outfit"
-        android:fontVariationSettings="'wght' 600"
+        android:textFontWeight="500"
         android:letterSpacing="0.04" />
 
     <!-- Frosted Glass Player Controls: Prev, Play/Pause, Next -->
@@ -189,7 +189,7 @@
             android:textColor="@drawable/dialog_btn_text"
             android:textSize="13sp"
             android:fontFamily="@font/outfit"
-            android:fontVariationSettings="'wght' 600"
+            android:textFontWeight="500"
             android:gravity="center"
             android:focusable="true"
             android:clickable="true"
@@ -207,7 +207,7 @@
             android:textColor="@drawable/dialog_btn_text"
             android:textSize="13sp"
             android:fontFamily="@font/outfit"
-            android:fontVariationSettings="'wght' 600"
+            android:textFontWeight="500"
             android:gravity="center"
             android:focusable="true"
             android:clickable="true"

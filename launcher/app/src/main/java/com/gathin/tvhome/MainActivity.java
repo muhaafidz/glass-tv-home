@@ -140,6 +140,9 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     private DockDecoration tray;
     private FrameLayout root;
     private View ambient;
+    /** The Tenang background (docs/REVAMP.md P4), shown when the wallpaper category is Tenang. */
+    private AmbientView ambientView;
+    static final String TENANG_CATEGORY = "Tenang";
     /** The focus: one dark shape gliding between tiles and pills (see Glider). */
     private Glider glider;
     /** Whether the glider is on the top menu, so a move down travels dark. */
@@ -186,6 +189,10 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     private View btnCandyBox;
     private View badgeSettingsUpdate;
     private TextView ampmView, dateView;
+    /** Tenang home (docs/REVAMP.md P2): greeting, IPU chip, prayer countdown. */
+    private TextView greetingView, aqiChipView, prayerPrevView, prayerNextInView;
+    private View prayerBarFill, prayerNextCell;
+    private ObjectAnimator prayerGlowAnimator;
     private TextView shamsiDate;
     private TextView prayerTimesView;
     private TextView weatherAirQualityView;
@@ -226,6 +233,11 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     private boolean moduleCards;
     /** Calmer motion for weak GPUs (config.xml, reduced_motion): stiff spring, short fades, no replay. */
     private boolean reducedMotion;
+    /** The Tenang palette this activity was created with; a different one means recreate (see paletteCheck). */
+    private String appliedPalette;
+    private boolean paletteSwitching;
+    /** Set just before a palette recreate, so the new Home fades in instead of popping. */
+    private static boolean sFadeInAfterPaletteSwitch;
     /** hidden_apps as the adapter sees them (config.xml or a theme's config.json): a hidden app gets no card either. */
     private Set<String> hiddenApps = Collections.emptySet();
     private List<Cards.Card> cards = Collections.emptyList();
@@ -334,6 +346,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             refreshOnlineWallpapersIfDue();
             checkInactivity();
             handler.postDelayed(this, MINUTE_MS);
+            paletteCheck(false);
         }
     };
 
@@ -483,9 +496,17 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        appliedPalette = Tenang.apply(this);
         sInstance = new java.lang.ref.WeakReference<>(this);
         SoundEffects.init(this);
         setContentView(R.layout.activity_main);
+        if (sFadeInAfterPaletteSwitch) {
+            sFadeInAfterPaletteSwitch = false;
+            View content = findViewById(android.R.id.content);
+            content.setAlpha(0f);
+            content.animate().alpha(1f).setDuration(450).setStartDelay(60)
+                    .setInterpolator(new android.view.animation.PathInterpolator(0.22f, 1f, 0.36f, 1f)).start();
+        }
         density = getResources().getDisplayMetrics().density;
         // config.xml, overlaid by config.json from a pushed theme (see Config and tools/theme.sh).
         Config cfg = Config.load(this);
@@ -507,7 +528,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         if (Math.abs(launch.getLong("boot_at", 0) - bootAt) < 60_000) tilesAnimatedOnce = true;
         else launch.edit().putLong("boot_at", bootAt).apply();
         ensureSystemScreensaverAndSleepSettings();
-        root.setBackgroundColor(cfg.backgroundColor);
+        root.setBackgroundColor(cfg.backgroundColor != 0 ? cfg.backgroundColor : Design.BG1);
         config = cfg;
         wallpapers = cfg.wallpapers;
         wallpaperIntervalMs = getWallpaperIntervalMs();
@@ -524,7 +545,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         if (heroName != null) heroName.setMaxWidth(heroNameMaxWidth);
         if (heroDesc != null) heroDesc.setMaxWidth(heroMaxWidth);
 
-        String activeCat = getSharedPreferences("wallpaper_prefs", MODE_PRIVATE).getString("active_category", "Malaysia");
+        String activeCat = getSharedPreferences("wallpaper_prefs", MODE_PRIVATE).getString("active_category", TENANG_CATEGORY);
         if ("Custom".equalsIgnoreCase(activeCat)) {
             placesMode = false;
             File customDir = new File(getFilesDir(), "custom_wallpapers");
@@ -551,6 +572,11 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             // previously cached online category or start a network refresh in the background.
             placesMode = false;
             if (wallpapers.isEmpty()) wallpapers = Collections.singletonList(cfg.wallpaper);
+        } else if (TENANG_CATEGORY.equalsIgnoreCase(activeCat)) {
+            // The calm canvas: no pictures, nothing downloaded.
+            placesMode = false;
+            wallpapers = Collections.emptyList();
+            showAmbient(true);
         } else {
             placesMode = false;
             List<File> catFiles = OnlineWallpapers.listByCategory(this, activeCat);
@@ -584,6 +610,11 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         });
         ampmView = findViewById(R.id.ampm);
         dateView = findViewById(R.id.date);
+        greetingView = findViewById(R.id.greeting);
+        aqiChipView = findViewById(R.id.aqiChip);
+        prayerPrevView = findViewById(R.id.prayerPrev);
+        prayerNextInView = findViewById(R.id.prayerNextIn);
+        prayerBarFill = findViewById(R.id.prayerBarFill);
         updateDateAndPeriod();
         weatherAirQualityView = findViewById(R.id.weatherAirQuality);
         if (weatherAirQualityView != null) {
@@ -814,7 +845,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             timeIsyak = findViewById(R.id.timeIsyak);
 
             islamicShelf.addOnLayoutChangeListener((v, l, t, r, b, ol, ot, orr, ob) -> {
-                if (infoRailBottom > 0) v.setY(infoRailBottom - v.getHeight());
+                if (infoRailBottom > 0) v.setY(infoRailTop(v.getHeight()));
             });
             updateIslamicShelf();
         }
@@ -918,6 +949,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         // the animation arms it for the grid's first draw, so on any later fresh start (Android
         // closing Home while an app was open) it is not set at all: armed, it drew the dock's tray
         // empty while the apps faded in.
+        if (!tilesAnimatedOnce && !reducedMotion) playHeaderEntrance();
         if (!tilesAnimatedOnce) {
             int enterAnim = reducedMotion ? R.anim.tile_enter_reduced : R.anim.tile_enter;
             float enterDelay = reducedMotion ? 0f : 0.06f;
@@ -1197,6 +1229,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     /** Puts a picture behind everything, cross-fading from the previous one when asked. */
     private void setWallpaper(android.graphics.Bitmap bmp, boolean fade) {
         if (bmp == null) return;
+        if (ambientView != null) showAmbient(false);
         if (wallView == null) {
             wallView = new android.widget.ImageView(this);
             wallView.setScaleType(android.widget.ImageView.ScaleType.CENTER_CROP);
@@ -1448,9 +1481,75 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         super.onStop();
     }
 
+    /** Shows (or removes) the Tenang background under everything; pictures and it never stack. */
+    private void showAmbient(boolean on) {
+        if (on) {
+            if (ambientView == null) {
+                ambientView = new AmbientView(this);
+                root.addView(ambientView, 0, new FrameLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            }
+            if (wallView != null) {
+                wallView.setImageDrawable(null);
+                wallView.setVisibility(View.GONE);
+            }
+            wallBitmap = null;
+            if (hasWindowFocus()) ambientView.start(reducedMotion);
+        } else if (ambientView != null) {
+            ambientView.stop();
+            root.removeView(ambientView);
+            ambientView = null;
+            if (wallView != null) wallView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    /**
+     * Tenang entrance, once per TV boot like the tiles': the clock, the top buttons and the info row
+     * rise 11 dp and fade in, staggered (docs/REVAMP.md §3.4). Translation and alpha only.
+     */
+    private void playHeaderEntrance() {
+        int[] ids = {R.id.leftBlock, R.id.topButtons, R.id.weatherRow};
+        long[] delays = {0, 80, 180};
+        android.view.animation.PathInterpolator ease = new android.view.animation.PathInterpolator(0.22f, 1f, 0.36f, 1f);
+        for (int i = 0; i < ids.length; i++) {
+            View v = findViewById(ids[i]);
+            if (v == null) continue;
+            v.setAlpha(0f);
+            v.setTranslationY(11 * density);
+            v.animate().alpha(1f).translationY(0f).setStartDelay(delays[i]).setDuration(900)
+                    .setInterpolator(ease).start();
+        }
+    }
+
+    /**
+     * Recreates Home behind a short fade when the Tenang palette due now differs from the one on
+     * screen (Auto crossing Asar or Isyak, or the setting changed). Skipped while a dialog has focus.
+     * Returns true when a switch started.
+     */
+    private boolean paletteCheck(boolean fromResume) {
+        if (paletteSwitching || appliedPalette == null || isFinishing()) return false;
+        // On the minute tick, only switch while Home itself has focus: no dialog, menu or other app.
+        if (!fromResume && !hasWindowFocus()) return false;
+        String due = Tenang.current(this);
+        if (due.equals(appliedPalette)) return false;
+        paletteSwitching = true;
+        sFadeInAfterPaletteSwitch = !reducedMotion;
+        View content = findViewById(android.R.id.content);
+        if (content == null || reducedMotion) {
+            recreate();
+            return true;
+        }
+        content.animate().alpha(0f).setDuration(450)
+                .setInterpolator(new android.view.animation.PathInterpolator(0.22f, 1f, 0.36f, 1f))
+                .withEndAction(this::recreate).start();
+        return true;
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
+        Design.load(this);   // another screen (weather, azan) may have loaded its own palette meanwhile
+        paletteCheck(true);   // never returns early: onPause expects what onResume registers
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             registerReceiver(packageReceiver, packageFilter, Context.RECEIVER_NOT_EXPORTED);
         } else {
@@ -1580,6 +1679,12 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     @Override
     protected void onPause() {
         super.onPause();
+        if (ambientView != null) ambientView.stop();
+        if (prayerGlowAnimator != null) {   // nothing animates while another app is in front
+            prayerGlowAnimator.cancel();
+            prayerGlowAnimator = null;
+        }
+        prayerNextCell = null;   // so onResume puts the outline and its breathing back
         if (btnCandyBox instanceof FrameLayout) {
             FrameLayout fb = (FrameLayout) btnCandyBox;
             for (int i = 0; i < fb.getChildCount(); i++) {
@@ -1608,6 +1713,12 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) showCardPrompt();
+        // The canvas drifts only while Home itself has focus: a dialog, menu or app over it pauses it.
+        if (hasFocus) paletteCheck(false);   // e.g. the theme was changed in Settings, now closed
+        if (ambientView != null) {
+            if (hasFocus && !screensaverActive) ambientView.start(reducedMotion);
+            else ambientView.stop();
+        }
     }
 
     /**
@@ -1623,6 +1734,11 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     protected void onDestroy() {
         super.onDestroy();
         stopWarningAnimation();
+        if (prayerGlowAnimator != null) {   // nothing animates while another app is in front
+            prayerGlowAnimator.cancel();
+            prayerGlowAnimator = null;
+        }
+        prayerNextCell = null;   // so the next resume puts the outline and its breathing back
         if (sInstance != null && sInstance.get() == this) {
             sInstance = null;
         }
@@ -1802,7 +1918,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         infoRailBottom = dockTopInRoot - INFO_RAIL_GAP_DP * density;
 
         if (islamicShelf != null) {
-            float iy = infoRailBottom - islamicShelf.getHeight();
+            float iy = infoRailTop(islamicShelf.getHeight());
             islamicShelf.setY(iy);
             islamicShelf.animate().cancel();
             if (!heroShown) {
@@ -2110,7 +2226,27 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         Rect r = new Rect(0, 0, card.getWidth(), card.getHeight());
         root.offsetDescendantRectToMyCoords(card, r);
         infoRailBottom = r.top - INFO_RAIL_GAP_DP * density;
-        islamicShelf.setY(infoRailBottom - islamicShelf.getHeight());
+        islamicShelf.setY(infoRailTop(islamicShelf.getHeight()));
+    }
+
+    /**
+     * Tenang: the information rail sits in the middle of the free space between the info chips (or
+     * the now-playing card) and the dock, so the gap above it matches the gap below, at least 18 dp
+     * each. Hanging it a fixed distance above the dock left it pressed against the chips once the
+     * clock grew.
+     */
+    private float infoRailTop(int railHeight) {
+        float dockTop = infoRailBottom + INFO_RAIL_GAP_DP * density;
+        float minGap = 18 * density;
+        View above = nowPlayingCard != null && nowPlayingCard.getVisibility() == View.VISIBLE
+                ? nowPlayingCard : findViewById(R.id.weatherRow);
+        if (above == null || above.getHeight() == 0) return infoRailBottom - railHeight;
+        Rect a = new Rect(0, 0, above.getWidth(), above.getHeight());
+        root.offsetDescendantRectToMyCoords(above, a);
+        float free = dockTop - a.bottom - railHeight;
+        float gap = Math.max(minGap, free / 2f);
+        // Never into the dock: when space is short the rail keeps its minimum gap below instead.
+        return Math.min(a.bottom + gap, dockTop - minGap - railHeight);
     }
 
     /**
@@ -2181,7 +2317,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         paint.setShader(new RadialGradient(
                 w * 0.32f, h * 0.42f, w * 0.62f,
-                new int[]{0x5CFFFFFF, 0x26FFFFFF, 0x00FFFFFF},
+                new int[]{Design.ink(0x5C), Design.ink(0x26), 0x00FFFFFF},
                 new float[]{0f, 0.45f, 1f},
                 Shader.TileMode.CLAMP));
         new Canvas(bmp).drawRect(0, 0, w, h, paint);
@@ -2610,20 +2746,37 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             weatherAirQualityView.setText(WeatherAirQuality.getFormatted(this));
             return;
         }
-        String sep = line.weather.isEmpty() || line.api.isEmpty() ? "" : "     ·     ";
-        android.text.SpannableString text = new android.text.SpannableString(line.weather + sep + line.api);
-        if (!line.api.isEmpty()) {
-            text.setSpan(new android.text.style.ForegroundColorSpan(line.apiColor), text.length() - line.api.length(),
-                    text.length(), android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        // Tenang: weather and air quality are two chips; the IPU chip carries a status dot in the API colour.
+        if (aqiChipView != null) {
+            weatherAirQualityView.setText(line.weather.isEmpty() ? line.api : line.weather);
+            if (!line.weather.isEmpty() && !line.api.isEmpty()) {
+                aqiChipView.setText(line.api);
+                Drawable dot = getDrawable(R.drawable.tn_dot).mutate();
+                dot.setTint(line.apiColor);
+                int dotPx = Math.round(7 * density);
+                dot.setBounds(0, 0, dotPx, dotPx);
+                aqiChipView.setCompoundDrawables(dot, null, null, null);
+                aqiChipView.setCompoundDrawablePadding(Math.round(7 * density));
+                aqiChipView.setVisibility(View.VISIBLE);
+            } else {
+                aqiChipView.setVisibility(View.GONE);
+            }
+        } else {
+            String sep = line.weather.isEmpty() || line.api.isEmpty() ? "" : "     ·     ";
+            android.text.SpannableString text = new android.text.SpannableString(line.weather + sep + line.api);
+            if (!line.api.isEmpty()) {
+                text.setSpan(new android.text.style.ForegroundColorSpan(line.apiColor), text.length() - line.api.length(),
+                        text.length(), android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+            weatherAirQualityView.setText(text);
         }
-        weatherAirQualityView.setText(text);
         if (line.icon != 0) {
             Drawable d = getDrawable(line.icon);
-            int px = Math.round(20 * density);
+            int px = Math.round(17 * density);
             int yOffset = 0;
             d.setBounds(0, yOffset, px, px + yOffset);
             weatherAirQualityView.setCompoundDrawables(d, null, null, null);
-            weatherAirQualityView.setCompoundDrawablePadding(Math.round(8 * density));
+            weatherAirQualityView.setCompoundDrawablePadding(Math.round(7 * density));
         } else {
             weatherAirQualityView.setCompoundDrawables(null, null, null, null);
         }
@@ -2798,12 +2951,13 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             weatherWarningIcon.setAlpha(1.0f);
             return;
         }
-        PropertyValuesHolder pvhX = PropertyValuesHolder.ofFloat(View.SCALE_X, 1.0f, 1.25f);
-        PropertyValuesHolder pvhY = PropertyValuesHolder.ofFloat(View.SCALE_Y, 1.0f, 1.25f);
-        PropertyValuesHolder pvhAlpha = PropertyValuesHolder.ofFloat(View.ALPHA, 1.0f, 0.65f);
+        // Tenang: the warning dot breathes slowly (3.2 s a cycle) rather than pulsing.
+        PropertyValuesHolder pvhX = PropertyValuesHolder.ofFloat(View.SCALE_X, 1.0f, 0.8f);
+        PropertyValuesHolder pvhY = PropertyValuesHolder.ofFloat(View.SCALE_Y, 1.0f, 0.8f);
+        PropertyValuesHolder pvhAlpha = PropertyValuesHolder.ofFloat(View.ALPHA, 1.0f, 0.35f);
 
         warningIconAnimator = ObjectAnimator.ofPropertyValuesHolder(weatherWarningIcon, pvhX, pvhY, pvhAlpha);
-        warningIconAnimator.setDuration(850);
+        warningIconAnimator.setDuration(1600);
         warningIconAnimator.setRepeatMode(ValueAnimator.REVERSE);
         warningIconAnimator.setRepeatCount(ValueAnimator.INFINITE);
         warningIconAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
@@ -3047,28 +3201,64 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             TextView[] times = {timeSubuh, timeSyuruk, timeZohor, timeAsar, timeMaghrib, timeIsyak};
             Typeface prayerFont = getResources().getFont(R.font.outfit);
 
+            View nextCell = null;
             for (int i = 0; i < 6; i++) {
                 if (times[i] != null) times[i].setText(items[i].timeStr);
                 if (labels[i] != null) {
                     labels[i].setText(items[i].name);
-                    if (items[i].isNext) {
-                        labels[i].setTextColor(Design.ACCENT);
-                        labels[i].setTypeface(prayerFont, Typeface.BOLD);
-                        if (times[i] != null) {
-                            times[i].setTextColor(Design.ACCENT);
-                            times[i].setTypeface(prayerFont, Typeface.BOLD);
-                        }
-                    } else {
-                        labels[i].setTextColor(Design.TEXT_MUTED);
-                        labels[i].setTypeface(prayerFont, Typeface.NORMAL);
-                        if (times[i] != null) {
-                            times[i].setTextColor(Design.TEXT);
-                            times[i].setTypeface(prayerFont, Typeface.NORMAL);
-                        }
+                    boolean next = items[i].isNext;
+                    labels[i].setTextColor(next ? Design.ACCENT : Design.TEXT_MUTED);
+                    labels[i].setTypeface(prayerFont);
+                    Fonts.weight(labels[i], next ? 500 : 400);
+                    if (times[i] != null) {
+                        times[i].setTextColor(Design.TEXT);
+                        times[i].setTypeface(prayerFont);
+                        Fonts.weight(times[i], next ? 400 : 300);
                     }
+                    View cell = (View) labels[i].getParent();
+                    if (next) nextCell = cell;
+                    else cell.setBackground(null);
                 }
             }
+            showPrayerNext(nextCell);
+            updatePrayerCountdown();
         }
+    }
+
+    /** Outlines the next prayer's cell; its outline breathes slowly unless motion is reduced. */
+    private void showPrayerNext(View cell) {
+        if (cell == prayerNextCell && cell != null && cell.getBackground() != null) return;
+        if (prayerGlowAnimator != null) {
+            prayerGlowAnimator.cancel();
+            prayerGlowAnimator = null;
+        }
+        prayerNextCell = cell;
+        if (cell == null) return;
+        Drawable glow = getDrawable(R.drawable.tn_prayer_next).mutate();
+        cell.setBackground(glow);
+        if (isAnimationsEnabled()) {
+            prayerGlowAnimator = ObjectAnimator.ofInt(glow, "alpha", 255, 90);
+            prayerGlowAnimator.setDuration(2000);
+            prayerGlowAnimator.setRepeatMode(ValueAnimator.REVERSE);
+            prayerGlowAnimator.setRepeatCount(ValueAnimator.INFINITE);
+            prayerGlowAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
+            prayerGlowAnimator.start();
+        }
+    }
+
+    /** "Isyak ━━━━━ Subuh dalam 5j 36m": the previous prayer, a progress bar and time left to the next. */
+    private void updatePrayerCountdown() {
+        if (prayerNextInView == null || prayerBarFill == null) return;
+        long[] t = PrayerTimes.todayTimes(this);
+        if (t == null || t.length < 6) return;
+        long now = System.currentTimeMillis();
+        long[] w = HomeText.window(t, now);
+        String[] names = AppLanguage.getPrayerNames(this);
+        String lang = AppLanguage.getLanguage(this);
+        long minutes = (w[3] - now + 59_999) / 60_000;
+        if (prayerPrevView != null) prayerPrevView.setText(names[(int) w[0]]);
+        prayerNextInView.setText(HomeText.nextIn(lang, names[(int) w[1]], minutes));
+        prayerBarFill.setScaleX(HomeText.progress(w[2], w[3], now));
     }
 
     void updateAyah() {
@@ -3112,12 +3302,12 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             ayahArabic.setMaxLines(2);
             ayahArabic.setEllipsize(TextUtils.TruncateAt.END);
             ayahArabic.setTextDirection(View.TEXT_DIRECTION_RTL);
-            ayahArabic.setGravity(Gravity.END);
+            ayahArabic.setGravity(Gravity.RIGHT);   // Arabic sits on the right edge; END would mean left in RTL
             ayahArabic.setIncludeFontPadding(false);
             try {
                 ayahArabic.setTypeface(androidx.core.content.res.ResourcesCompat.getFont(this, R.font.amiri_quran), Typeface.NORMAL);
             } catch (Exception ignored) {}
-            ayahArabic.setTextColor(0xFFFFB84D);
+            ayahArabic.setTextColor(Design.AMBER);
             // A fixed TV size, with two lines, rather than shrinking the verse to fit one line.
             ayahArabic.setTextSize(TypedValue.COMPLEX_UNIT_SP, is4K ? 22f : 16f);
             ayahArabic.setText(text);
@@ -3166,7 +3356,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             } catch (Exception e) {
                 ayahArabic.setTypeface(Typeface.create("sans-serif-medium", Typeface.BOLD));
             }
-            ayahArabic.setTextColor(0xFFFFB84D);
+            ayahArabic.setTextColor(Design.AMBER);
 
             float baseSp = is4K ? 16f : 13.5f;
             android.text.TextPaint paint = new android.text.TextPaint(ayahArabic.getPaint());
@@ -3235,7 +3425,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             if (iconView != null) iconView.setImageResource(R.drawable.ic_mosque);
             if (badgeView != null) {
                 badgeView.setText("KHUTBAH MINBAR");
-                badgeView.setTextColor(0xFF2EF2C0);
+                badgeView.setTextColor(Design.ACCENT);
             }
             if (titleView != null) titleView.setText(k != null && k.title != null ? k.title : "Khutbah Jumaat");
             if (metaView != null) {
@@ -3267,7 +3457,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             if (iconView != null) iconView.setImageResource(R.drawable.ic_rehal);
             if (badgeView != null) {
                 badgeView.setText("DOA HARIAN");
-                badgeView.setTextColor(0xFFFFB84D);
+                badgeView.setTextColor(Design.AMBER);
             }
             if (titleView != null) titleView.setText(a != null ? a.reference : "Ayat Al-Quran");
             if (metaView != null) {
@@ -3411,21 +3601,21 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             if (indicatorDoa != null) {
                 indicatorDoa.setBackgroundResource(isDoa ? R.drawable.bg_choice_active_badge : R.drawable.bg_choice_inactive_badge);
                 indicatorDoa.setText(isDoa ? "● AKTIF" : "○ PILIH");
-                indicatorDoa.setTextColor(isDoa ? 0xFF2EF2C0 : 0x80FFFFFF);
+                indicatorDoa.setTextColor(isDoa ? Design.ACCENT : Design.ink(0x80));
             }
             if (btnDoaSelect != null) {
                 btnDoaSelect.setText(isDoa ? "✓ Sedang Dipaparkan" : "Tekan OK untuk Pilih");
-                btnDoaSelect.setTextColor(isDoa ? 0xFF2EF2C0 : 0xFF98A2B3);
+                btnDoaSelect.setTextColor(isDoa ? Design.ACCENT : Design.TEXT_MUTED);
             }
 
             if (indicatorMinbar != null) {
                 indicatorMinbar.setBackgroundResource(!isDoa ? R.drawable.bg_choice_active_badge : R.drawable.bg_choice_inactive_badge);
                 indicatorMinbar.setText(!isDoa ? "● AKTIF" : "○ PILIH");
-                indicatorMinbar.setTextColor(!isDoa ? 0xFF2EF2C0 : 0x80FFFFFF);
+                indicatorMinbar.setTextColor(!isDoa ? Design.ACCENT : Design.ink(0x80));
             }
             if (btnMinbarSelect != null) {
                 btnMinbarSelect.setText(!isDoa ? "✓ Sedang Dipaparkan" : "Tekan OK untuk Pilih");
-                btnMinbarSelect.setTextColor(!isDoa ? 0xFF2EF2C0 : 0xFF98A2B3);
+                btnMinbarSelect.setTextColor(!isDoa ? Design.ACCENT : Design.TEXT_MUTED);
             }
         };
 
@@ -3531,24 +3721,11 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         int year = cal.get(Calendar.YEAR);
 
         String lang = AppLanguage.getLanguage(this);
-        String[] months;
-        switch (lang) {
-            case AppLanguage.LANG_EN:
-                months = new String[]{"JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"};
-                break;
-            case AppLanguage.LANG_ID:
-                months = new String[]{"JAN", "FEB", "MAR", "APR", "MEI", "JUN", "JUL", "AGU", "SEP", "OKT", "NOV", "DES"};
-                break;
-            case AppLanguage.LANG_MS:
-            default:
-                months = new String[]{"JAN", "FEB", "MAC", "APR", "MEI", "JUN", "JUL", "OGO", "SEP", "OKT", "NOV", "DIS"};
-                break;
-        }
-        String mStr = (month >= 0 && month < 12) ? months[month] : "";
-        String dateStr = day + " " + mStr + " " + year;
+        String dateStr = HomeText.date(lang, day, month, year);
 
         if (ampmView != null) ampmView.setText(period);
         if (dateView != null) dateView.setText(dateStr);
+        if (greetingView != null) greetingView.setText(HomeText.greeting(lang, hour) + " \u2726");
     }
 
     /** Shows the Wi-Fi network name on the button when we can read it, otherwise the connection type. */
@@ -3811,18 +3988,18 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         TextView titleView = new TextView(this);
         titleView.setText(AppLanguage.strAzanSettingsHeaderTitle(this));
         titleView.setTextSize(19);
-        titleView.setTextColor(0xFFFFFFFF);
+        titleView.setTextColor(Design.TEXT);
         titleView.setTypeface(getResources().getFont(R.font.outfit), Typeface.BOLD);
-        titleView.setFontVariationSettings("'wght' 700");
+        Fonts.variation(titleView, "'wght' 700");
         titleView.setShadowLayer(4 * density, 0, 1 * density, 0xDD000000);
         titleCol.addView(titleView);
 
         TextView subView = new TextView(this);
         subView.setText(AppLanguage.strAzanSettingsHeaderSub(this));
         subView.setTextSize(12.5f);
-        subView.setTextColor(0xD9FFFFFF);
+        subView.setTextColor(Design.ink(0xD9));
         subView.setTypeface(getResources().getFont(R.font.outfit), Typeface.BOLD);
-        subView.setFontVariationSettings("'wght' 600");
+        Fonts.variation(subView, "'wght' 600");
         subView.setShadowLayer(3 * density, 0, 1 * density, 0xCC000000);
         subView.setPadding(0, (int) (2 * density), 0, 0);
         titleCol.addView(subView);
@@ -3832,7 +4009,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
 
         // Gap below header
         View headerDivider = new View(this);
-        headerDivider.setBackgroundColor(0x22FFFFFF);
+        headerDivider.setBackgroundColor(Design.ink(0x22));
         LinearLayout.LayoutParams divLp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Math.max(1, (int) (1 * density)));
         divLp.topMargin = (int) (8 * density);
         divLp.bottomMargin = (int) (8 * density);
@@ -3913,7 +4090,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
 
         // Subtle vertical divider between columns
         View colDivider = new View(this);
-        colDivider.setBackgroundColor(0x1FFFFFFF);
+        colDivider.setBackgroundColor(Design.ink(0x1F));
         LinearLayout.LayoutParams colDivLp = new LinearLayout.LayoutParams(Math.max(1, (int) (1 * density)), ViewGroup.LayoutParams.MATCH_PARENT);
         colDivLp.leftMargin = (int) (4 * density);
         colDivLp.rightMargin = (int) (12 * density);
@@ -3952,8 +4129,8 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         soundTag.setText(AppLanguage.strAzanAudioChangeBtn(this));
         soundTag.setTextSize(12.5f);
         soundTag.setTypeface(getResources().getFont(R.font.outfit), Typeface.BOLD);
-        soundTag.setFontVariationSettings("'wght' 700");
-        soundTag.setTextColor(new ColorStateList(new int[][]{{android.R.attr.state_focused}, {}}, new int[]{0xFF000000, 0xFF2EF2C0}));
+        Fonts.variation(soundTag, "'wght' 700");
+        soundTag.setTextColor(new ColorStateList(new int[][]{{android.R.attr.state_focused}, {}}, new int[]{Design.ON_ACCENT, Design.ACCENT}));
         rightCol.addView(soundRow);
 
         // Bahagian D: Ujian Azan
@@ -3976,8 +4153,8 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         testTag.setText(AppLanguage.strAzanTestBtn(this));
         testTag.setTextSize(13);
         testTag.setTypeface(getResources().getFont(R.font.outfit), Typeface.BOLD);
-        testTag.setFontVariationSettings("'wght' 700");
-        testTag.setTextColor(new ColorStateList(new int[][]{{android.R.attr.state_focused}, {}}, new int[]{0xFF000000, 0xFF2EF2C0}));
+        Fonts.variation(testTag, "'wght' 700");
+        testTag.setTextColor(new ColorStateList(new int[][]{{android.R.attr.state_focused}, {}}, new int[]{Design.ON_ACCENT, Design.ACCENT}));
         rightCol.addView(testRow);
 
         // Info Card
@@ -3985,17 +4162,17 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         infoCard.setOrientation(LinearLayout.VERTICAL);
         infoCard.setPadding((int) (12 * density), (int) (8 * density), (int) (12 * density), (int) (8 * density));
         GradientDrawable infoBg = new GradientDrawable();
-        infoBg.setColor(0x12FFFFFF);
+        infoBg.setColor(Design.ink(0x12));
         infoBg.setCornerRadius(9 * density);
-        infoBg.setStroke(Math.max(1, (int) (1 * density)), 0x22FFFFFF);
+        infoBg.setStroke(Math.max(1, (int) (1 * density)), Design.ink(0x22));
         infoCard.setBackground(infoBg);
 
         TextView infoText = new TextView(this);
         infoText.setText(AppLanguage.strAzanInfoText(this));
         infoText.setTextSize(11f);
-        infoText.setTextColor(0xB3FFFFFF);
+        infoText.setTextColor(Design.ink(0xB3));
         infoText.setTypeface(getResources().getFont(R.font.outfit), Typeface.NORMAL);
-        infoText.setFontVariationSettings("'wght' 500");
+        Fonts.variation(infoText, "'wght' 500");
         infoText.setLineSpacing(0, 1.25f);
         infoCard.addView(infoText);
 
@@ -4020,8 +4197,8 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         closeTag.setText(AppLanguage.strClose(this).toUpperCase(Locale.ROOT));
         closeTag.setTextSize(12.5f);
         closeTag.setTypeface(getResources().getFont(R.font.outfit), Typeface.BOLD);
-        closeTag.setFontVariationSettings("'wght' 700");
-        closeTag.setTextColor(new ColorStateList(new int[][]{{android.R.attr.state_focused}, {}}, new int[]{0xFF000000, 0x88FFFFFF}));
+        Fonts.variation(closeTag, "'wght' 700");
+        closeTag.setTextColor(new ColorStateList(new int[][]{{android.R.attr.state_focused}, {}}, new int[]{Design.ON_ACCENT, Design.ink(0x88)}));
         rightCol.addView(closeRow);
 
         twoCols.addView(rightCol);
@@ -4104,27 +4281,27 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         tag.setText(on ? "ON" : "OFF");
         tag.setTextSize(13);
         tag.setTypeface(getResources().getFont(R.font.outfit), Typeface.NORMAL);
-        tag.setFontVariationSettings(on ? "'wght' 700" : "'wght' 600");
-        int color = on ? 0xFF2EF2C0 : 0x99FFFFFF;
-        tag.setTextColor(new ColorStateList(new int[][]{{android.R.attr.state_focused}, {}}, new int[]{0xFF000000, color}));
+        Fonts.variation(tag, on ? "'wght' 700" : "'wght' 600");
+        int color = on ? Design.ACCENT : Design.ink(0x99);
+        tag.setTextColor(new ColorStateList(new int[][]{{android.R.attr.state_focused}, {}}, new int[]{Design.ON_ACCENT, color}));
     }
 
     private void updatePrayerTag(TextView tag, boolean on) {
         tag.setText(on ? "ON" : "OFF");
         tag.setTextSize(13);
         tag.setTypeface(getResources().getFont(R.font.outfit), Typeface.NORMAL);
-        tag.setFontVariationSettings(on ? "'wght' 700" : "'wght' 600");
-        int color = on ? 0xFF2EF2C0 : 0x99FFFFFF;
-        tag.setTextColor(new ColorStateList(new int[][]{{android.R.attr.state_focused}, {}}, new int[]{0xFF000000, color}));
+        Fonts.variation(tag, on ? "'wght' 700" : "'wght' 600");
+        int color = on ? Design.ACCENT : Design.ink(0x99);
+        tag.setTextColor(new ColorStateList(new int[][]{{android.R.attr.state_focused}, {}}, new int[]{Design.ON_ACCENT, color}));
     }
 
     private TextView createDialogSectionHeader(String title) {
         TextView tv = new TextView(this);
         tv.setText(title);
         tv.setTextSize(11.5f);
-        tv.setTextColor(0xFF2EF2C0);
+        tv.setTextColor(Design.ACCENT);
         tv.setTypeface(getResources().getFont(R.font.outfit), Typeface.BOLD);
-        tv.setFontVariationSettings("'wght' 700");
+        Fonts.variation(tv, "'wght' 700");
         tv.setLetterSpacing(0.08f);
         tv.setPadding(0, (int) (6 * density), 0, (int) (3 * density));
         return tv;
@@ -4141,10 +4318,10 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
 
         StateListDrawable bg = new StateListDrawable();
         GradientDrawable on = new GradientDrawable();
-        on.setColor(0xFF2EF2C0);
+        on.setColor(Design.ACCENT);
         on.setCornerRadius(9 * density);
         GradientDrawable off = new GradientDrawable();
-        off.setColor(0xFF1B1E27);
+        off.setColor(Design.SURFACE_RAISED);
         off.setCornerRadius(9 * density);
         bg.addState(new int[]{android.R.attr.state_focused}, on);
         bg.addState(new int[]{}, off);
@@ -4158,9 +4335,9 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         TextView rowTitle = new TextView(this);
         rowTitle.setText(title);
         rowTitle.setTextSize(15);
-        rowTitle.setTextColor(new ColorStateList(new int[][]{{android.R.attr.state_focused}, {}}, new int[]{0xFF000000, 0xFFFFFFFF}));
+        rowTitle.setTextColor(new ColorStateList(new int[][]{{android.R.attr.state_focused}, {}}, new int[]{Design.ON_ACCENT, Design.TEXT}));
         rowTitle.setTypeface(getResources().getFont(R.font.outfit), Typeface.BOLD);
-        rowTitle.setFontVariationSettings("'wght' 700");
+        Fonts.variation(rowTitle, "'wght' 700");
         rowTitle.setShadowLayer(3 * density, 0, 1 * density, 0xCC000000);
         rowTitle.setDuplicateParentStateEnabled(true);
         topRow.addView(rowTitle, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
@@ -4176,9 +4353,9 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             TextView rowSub = new TextView(this);
             rowSub.setText(subtitle);
             rowSub.setTextSize(12.5f);
-            rowSub.setTextColor(new ColorStateList(new int[][]{{android.R.attr.state_focused}, {}}, new int[]{0xFF1B1E27, 0xD9FFFFFF}));
+            rowSub.setTextColor(new ColorStateList(new int[][]{{android.R.attr.state_focused}, {}}, new int[]{Design.SURFACE_RAISED, Design.ink(0xD9)}));
             rowSub.setTypeface(getResources().getFont(R.font.outfit), Typeface.BOLD);
-            rowSub.setFontVariationSettings("'wght' 600");
+            Fonts.variation(rowSub, "'wght' 600");
             rowSub.setShadowLayer(2 * density, 0, 1 * density, 0xAA000000);
             rowSub.setPadding(0, (int) (2 * density), 0, 0);
             rowSub.setDuplicateParentStateEnabled(true);
@@ -4325,24 +4502,24 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
 
         View.OnFocusChangeListener focusListener = (v, hasFocus) -> {
             if (v instanceof TextView) {
-                ((TextView) v).setTextColor(hasFocus ? 0xFF000000 : 0xFFFFFFFF);
+                ((TextView) v).setTextColor(hasFocus ? Design.ON_ACCENT : Design.TEXT);
             }
             if (hasFocus) SoundEffects.playNav();
         };
         if (btnCheckNow != null) {
-            btnCheckNow.setTextColor(0xFF000000);
+            btnCheckNow.setTextColor(Design.ON_ACCENT);
             btnCheckNow.setOnFocusChangeListener(focusListener);
         }
         if (btnChangeTime != null) {
-            btnChangeTime.setTextColor(0xFFFFFFFF);
+            btnChangeTime.setTextColor(Design.TEXT);
             btnChangeTime.setOnFocusChangeListener(focusListener);
         }
         if (btnToggleAuto != null) {
-            btnToggleAuto.setTextColor(0xFFFFFFFF);
+            btnToggleAuto.setTextColor(Design.TEXT);
             btnToggleAuto.setOnFocusChangeListener(focusListener);
         }
         if (btnClose != null) {
-            btnClose.setTextColor(0xFFFFFFFF);
+            btnClose.setTextColor(Design.TEXT);
             btnClose.setOnFocusChangeListener(focusListener);
         }
 
@@ -4383,7 +4560,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         if (imgQrCoffee != null) {
             imgQrCoffee.setOnClickListener(v -> {
                 SoundEffects.playSelect();
-                Toast.makeText(this, "☕ Terima kasih atas sokongan belanja kopi! (@imsomangge)", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "☕ Terima kasih atas sokongan belanja kopi! (@mhfiz.ms)", Toast.LENGTH_SHORT).show();
             });
         }
 
@@ -4708,7 +4885,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             if (txtTrackArtist != null) txtTrackArtist.setText("Buka Spotify atau YouTube Music untuk mula mendengar");
             if (txtPlaybackStatus != null) {
                 txtPlaybackStatus.setText("⏸ Tiada Mainan");
-                txtPlaybackStatus.setTextColor(Color.parseColor("#80FFFFFF"));
+                txtPlaybackStatus.setTextColor(Design.ink(0x80));
             }
             if (btnPlayPause != null) {
                 btnPlayPause.setImageResource(R.drawable.ic_play);
@@ -4727,7 +4904,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         File[] customFiles = customDir.listFiles((dir, name) -> name.endsWith(".jpg") || name.endsWith(".png") || name.endsWith(".jpeg"));
         int customCount = (customFiles != null) ? customFiles.length : 0;
 
-        String currentKey = getSharedPreferences("wallpaper_prefs", MODE_PRIVATE).getString("active_category", "Malaysia");
+        String currentKey = getSharedPreferences("wallpaper_prefs", MODE_PRIVATE).getString("active_category", TENANG_CATEGORY);
 
         class WallpaperOption {
             final String key;
@@ -4742,6 +4919,13 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
 
         String curLang = AppLanguage.getLanguage(this);
         List<WallpaperOption> options = new ArrayList<>();
+
+        // Category 0: Tenang, the calm moving canvas (default, offline)
+        String tTen = AppLanguage.LANG_EN.equals(curLang) ? "\u2726 Tenang (calm canvas)" : "\u2726 Tenang (kanvas tenang)";
+        String sTen = AppLanguage.LANG_EN.equals(curLang) ? "Soft drifting colours that follow prayer times \u2022 offline"
+                : (AppLanguage.LANG_ID.equals(curLang) ? "Warna lembut yang mengikut waktu solat \u2022 luring"
+                : "Warna lembut yang mengikut waktu solat \u2022 luar talian");
+        options.add(new WallpaperOption(TENANG_CATEGORY, tTen, sTen));
 
         // Category 1: Malaysia
         String tMal = AppLanguage.LANG_EN.equals(curLang) ? "🇲🇾 Attractions in Malaysia" : (AppLanguage.LANG_ID.equals(curLang) ? "🇲🇾 Tempat Wisata Malaysia" : "🇲🇾 Tempat Menarik di Malaysia");
@@ -4821,9 +5005,9 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         TextView titleView = new TextView(this);
         titleView.setText(AppLanguage.strWallpaperDialogTitle(this));
         titleView.setTextSize(19);
-        titleView.setTextColor(0xFFFFFFFF);
+        titleView.setTextColor(Design.TEXT);
         titleView.setTypeface(getResources().getFont(R.font.outfit), Typeface.BOLD);
-        titleView.setFontVariationSettings("'wght' 700");
+        Fonts.variation(titleView, "'wght' 700");
         titleView.setShadowLayer(4 * density, 0, 1 * density, 0xDD000000);
         layout.addView(titleView);
 
@@ -4831,9 +5015,9 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         TextView subView = new TextView(this);
         subView.setText(AppLanguage.strWallpaperDialogSub(this));
         subView.setTextSize(13.5f);
-        subView.setTextColor(0xE6FFFFFF);
+        subView.setTextColor(Design.ink(0xE6));
         subView.setTypeface(getResources().getFont(R.font.outfit), Typeface.BOLD);
-        subView.setFontVariationSettings("'wght' 600");
+        Fonts.variation(subView, "'wght' 600");
         subView.setShadowLayer(3 * density, 0, 1 * density, 0xCC000000);
         subView.setPadding(0, (int) (3 * density), 0, (int) (12 * density));
         layout.addView(subView);
@@ -4858,11 +5042,11 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
 
             StateListDrawable bg = new StateListDrawable();
             GradientDrawable on = new GradientDrawable();
-            on.setColor(0xFF2EF2C0);
+            on.setColor(Design.ACCENT);
             on.setCornerRadius(10 * density);
             GradientDrawable off = new GradientDrawable();
-            off.setColor(isActive ? 0x1F2EF2C0 : 0xFF1B1E27);
-            off.setStroke((int) (1.2f * density), isActive ? 0xFF2EF2C0 : 0xFF262B36);
+            off.setColor(isActive ? Design.alpha(Design.ACCENT, 0x1F) : Design.SURFACE_RAISED);
+            off.setStroke((int) (1.2f * density), isActive ? Design.ACCENT : Design.HAIRLINE);
             off.setCornerRadius(10 * density);
             bg.addState(new int[]{android.R.attr.state_focused}, on);
             bg.addState(new int[]{}, off);
@@ -4876,9 +5060,9 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             TextView rowTitle = new TextView(this);
             rowTitle.setText(opt.title);
             rowTitle.setTextSize(16);
-            rowTitle.setTextColor(0xFFFFFFFF);
+            rowTitle.setTextColor(Design.TEXT);
             rowTitle.setTypeface(getResources().getFont(R.font.outfit), Typeface.BOLD);
-            rowTitle.setFontVariationSettings("'wght' 700");
+            Fonts.variation(rowTitle, "'wght' 700");
             rowTitle.setShadowLayer(3 * density, 0, 1 * density, 0xCC000000);
             topRow.addView(rowTitle, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
 
@@ -4887,9 +5071,9 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
                 activeTag = new TextView(this);
                 activeTag.setText("✓ " + AppLanguage.strNowBadge(this));
                 activeTag.setTextSize(13);
-                activeTag.setTextColor(0xFF2EF2C0);
+                activeTag.setTextColor(Design.ACCENT);
                 activeTag.setTypeface(getResources().getFont(R.font.outfit), Typeface.BOLD);
-                activeTag.setFontVariationSettings("'wght' 700");
+                Fonts.variation(activeTag, "'wght' 700");
                 topRow.addView(activeTag);
             }
             row.addView(topRow);
@@ -4897,9 +5081,9 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             TextView rowSub = new TextView(this);
             rowSub.setText(opt.subtitle);
             rowSub.setTextSize(13);
-            rowSub.setTextColor(0xD9FFFFFF);
+            rowSub.setTextColor(Design.ink(0xD9));
             rowSub.setTypeface(getResources().getFont(R.font.outfit), Typeface.BOLD);
-            rowSub.setFontVariationSettings("'wght' 600");
+            Fonts.variation(rowSub, "'wght' 600");
             rowSub.setShadowLayer(2 * density, 0, 1 * density, 0xAA000000);
             rowSub.setPadding(0, (int) (2 * density), 0, 0);
             row.addView(rowSub);
@@ -4909,21 +5093,21 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             final TextView finalActiveTag = activeTag;
             row.setOnFocusChangeListener((v, hasFocus) -> {
                 if (hasFocus) {
-                    finalRowTitle.setTextColor(0xFF06120E);
+                    finalRowTitle.setTextColor(Design.ON_ACCENT);
                     finalRowTitle.setShadowLayer(0, 0, 0, 0);
-                    finalRowSub.setTextColor(0xFF0A2A22);
+                    finalRowSub.setTextColor(Design.alpha(Design.ACCENT, 0x2E));
                     finalRowSub.setShadowLayer(0, 0, 0, 0);
                     if (finalActiveTag != null) {
-                        finalActiveTag.setTextColor(0xFF06120E);
+                        finalActiveTag.setTextColor(Design.ON_ACCENT);
                         finalActiveTag.setShadowLayer(0, 0, 0, 0);
                     }
                 } else {
-                    finalRowTitle.setTextColor(0xFFFFFFFF);
+                    finalRowTitle.setTextColor(Design.TEXT);
                     finalRowTitle.setShadowLayer(3 * density, 0, 1 * density, 0xCC000000);
-                    finalRowSub.setTextColor(0xD9FFFFFF);
+                    finalRowSub.setTextColor(Design.ink(0xD9));
                     finalRowSub.setShadowLayer(2 * density, 0, 1 * density, 0xAA000000);
                     if (finalActiveTag != null) {
-                        finalActiveTag.setTextColor(0xFF2EF2C0);
+                        finalActiveTag.setTextColor(Design.ACCENT);
                         finalActiveTag.setShadowLayer(2 * density, 0, 1 * density, 0xAA000000);
                     }
                 }
@@ -4995,12 +5179,12 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
 
             if (isActive && viewToFocus[0] == null) {
                 viewToFocus[0] = row;
-                rowTitle.setTextColor(0xFF06120E);
+                rowTitle.setTextColor(Design.ON_ACCENT);
                 rowTitle.setShadowLayer(0, 0, 0, 0);
-                rowSub.setTextColor(0xFF0A2A22);
+                rowSub.setTextColor(Design.alpha(Design.ACCENT, 0x2E));
                 rowSub.setShadowLayer(0, 0, 0, 0);
                 if (activeTag != null) {
-                    activeTag.setTextColor(0xFF06120E);
+                    activeTag.setTextColor(Design.ON_ACCENT);
                     activeTag.setShadowLayer(0, 0, 0, 0);
                 }
             }
@@ -5077,9 +5261,9 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         TextView titleView = new TextView(this);
         titleView.setText(AppLanguage.strWallpaperIntervalTitle(this));
         titleView.setTextSize(19);
-        titleView.setTextColor(0xFFFFFFFF);
+        titleView.setTextColor(Design.TEXT);
         titleView.setTypeface(getResources().getFont(R.font.outfit), Typeface.BOLD);
-        titleView.setFontVariationSettings("'wght' 700");
+        Fonts.variation(titleView, "'wght' 700");
         titleView.setShadowLayer(4 * density, 0, 1 * density, 0xDD000000);
         layout.addView(titleView);
 
@@ -5087,9 +5271,9 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         TextView subView = new TextView(this);
         subView.setText(AppLanguage.strWallpaperIntervalSub(this));
         subView.setTextSize(13.5f);
-        subView.setTextColor(0xE6FFFFFF);
+        subView.setTextColor(Design.ink(0xE6));
         subView.setTypeface(getResources().getFont(R.font.outfit), Typeface.BOLD);
-        subView.setFontVariationSettings("'wght' 600");
+        Fonts.variation(subView, "'wght' 600");
         subView.setShadowLayer(3 * density, 0, 1 * density, 0xCC000000);
         subView.setPadding(0, (int) (3 * density), 0, (int) (12 * density));
         layout.addView(subView);
@@ -5114,11 +5298,11 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
 
             StateListDrawable bg = new StateListDrawable();
             GradientDrawable on = new GradientDrawable();
-            on.setColor(0xFF2EF2C0);
+            on.setColor(Design.ACCENT);
             on.setCornerRadius(10 * density);
             GradientDrawable off = new GradientDrawable();
-            off.setColor(isActive ? 0x1F2EF2C0 : 0xFF1B1E27);
-            off.setStroke((int) (1.2f * density), isActive ? 0xFF2EF2C0 : 0xFF262B36);
+            off.setColor(isActive ? Design.alpha(Design.ACCENT, 0x1F) : Design.SURFACE_RAISED);
+            off.setStroke((int) (1.2f * density), isActive ? Design.ACCENT : Design.HAIRLINE);
             off.setCornerRadius(10 * density);
             bg.addState(new int[]{android.R.attr.state_focused}, on);
             bg.addState(new int[]{}, off);
@@ -5131,9 +5315,9 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             TextView rowTitle = new TextView(this);
             rowTitle.setText(opt.title);
             rowTitle.setTextSize(16);
-            rowTitle.setTextColor(0xFFFFFFFF);
+            rowTitle.setTextColor(Design.TEXT);
             rowTitle.setTypeface(getResources().getFont(R.font.outfit), Typeface.BOLD);
-            rowTitle.setFontVariationSettings("'wght' 700");
+            Fonts.variation(rowTitle, "'wght' 700");
             rowTitle.setShadowLayer(3 * density, 0, 1 * density, 0xCC000000);
             topRow.addView(rowTitle, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
 
@@ -5142,9 +5326,9 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
                 activeTag = new TextView(this);
                 activeTag.setText("✓ " + AppLanguage.strNowBadge(this));
                 activeTag.setTextSize(13);
-                activeTag.setTextColor(0xFF2EF2C0);
+                activeTag.setTextColor(Design.ACCENT);
                 activeTag.setTypeface(getResources().getFont(R.font.outfit), Typeface.BOLD);
-                activeTag.setFontVariationSettings("'wght' 700");
+                Fonts.variation(activeTag, "'wght' 700");
                 topRow.addView(activeTag);
             }
             row.addView(topRow);
@@ -5152,9 +5336,9 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             TextView rowSub = new TextView(this);
             rowSub.setText(opt.subtitle);
             rowSub.setTextSize(13);
-            rowSub.setTextColor(0xD9FFFFFF);
+            rowSub.setTextColor(Design.ink(0xD9));
             rowSub.setTypeface(getResources().getFont(R.font.outfit), Typeface.BOLD);
-            rowSub.setFontVariationSettings("'wght' 600");
+            Fonts.variation(rowSub, "'wght' 600");
             rowSub.setShadowLayer(2 * density, 0, 1 * density, 0xAA000000);
             rowSub.setPadding(0, (int) (2 * density), 0, 0);
             row.addView(rowSub);
@@ -5164,21 +5348,21 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             final TextView finalActiveTag = activeTag;
             row.setOnFocusChangeListener((v, hasFocus) -> {
                 if (hasFocus) {
-                    finalRowTitle.setTextColor(0xFF06120E);
+                    finalRowTitle.setTextColor(Design.ON_ACCENT);
                     finalRowTitle.setShadowLayer(0, 0, 0, 0);
-                    finalRowSub.setTextColor(0xFF0A2A22);
+                    finalRowSub.setTextColor(Design.alpha(Design.ACCENT, 0x2E));
                     finalRowSub.setShadowLayer(0, 0, 0, 0);
                     if (finalActiveTag != null) {
-                        finalActiveTag.setTextColor(0xFF06120E);
+                        finalActiveTag.setTextColor(Design.ON_ACCENT);
                         finalActiveTag.setShadowLayer(0, 0, 0, 0);
                     }
                 } else {
-                    finalRowTitle.setTextColor(0xFFFFFFFF);
+                    finalRowTitle.setTextColor(Design.TEXT);
                     finalRowTitle.setShadowLayer(3 * density, 0, 1 * density, 0xCC000000);
-                    finalRowSub.setTextColor(0xD9FFFFFF);
+                    finalRowSub.setTextColor(Design.ink(0xD9));
                     finalRowSub.setShadowLayer(2 * density, 0, 1 * density, 0xAA000000);
                     if (finalActiveTag != null) {
-                        finalActiveTag.setTextColor(0xFF2EF2C0);
+                        finalActiveTag.setTextColor(Design.ACCENT);
                         finalActiveTag.setShadowLayer(2 * density, 0, 1 * density, 0xAA000000);
                     }
                 }
@@ -5210,12 +5394,12 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
 
             if (isActive && viewToFocus[0] == null) {
                 viewToFocus[0] = row;
-                rowTitle.setTextColor(0xFF06120E);
+                rowTitle.setTextColor(Design.ON_ACCENT);
                 rowTitle.setShadowLayer(0, 0, 0, 0);
-                rowSub.setTextColor(0xFF0A2A22);
+                rowSub.setTextColor(Design.alpha(Design.ACCENT, 0x2E));
                 rowSub.setShadowLayer(0, 0, 0, 0);
                 if (activeTag != null) {
-                    activeTag.setTextColor(0xFF06120E);
+                    activeTag.setTextColor(Design.ON_ACCENT);
                     activeTag.setShadowLayer(0, 0, 0, 0);
                 }
             }
@@ -5322,18 +5506,18 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         TextView titleView = new TextView(this);
         titleView.setText("🌙 " + (isMalay ? "Mod Gelap & Perlindungan OLED" : "Dark Mode & OLED Dimming"));
         titleView.setTextSize(18);
-        titleView.setTextColor(0xFFFFFFFF);
+        titleView.setTextColor(Design.TEXT);
         titleView.setTypeface(getResources().getFont(R.font.outfit), Typeface.BOLD);
-        titleView.setFontVariationSettings("'wght' 700");
+        Fonts.variation(titleView, "'wght' 700");
         titleView.setShadowLayer(4 * density, 0, 1 * density, 0xDD000000);
         layout.addView(titleView);
 
         TextView subView = new TextView(this);
         subView.setText(isMalay ? "Pilih gaya kecerahan skrin utama mengikut persekitaran ruang tamu anda." : "Choose homescreen dimming mode to match your living room lighting.");
         subView.setTextSize(12.5f);
-        subView.setTextColor(0xBBFFFFFF);
+        subView.setTextColor(Design.ink(0xBB));
         subView.setTypeface(getResources().getFont(R.font.outfit), Typeface.NORMAL);
-        subView.setFontVariationSettings("'wght' 500");
+        Fonts.variation(subView, "'wght' 500");
         subView.setPadding(0, (int) (3 * density), 0, (int) (12 * density));
         layout.addView(subView);
 
@@ -5357,11 +5541,11 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
 
             StateListDrawable bg = new StateListDrawable();
             GradientDrawable on = new GradientDrawable();
-            on.setColor(0xFF2EF2C0);
+            on.setColor(Design.ACCENT);
             on.setCornerRadius(10 * density);
             GradientDrawable off = new GradientDrawable();
-            off.setColor(isActive ? 0x1F2EF2C0 : 0xFF1B1E27);
-            off.setStroke((int) (1.2f * density), isActive ? 0xFF2EF2C0 : 0xFF262B36);
+            off.setColor(isActive ? Design.alpha(Design.ACCENT, 0x1F) : Design.SURFACE_RAISED);
+            off.setStroke((int) (1.2f * density), isActive ? Design.ACCENT : Design.HAIRLINE);
             off.setCornerRadius(10 * density);
             bg.addState(new int[]{android.R.attr.state_focused}, on);
             bg.addState(new int[]{}, off);
@@ -5374,9 +5558,9 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             TextView rowTitle = new TextView(this);
             rowTitle.setText(opt.title);
             rowTitle.setTextSize(15);
-            rowTitle.setTextColor(0xFFFFFFFF);
+            rowTitle.setTextColor(Design.TEXT);
             rowTitle.setTypeface(getResources().getFont(R.font.outfit), Typeface.BOLD);
-            rowTitle.setFontVariationSettings("'wght' 700");
+            Fonts.variation(rowTitle, "'wght' 700");
             headerRow.addView(rowTitle, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
 
             TextView activeTag = null;
@@ -5384,9 +5568,9 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
                 activeTag = new TextView(this);
                 activeTag.setText("✓ " + (isMalay ? "AKTIF" : "ACTIVE"));
                 activeTag.setTextSize(11);
-                activeTag.setTextColor(0xFF2EF2C0);
+                activeTag.setTextColor(Design.ACCENT);
                 activeTag.setTypeface(getResources().getFont(R.font.outfit), Typeface.BOLD);
-                activeTag.setFontVariationSettings("'wght' 700");
+                Fonts.variation(activeTag, "'wght' 700");
                 headerRow.addView(activeTag);
             }
             row.addView(headerRow);
@@ -5394,9 +5578,9 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             TextView rowSub = new TextView(this);
             rowSub.setText(opt.subtitle);
             rowSub.setTextSize(12.5f);
-            rowSub.setTextColor(0xD9FFFFFF);
+            rowSub.setTextColor(Design.ink(0xD9));
             rowSub.setTypeface(getResources().getFont(R.font.outfit), Typeface.NORMAL);
-            rowSub.setFontVariationSettings("'wght' 500");
+            Fonts.variation(rowSub, "'wght' 500");
             rowSub.setPadding(0, (int) (2 * density), 0, 0);
             row.addView(rowSub);
 
@@ -5405,21 +5589,21 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             final TextView fActive = activeTag;
             row.setOnFocusChangeListener((v, hasFocus) -> {
                 if (hasFocus) {
-                    fTitle.setTextColor(0xFF06120E);
+                    fTitle.setTextColor(Design.ON_ACCENT);
                     fTitle.setShadowLayer(0, 0, 0, 0);
-                    fSub.setTextColor(0xFF0A2A22);
+                    fSub.setTextColor(Design.alpha(Design.ACCENT, 0x2E));
                     fSub.setShadowLayer(0, 0, 0, 0);
                     if (fActive != null) {
-                        fActive.setTextColor(0xFF06120E);
+                        fActive.setTextColor(Design.ON_ACCENT);
                         fActive.setShadowLayer(0, 0, 0, 0);
                     }
                 } else {
-                    fTitle.setTextColor(0xFFFFFFFF);
+                    fTitle.setTextColor(Design.TEXT);
                     fTitle.setShadowLayer(3 * density, 0, 1 * density, 0xCC000000);
-                    fSub.setTextColor(0xD9FFFFFF);
+                    fSub.setTextColor(Design.ink(0xD9));
                     fSub.setShadowLayer(2 * density, 0, 1 * density, 0xAA000000);
                     if (fActive != null) {
-                        fActive.setTextColor(0xFF2EF2C0);
+                        fActive.setTextColor(Design.ACCENT);
                         fActive.setShadowLayer(2 * density, 0, 1 * density, 0xAA000000);
                     }
                 }
@@ -5440,12 +5624,12 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
 
             if (isActive && viewToFocus[0] == null) {
                 viewToFocus[0] = row;
-                rowTitle.setTextColor(0xFF06120E);
+                rowTitle.setTextColor(Design.ON_ACCENT);
                 rowTitle.setShadowLayer(0, 0, 0, 0);
-                rowSub.setTextColor(0xFF0A2A22);
+                rowSub.setTextColor(Design.alpha(Design.ACCENT, 0x2E));
                 rowSub.setShadowLayer(0, 0, 0, 0);
                 if (activeTag != null) {
-                    activeTag.setTextColor(0xFF06120E);
+                    activeTag.setTextColor(Design.ON_ACCENT);
                     activeTag.setShadowLayer(0, 0, 0, 0);
                 }
             }
@@ -5537,40 +5721,40 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             TextView titleView = dialog.findViewById(android.R.id.title);
             if (titleView != null) {
                 titleView.setTypeface(outfit, Typeface.BOLD);
-                titleView.setFontVariationSettings("'wght' 700");
+                Fonts.variation(titleView, "'wght' 700");
                 titleView.setTextSize(20f);
-                titleView.setTextColor(0xFFFFFFFF);
+                titleView.setTextColor(Design.TEXT);
                 titleView.setShadowLayer(4 * density, 0, 1 * density, 0xDD000000);
             }
             TextView msgView = dialog.findViewById(android.R.id.message);
             if (msgView != null) {
                 msgView.setTypeface(outfit, Typeface.BOLD);
-                msgView.setFontVariationSettings("'wght' 600");
+                Fonts.variation(msgView, "'wght' 600");
                 msgView.setTextSize(15f);
-                msgView.setTextColor(0xF0FFFFFF);
+                msgView.setTextColor(Design.ink(0xF0));
                 msgView.setLineSpacing(0, 1.35f);
                 msgView.setShadowLayer(3 * density, 0, 1 * density, 0xCC000000);
             }
             Button btnPos = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
             if (btnPos != null) {
                 btnPos.setTypeface(outfit, Typeface.BOLD);
-                btnPos.setFontVariationSettings("'wght' 700");
+                Fonts.variation(btnPos, "'wght' 700");
                 btnPos.setTextSize(15f);
-                btnPos.setTextColor(0xFFFFFFFF);
+                btnPos.setTextColor(Design.TEXT);
             }
             Button btnNeg = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
             if (btnNeg != null) {
                 btnNeg.setTypeface(outfit, Typeface.BOLD);
-                btnNeg.setFontVariationSettings("'wght' 650");
+                Fonts.variation(btnNeg, "'wght' 650");
                 btnNeg.setTextSize(15f);
-                btnNeg.setTextColor(0xCCFFFFFF);
+                btnNeg.setTextColor(Design.ink(0xCC));
             }
             Button btnNeu = dialog.getButton(DialogInterface.BUTTON_NEUTRAL);
             if (btnNeu != null) {
                 btnNeu.setTypeface(outfit, Typeface.BOLD);
-                btnNeu.setFontVariationSettings("'wght' 650");
+                Fonts.variation(btnNeu, "'wght' 650");
                 btnNeu.setTextSize(15f);
-                btnNeu.setTextColor(0xCCFFFFFF);
+                btnNeu.setTextColor(Design.ink(0xCC));
             }
             ListView listView = dialog.getListView();
             if (listView != null) {
@@ -5580,9 +5764,9 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
                         if (child instanceof TextView) {
                             TextView tv = (TextView) child;
                             tv.setTypeface(outfit, Typeface.BOLD);
-                            tv.setFontVariationSettings("'wght' 650");
+                            Fonts.variation(tv, "'wght' 650");
                             tv.setTextSize(15.5f);
-                            tv.setTextColor(0xFFFFFFFF);
+                            tv.setTextColor(Design.TEXT);
                             tv.setShadowLayer(3 * density, 0, 1 * density, 0xAA000000);
                             tv.setPadding((int) (18 * density), (int) (12 * density), (int) (18 * density), (int) (12 * density));
                         }
@@ -5606,6 +5790,17 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             displayLabel = category;
         }
         Toast.makeText(this, "Kategori: " + displayLabel, Toast.LENGTH_SHORT).show();
+        if (TENANG_CATEGORY.equalsIgnoreCase(category)) {
+            placesMode = false;
+            wallpapers = Collections.emptyList();
+            if (heroShelf != null) {
+                heroShelf.animate().cancel();
+                heroShelf.setAlpha(0f);
+                heroShelf.setVisibility(View.GONE);
+            }
+            showAmbient(true);
+            return;
+        }
 
         if ("Custom".equalsIgnoreCase(category)) {
             placesMode = false;
@@ -5670,9 +5865,9 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         TextView title = new TextView(this);
         title.setText("✨ Gemini AI Assistant");
         title.setTextSize(22);
-        title.setTextColor(0xFFFFFFFF);
+        title.setTextColor(Design.TEXT);
         title.setTypeface(getResources().getFont(R.font.outfit), Typeface.BOLD);
-        title.setFontVariationSettings("'wght' 700");
+        Fonts.variation(title, "'wght' 700");
         title.setShadowLayer(4 * density, 0, 1 * density, 0xDD000000);
         title.setPadding(0, 0, 0, (int) (4 * density));
         layout.addView(title);
@@ -5680,9 +5875,9 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         TextView sub = new TextView(this);
         sub.setText("Bantuan Pintar Built-In Glass TV Home");
         sub.setTextSize(14f);
-        sub.setTextColor(0xE6FFFFFF);
+        sub.setTextColor(Design.ink(0xE6));
         sub.setTypeface(getResources().getFont(R.font.outfit), Typeface.BOLD);
-        sub.setFontVariationSettings("'wght' 600");
+        Fonts.variation(sub, "'wght' 600");
         sub.setShadowLayer(3 * density, 0, 1 * density, 0xCC000000);
         sub.setPadding(0, 0, 0, (int) (14 * density));
         layout.addView(sub);
@@ -5692,7 +5887,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         statusCard.setOrientation(LinearLayout.VERTICAL);
         statusCard.setPadding((int) (16 * density), (int) (12 * density), (int) (16 * density), (int) (12 * density));
         GradientDrawable cardBg = new GradientDrawable();
-        cardBg.setColor(0x24FFFFFF);
+        cardBg.setColor(Design.ink(0x24));
         cardBg.setCornerRadius(14 * density);
         cardBg.setStroke((int) (1.8f * density), 0x8064D2FF);
         statusCard.setBackground(cardBg);
@@ -5709,9 +5904,9 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
                 + "• Cuaca & JAS IPU: " + wxStr + "\n"
                 + "• Memori & TV: Sistem Beroperasi Pantas & Bersih");
         statusText.setTextSize(14.5f);
-        statusText.setTextColor(0xFFFFFFFF);
+        statusText.setTextColor(Design.TEXT);
         statusText.setTypeface(getResources().getFont(R.font.outfit), Typeface.BOLD);
-        statusText.setFontVariationSettings("'wght' 600");
+        Fonts.variation(statusText, "'wght' 600");
         statusText.setShadowLayer(3 * density, 0, 1 * density, 0xCC000000);
         statusText.setLineSpacing(0, 1.3f);
         statusCard.addView(statusText);
@@ -5720,9 +5915,9 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         TextView actionsTitle = new TextView(this);
         actionsTitle.setText("Tindakan Pintar:");
         actionsTitle.setTextSize(14.5f);
-        actionsTitle.setTextColor(0xE6FFFFFF);
+        actionsTitle.setTextColor(Design.ink(0xE6));
         actionsTitle.setTypeface(getResources().getFont(R.font.outfit), Typeface.BOLD);
-        actionsTitle.setFontVariationSettings("'wght' 700");
+        Fonts.variation(actionsTitle, "'wght' 700");
         actionsTitle.setShadowLayer(3 * density, 0, 1 * density, 0xCC000000);
         actionsTitle.setPadding(0, (int) (14 * density), 0, (int) (8 * density));
         layout.addView(actionsTitle);
@@ -5786,9 +5981,9 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         TextView btn = new TextView(this);
         btn.setText(title);
         btn.setTextSize(15.5f);
-        btn.setTextColor(0xFFFFFFFF);
+        btn.setTextColor(Design.TEXT);
         btn.setTypeface(getResources().getFont(R.font.outfit), Typeface.BOLD);
-        btn.setFontVariationSettings("'wght' 650");
+        Fonts.variation(btn, "'wght' 650");
         btn.setShadowLayer(3 * density, 0, 1 * density, 0xAA000000);
         btn.setPadding((int) (16 * density), (int) (12 * density), (int) (16 * density), (int) (12 * density));
         btn.setFocusable(true);
@@ -5796,15 +5991,15 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
 
         StateListDrawable bg = new StateListDrawable();
         GradientDrawable on = new GradientDrawable();
-        on.setColor(0xFF2EF2C0);
+        on.setColor(Design.ACCENT);
         on.setCornerRadius(12 * density);
         GradientDrawable off = new GradientDrawable();
-        off.setColor(0xFF1B1E27);
+        off.setColor(Design.SURFACE_RAISED);
         off.setCornerRadius(12 * density);
         bg.addState(new int[]{android.R.attr.state_focused}, on);
         bg.addState(new int[]{}, off);
         btn.setBackground(bg);
-        btn.setTextColor(new ColorStateList(new int[][]{{android.R.attr.state_focused}, {}}, new int[]{0xFF000000, 0xFFFFFFFF}));
+        btn.setTextColor(new ColorStateList(new int[][]{{android.R.attr.state_focused}, {}}, new int[]{Design.ON_ACCENT, Design.TEXT}));
 
         btn.setOnClickListener(v -> onClick.run());
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -5906,14 +6101,14 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         int padH = Math.round(36 * density);
         int padV = Math.round(28 * density);
         rootLayout.setPadding(padH, padV, padH, padV);
-        rootLayout.setBackgroundColor(0xF0131722); // Elegant dark slate
+        rootLayout.setBackgroundColor(Design.alpha(Design.SURFACE, 0xF0)); // Elegant dark slate
 
         // Title
         TextView title = new TextView(this);
         title.setText("📲 Muat Naik Wallpaper Dari Telefon");
-        title.setTextColor(0xFFFFFFFF);
+        title.setTextColor(Design.TEXT);
         title.setTypeface(getResources().getFont(R.font.outfit), Typeface.BOLD);
-        title.setFontVariationSettings("'wght' 700");
+        Fonts.variation(title, "'wght' 700");
         title.setTextSize(TypedValue.COMPLEX_UNIT_SP, 21);
         title.setShadowLayer(4 * density, 0, 1 * density, 0xDD000000);
         title.setGravity(Gravity.CENTER);
@@ -5922,9 +6117,9 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         // Subtitle instructions
         TextView sub = new TextView(this);
         sub.setText("Sambungkan telefon pada Wi-Fi yang sama, kemudian imbas kod QR di bawah:");
-        sub.setTextColor(0xFFF5F7FA);
+        sub.setTextColor(Design.TEXT);
         sub.setTypeface(getResources().getFont(R.font.outfit), Typeface.BOLD);
-        sub.setFontVariationSettings("'wght' 600");
+        Fonts.variation(sub, "'wght' 600");
         sub.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14.5f);
         sub.setShadowLayer(3 * density, 0, 1 * density, 0xCC000000);
         sub.setGravity(Gravity.CENTER);
@@ -5955,9 +6150,9 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         // Web URL pill
         qrUrlText = new TextView(this);
         qrUrlText.setText("🌐 " + uploadUrl);
-        qrUrlText.setTextColor(0xFF2EF2C0);
+        qrUrlText.setTextColor(Design.ACCENT);
         qrUrlText.setTypeface(getResources().getFont(R.font.outfit), Typeface.BOLD);
-        qrUrlText.setFontVariationSettings("'wght' 700");
+        Fonts.variation(qrUrlText, "'wght' 700");
         qrUrlText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
         qrUrlText.setShadowLayer(3 * density, 0, 1 * density, 0xCC000000);
         qrUrlText.setGravity(Gravity.CENTER);
@@ -5967,9 +6162,9 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         // Status text
         qrStatusText = new TextView(this);
         qrStatusText.setText("📡 Menunggu imbasan kamera atau fail dari telefon...");
-        qrStatusText.setTextColor(0xFFF5F7FA);
+        qrStatusText.setTextColor(Design.TEXT);
         qrStatusText.setTypeface(getResources().getFont(R.font.outfit), Typeface.BOLD);
-        qrStatusText.setFontVariationSettings("'wght' 600");
+        Fonts.variation(qrStatusText, "'wght' 600");
         qrStatusText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
         qrStatusText.setShadowLayer(3 * density, 0, 1 * density, 0xAA000000);
         qrStatusText.setGravity(Gravity.CENTER);
@@ -5979,10 +6174,10 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         // Close button
         Button btnClose = new Button(this);
         btnClose.setText("Tutup / Cancel");
-        btnClose.setTextColor(0xFFFFFFFF);
+        btnClose.setTextColor(Design.TEXT);
         btnClose.setBackgroundResource(R.drawable.pill_bg);
         btnClose.setTypeface(getResources().getFont(R.font.outfit), Typeface.BOLD);
-        btnClose.setFontVariationSettings("'wght' 700");
+        Fonts.variation(btnClose, "'wght' 700");
         btnClose.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
         btnClose.setFocusable(true);
         btnClose.setFocusableInTouchMode(true);
@@ -5994,10 +6189,10 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
 
         // Watermark credit
         TextView credit = new TextView(this);
-        credit.setText("✨ Powered by @imsomangge");
-        credit.setTextColor(0xFF98A2B3);
+        credit.setText("✨ Powered by @mhfiz.ms");
+        credit.setTextColor(Design.TEXT_MUTED);
         credit.setTypeface(getResources().getFont(R.font.outfit), Typeface.BOLD);
-        credit.setFontVariationSettings("'wght' 600");
+        Fonts.variation(credit, "'wght' 600");
         credit.setTextSize(TypedValue.COMPLEX_UNIT_SP, 13);
         credit.setGravity(Gravity.CENTER);
         credit.setPadding(0, Math.round(14 * density), 0, 0);
@@ -6081,11 +6276,11 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
 
             if (qrStatusText != null) {
                 qrStatusText.setText("🎉 Berjaya Diterima & Dipaparkan di TV!");
-                qrStatusText.setTextColor(0xFF2EF2C0);
+                qrStatusText.setTextColor(Design.ACCENT);
             }
             if (qrUrlText != null) {
                 qrUrlText.setText("✅ Wallpaper Aktif: " + file.getName());
-                qrUrlText.setTextColor(0xFF2EF2C0);
+                qrUrlText.setTextColor(Design.ACCENT);
             }
             if (qrImageView != null) {
                 try {
@@ -6447,7 +6642,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         TextView title = row.findViewById(R.id.title);
         title.setText(name + (isNext ? " (Seterusnya)" : ""));
         title.setTypeface(getResources().getFont(R.font.outfit), Typeface.BOLD);
-        title.setFontVariationSettings(isNext ? "'wght' 700" : "'wght' 650");
+        Fonts.variation(title, isNext ? "'wght' 700" : "'wght' 650");
         title.setShadowLayer(3 * density, 0, 1 * density, 0xCC000000);
 
         TextView status = row.findViewById(R.id.status);
@@ -6455,7 +6650,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         status.setText(time);
         status.setVisibility(View.VISIBLE);
         status.setTypeface(getResources().getFont(R.font.outfit), Typeface.BOLD);
-        status.setFontVariationSettings(isNext ? "'wght' 700" : "'wght' 600");
+        Fonts.variation(status, isNext ? "'wght' 700" : "'wght' 600");
         status.setShadowLayer(3 * density, 0, 1 * density, 0xCC000000);
 
         if (isNext) {
@@ -6502,8 +6697,12 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         }
         closeMenu(false);
         screensaverActive = true;
+        if (ambientView != null) ambientView.stop();
         if (screensaverView == null) {
-            screensaverView = getLayoutInflater().inflate(R.layout.view_nightstand, root, false);
+            // The screensaver is always Malam, whatever the time: a bright screen at rest is not calm.
+            android.view.ContextThemeWrapper night = new android.view.ContextThemeWrapper(this, getTheme());
+            night.getTheme().applyStyle(R.style.ThemeOverlay_Tenang_Malam, true);
+            screensaverView = android.view.LayoutInflater.from(night).inflate(R.layout.view_nightstand, root, false);
             screensaverView.setOnClickListener(v -> dismissScreensaver());
             root.addView(screensaverView, new FrameLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
@@ -6561,21 +6760,22 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             }
             if (hint != null) hint.setTextColor(0x55FF453A);
         } else {
-            if (clock != null) clock.setTextColor(0xFFFFFFFF);
-            if (ampm != null) ampm.setTextColor(0xB3FFFFFF);
-            if (date != null) date.setTextColor(0xE6FFFFFF);
+            if (clock != null) clock.setTextColor(Design.TEXT);
+            if (ampm != null) ampm.setTextColor(Design.ink(0xB3));
+            if (date != null) date.setTextColor(Design.ink(0xE6));
             if (hijri != null) hijri.setTextColor(0xD9E6E0D2);
             if (prayer != null) {
-                prayer.setTextColor(0xFFFFFFFF);
+                prayer.setTextColor(Design.TEXT);
                 prayer.setBackgroundResource(R.drawable.pill_bg);
             }
-            if (hint != null) hint.setTextColor(0x4DFFFFFF);
+            if (hint != null) hint.setTextColor(Design.ink(0x4D));
         }
     }
 
     private void dismissScreensaver() {
         if (!screensaverActive || screensaverView == null) return;
         screensaverActive = false;
+        if (ambientView != null && hasWindowFocus()) ambientView.start(reducedMotion);
         lastUserInteraction = android.os.SystemClock.elapsedRealtime();
         screensaverView.animate().alpha(0f).setDuration(350).withEndAction(() -> {
             if (!screensaverActive && screensaverView != null) {
@@ -6974,7 +7174,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
 
     private void addSeparator(LinearLayout rows) {
         View line = new View(this);
-        line.setBackgroundColor(0x1FFFFFFF);
+        line.setBackgroundColor(Design.ink(0x1F));
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) density);
         int m = (int) (6 * density), h = (int) (12 * density);
         lp.setMargins(h, m, h, m);

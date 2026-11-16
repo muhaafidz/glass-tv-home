@@ -541,6 +541,13 @@ final class PrayerTimes {
         }
     }
 
+    /** Today's six prayer times (epoch ms, PrayerTimes order), from the JAKIM cache or the calculation. */
+    static long[] todayTimes(Context context) {
+        Calendar now = Calendar.getInstance();
+        long[] times = getTimesForToday(context, now.get(Calendar.DAY_OF_MONTH));
+        return times != null && times.length >= 6 ? times : calculateFallback(context, now);
+    }
+
     /** Returns all 6 prayers for today with formatted times and status. */
     static PrayerItem[] getPrayerItems(Context context) {
         Calendar now = Calendar.getInstance();
@@ -639,14 +646,14 @@ final class PrayerTimes {
                 sb.setSpan(new ForegroundColorSpan(0xFF4ADE80), start, sb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 sb.setSpan(new StyleSpan(Typeface.BOLD), start, sb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             } else {
-                sb.setSpan(new ForegroundColorSpan(0xE6FFFFFF), start, sb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                sb.setSpan(new ForegroundColorSpan(Design.ink(0xE6)), start, sb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 sb.setSpan(new StyleSpan(Typeface.BOLD), start, sb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
 
             if (i < displayIndices.length - 1) {
                 int dotStart = sb.length();
                 sb.append("  •  ");
-                sb.setSpan(new ForegroundColorSpan(0x80FFFFFF), dotStart, sb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                sb.setSpan(new ForegroundColorSpan(Design.ink(0x80)), dotStart, sb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
         }
 

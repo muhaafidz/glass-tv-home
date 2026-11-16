@@ -129,7 +129,7 @@ final class Config {
         boolean homeSettings = res.getBoolean(R.bool.show_home_settings_shortcut);
         boolean networkPill = res.getBoolean(R.bool.show_network_pill);
         boolean liveTvRow = res.getBoolean(R.bool.show_live_tv);
-        int background = 0xFF000000;
+        int background = 0;   // 0: no theme colour, the palette's background is used
         boolean applied = false;
 
         File dir = dir(ctx);
@@ -208,6 +208,13 @@ final class Config {
                 Math.max(1, columns), Math.max(0, rowsBelow), shamsi, moduleCards, reducedMotion,
                 vpn, homeSettings, networkPill, liveTvRow, background, wallpaper, wallpapers, wallpaperIntervalMs,
                 places, wallpaperOnline, wallpaperFeed, cacheCleanDays, applied);
+    }
+
+    /** The theme's "palette" key (malam, senja, embun or auto), or null when the theme has none. */
+    static String paletteMode(Context ctx) {
+        File dir = dir(ctx);
+        JSONObject json = read(dir != null ? new File(dir, FILE_NAME) : null);
+        return json != null ? string(json, "palette", null) : null;
     }
 
     /** Reads and parses the overlay; any problem means "no overlay", never a crash on the home screen. */

@@ -41,6 +41,7 @@ public class AzanActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Tenang.applyDark(this);
         // Over the screensaver too: turn the screen on and come in front of it.
         setShowWhenLocked(true);
         setTurnScreenOn(true);
@@ -62,7 +63,7 @@ public class AzanActivity extends Activity {
         card.setGravity(Gravity.CENTER_VERTICAL);
         card.setPadding(dp(30), dp(20), dp(34), dp(20));
         GradientDrawable glass = new GradientDrawable();
-        glass.setColor(0xF214161D);
+        glass.setColor(Design.alpha(Design.SURFACE, 0xF2));
         glass.setCornerRadius(dp(24));
         glass.setStroke(Math.max(1, dp(1f)), Design.HAIRLINE);
         card.setBackground(glass);
@@ -72,7 +73,7 @@ public class AzanActivity extends Activity {
         TextView takbir = text("ٱللَّهُ أَكْبَرُ", amiri, 40, 0xFFF5D489, 400);
         card.addView(takbir);
         View line = new View(this);
-        line.setBackgroundColor(0x33FFFFFF);
+        line.setBackgroundColor(Design.ink(0x33));
         LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(Math.max(1, dp(1)), dp(70));
         llp.leftMargin = dp(26);
         llp.rightMargin = dp(26);
@@ -82,7 +83,7 @@ public class AzanActivity extends Activity {
         words.setOrientation(LinearLayout.VERTICAL);
         String town = Location.prefs(this).getString("now_town", "");
         String azanWord = AppLanguage.strAzanPopupTitle(this);
-        TextView label = text(town.isEmpty() ? azanWord : azanWord + "  ·  " + town.toUpperCase(java.util.Locale.ROOT), outfit, 12, 0xB3FFFFFF, 600);
+        TextView label = text(town.isEmpty() ? azanWord : azanWord + "  ·  " + town.toUpperCase(java.util.Locale.ROOT), outfit, 12, Design.ink(0xB3), 600);
         label.setLetterSpacing(0.22f);
         label.setGravity(Gravity.START);
         words.addView(label);
@@ -94,15 +95,15 @@ public class AzanActivity extends Activity {
 
         String[] pNames = AppLanguage.getPrayerNames(this);
         int validPrayerIdx = Math.max(0, Math.min(prayer, pNames.length - 1));
-        TextView name = text(pNames[validPrayerIdx], outfit, 28, 0xFFFFFFFF, 500);
+        TextView name = text(pNames[validPrayerIdx], outfit, 28, Design.TEXT, 500);
         name.setSingleLine(true);
         nameRow.addView(name);
-        TextView time = text(when, outfit, 20, 0xCCFFFFFF, 300);
+        TextView time = text(when, outfit, 20, Design.ink(0xCC), 300);
         time.setSingleLine(true);
         time.setPadding(dp(14), 0, 0, dp(3));
         nameRow.addView(time);
         words.addView(nameRow);
-        hint = text(AppLanguage.strAzanPopupHint(this), outfit, 12, 0x99FFFFFF, 400);
+        hint = text(AppLanguage.strAzanPopupHint(this), outfit, 12, Design.ink(0x99), 400);
         hint.setGravity(Gravity.START);
         words.addView(hint);
         card.addView(words);
@@ -231,7 +232,7 @@ public class AzanActivity extends Activity {
         t.setTextSize(sp);
         t.setTextColor(color);
         t.setGravity(Gravity.CENTER);
-        if (font != null) t.setFontVariationSettings("'wght' " + weight);
+        if (font != null) Fonts.variation(t, "'wght' " + weight);
         return t;
     }
 

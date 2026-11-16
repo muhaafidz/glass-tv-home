@@ -43,7 +43,7 @@ public final class WhoIsWatchingDialog {
 
         GradientDrawable bg = new GradientDrawable(
                 GradientDrawable.Orientation.TOP_BOTTOM,
-                new int[]{0xFF0A0B0F, 0xFF0E1015}
+                new int[]{Design.BG1, Design.SURFACE}
         );
         rootFrame.setBackground(bg);
 
@@ -67,7 +67,7 @@ public final class WhoIsWatchingDialog {
         TextView tvTitle = new TextView(activity);
         tvTitle.setText(AppLanguage.strWhosWatchingTitle(activity));
         tvTitle.setTextSize(38);
-        tvTitle.setTextColor(0xFFFFFFFF);
+        tvTitle.setTextColor(Design.TEXT);
         tvTitle.setTypeface(activity.getResources().getFont(R.font.outfit), android.graphics.Typeface.BOLD);
         tvTitle.setGravity(Gravity.CENTER);
         tvTitle.setPadding(0, 0, 0, (int) (6 * density));
@@ -77,7 +77,7 @@ public final class WhoIsWatchingDialog {
         TextView tvSub = new TextView(activity);
         tvSub.setText(AppLanguage.strWhosWatchingSub(activity));
         tvSub.setTextSize(15.5f);
-        tvSub.setTextColor(0xFF98A2B3);
+        tvSub.setTextColor(Design.TEXT_MUTED);
         tvSub.setGravity(Gravity.CENTER);
         tvSub.setPadding(0, 0, 0, (int) (40 * density));
         contentCol.addView(tvSub);
@@ -115,7 +115,7 @@ public final class WhoIsWatchingDialog {
         TextView tvHint = new TextView(activity);
         tvHint.setText(AppLanguage.strWhosWatchingHint(activity));
         tvHint.setTextSize(13);
-        tvHint.setTextColor(0xFF98A2B3);
+        tvHint.setTextColor(Design.TEXT_MUTED);
         tvHint.setGravity(Gravity.CENTER);
         tvHint.setPadding(0, (int) (16 * density), 0, 0);
         contentCol.addView(tvHint);
@@ -209,7 +209,7 @@ public final class WhoIsWatchingDialog {
             GradientDrawable ringGd = new GradientDrawable();
             ringGd.setShape(GradientDrawable.OVAL);
             ringGd.setColor(Color.TRANSPARENT);
-            ringGd.setStroke(Math.round(2f * density), 0x552EF2C0); // Soap bubble thin-film rim
+            ringGd.setStroke(Math.round(2f * density), Design.alpha(Design.ACCENT, 0x55)); // Soap bubble thin-film rim
             ringFrame.setBackground(ringGd);
 
             // Inner Circular Avatar
@@ -232,13 +232,13 @@ public final class WhoIsWatchingDialog {
 
                 GradientDrawable starBg = new GradientDrawable();
                 starBg.setShape(GradientDrawable.OVAL);
-                starBg.setColor(0xFFFFB84D); // Amber gold
-                starBg.setStroke(Math.round(2f * density), 0xFF0A0B0F);
+                starBg.setColor(Design.AMBER); // Amber gold
+                starBg.setStroke(Math.round(2f * density), Design.BG1);
                 starBadge.setBackground(starBg);
 
                 TextView tvStar = new TextView(activity);
                 tvStar.setText("★");
-                tvStar.setTextColor(0xFF000000);
+                tvStar.setTextColor(Design.ON_ACCENT);
                 tvStar.setTextSize(14);
                 tvStar.setGravity(Gravity.CENTER);
                 tvStar.setIncludeFontPadding(false);
@@ -262,7 +262,7 @@ public final class WhoIsWatchingDialog {
             tvName.setLayoutParams(nameLp);
             tvName.setText(prof.name);
             tvName.setTextSize(17);
-            tvName.setTextColor(0xFF98A2B3);
+            tvName.setTextColor(Design.TEXT_MUTED);
             tvName.setTypeface(activity.getResources().getFont(R.font.outfit), android.graphics.Typeface.BOLD);
             tvName.setGravity(Gravity.CENTER);
             tvName.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
@@ -286,11 +286,11 @@ public final class WhoIsWatchingDialog {
 
             if (prof.isPrimary) {
                 tvRole.setText(AppLanguage.strProfileRolePrimary(activity));
-                tvRole.setTextColor(0xFFFFB84D); // Amber gold
+                tvRole.setTextColor(Design.AMBER); // Amber gold
                 tvRole.setVisibility(View.VISIBLE);
             } else if (prof.isChild) {
                 tvRole.setText(AppLanguage.strProfileRoleChild(activity));
-                tvRole.setTextColor(0xFF2EF2C0); // Sky blue
+                tvRole.setTextColor(Design.ACCENT); // Sky blue
                 tvRole.setVisibility(View.VISIBLE);
             } else {
                 tvRole.setText(" ");
@@ -301,15 +301,15 @@ public final class WhoIsWatchingDialog {
             // Focus & Scale Animation - only scale ringFrame so text labels stay strictly aligned!
             card.setOnFocusChangeListener((v, hasFocus) -> {
                 if (hasFocus) {
-                    ringGd.setStroke(Math.round(3.5f * density), 0xFF2EF2C0); // Glowing soap bubble rim
-                    ringGd.setColor(0x332EF2C0);
+                    ringGd.setStroke(Math.round(3.5f * density), Design.ACCENT); // Glowing soap bubble rim
+                    ringGd.setColor(Design.alpha(Design.ACCENT, 0x33));
                     ringFrame.animate().scaleX(1.10f).scaleY(1.10f).setDuration(160).start();
-                    tvName.setTextColor(0xFFFFFFFF);
+                    tvName.setTextColor(Design.TEXT);
                 } else {
-                    ringGd.setStroke(Math.round(2f * density), 0x552EF2C0);
+                    ringGd.setStroke(Math.round(2f * density), Design.alpha(Design.ACCENT, 0x55));
                     ringGd.setColor(Color.TRANSPARENT);
                     ringFrame.animate().scaleX(1.0f).scaleY(1.0f).setDuration(160).start();
-                    tvName.setTextColor(0xFF98A2B3);
+                    tvName.setTextColor(Design.TEXT_MUTED);
                 }
             });
 
@@ -356,13 +356,13 @@ public final class WhoIsWatchingDialog {
 
         GradientDrawable plusGd = new GradientDrawable();
         plusGd.setShape(GradientDrawable.OVAL);
-        plusGd.setColor(0x14FFFFFF); // Translucent frosted glass circle
-        plusGd.setStroke(Math.round(2f * density), 0x552EF2C0);
+        plusGd.setColor(Design.ink(0x14)); // Translucent frosted glass circle
+        plusGd.setStroke(Math.round(2f * density), Design.alpha(Design.ACCENT, 0x55));
         plusRing.setBackground(plusGd);
 
         TextView tvPlus = new TextView(activity);
         tvPlus.setText("+");
-        tvPlus.setTextColor(0xFF98A2B3);
+        tvPlus.setTextColor(Design.TEXT_MUTED);
         tvPlus.setTextSize(36);
         tvPlus.setTypeface(activity.getResources().getFont(R.font.outfit), android.graphics.Typeface.NORMAL);
         tvPlus.setGravity(Gravity.CENTER);
@@ -382,7 +382,7 @@ public final class WhoIsWatchingDialog {
         tvAddLabel.setLayoutParams(addLabelLp);
         tvAddLabel.setText(AppLanguage.strAddProfile(activity));
         tvAddLabel.setTextSize(17);
-        tvAddLabel.setTextColor(0xFF98A2B3);
+        tvAddLabel.setTextColor(Design.TEXT_MUTED);
         tvAddLabel.setTypeface(activity.getResources().getFont(R.font.outfit), android.graphics.Typeface.BOLD);
         tvAddLabel.setGravity(Gravity.CENTER);
         tvAddLabel.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
@@ -403,16 +403,16 @@ public final class WhoIsWatchingDialog {
 
         addCard.setOnFocusChangeListener((v, hasFocus) -> {
             if (hasFocus) {
-                plusGd.setStroke(Math.round(3.5f * density), 0xFF2EF2C0);
-                plusGd.setColor(0x332EF2C0);
-                tvPlus.setTextColor(0xFFFFFFFF);
-                tvAddLabel.setTextColor(0xFFFFFFFF);
+                plusGd.setStroke(Math.round(3.5f * density), Design.ACCENT);
+                plusGd.setColor(Design.alpha(Design.ACCENT, 0x33));
+                tvPlus.setTextColor(Design.TEXT);
+                tvAddLabel.setTextColor(Design.TEXT);
                 plusRing.animate().scaleX(1.10f).scaleY(1.10f).setDuration(160).start();
             } else {
-                plusGd.setStroke(Math.round(2f * density), 0x552EF2C0);
-                plusGd.setColor(0x14FFFFFF);
-                tvPlus.setTextColor(0xFF98A2B3);
-                tvAddLabel.setTextColor(0xFF98A2B3);
+                plusGd.setStroke(Math.round(2f * density), Design.alpha(Design.ACCENT, 0x55));
+                plusGd.setColor(Design.ink(0x14));
+                tvPlus.setTextColor(Design.TEXT_MUTED);
+                tvAddLabel.setTextColor(Design.TEXT_MUTED);
                 plusRing.animate().scaleX(1.0f).scaleY(1.0f).setDuration(160).start();
             }
         });

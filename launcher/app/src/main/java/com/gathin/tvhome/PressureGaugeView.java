@@ -30,7 +30,7 @@ public class PressureGaugeView extends View {
     private void init() {
         tickPaint.setStyle(Paint.Style.STROKE);
         tickPaint.setStrokeWidth(1.5f);
-        tickPaint.setColor(0x35FFFFFF);
+        tickPaint.setColor(Design.ink(0x35));
 
         activeTick.setStyle(Paint.Style.STROKE);
         activeTick.setStrokeWidth(2f);
@@ -42,7 +42,7 @@ public class PressureGaugeView extends View {
         textPaint.setFakeBoldText(true);
 
         labelPaint.setStyle(Paint.Style.FILL);
-        labelPaint.setColor(0x99FFFFFF);
+        labelPaint.setColor(Design.ink(0x99));
     }
 
     public void setPressure(int hPa) {

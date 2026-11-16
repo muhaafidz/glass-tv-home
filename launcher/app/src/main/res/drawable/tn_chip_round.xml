@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Small round button inside a chip (the warning's ✕). -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_focused="true">
+        <shape android:shape="oval">
+            <solid android:color="?attr/tnChip" />
+            <stroke android:width="2dp" android:color="?attr/tnAccent" />
+        </shape>
+    </item>
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="?attr/tnChip" />
+        </shape>
+    </item>
+</selector>

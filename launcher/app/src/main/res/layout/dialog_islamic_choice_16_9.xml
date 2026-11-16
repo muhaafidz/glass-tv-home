@@ -38,11 +38,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/outfit"
-                android:fontVariationSettings="'wght' 700"
+                android:textFontWeight="700"
                 android:letterSpacing="0.06"
                 android:text="PILIHAN KANDUNGAN PAPARAN"
                 android:textAllCaps="true"
-                android:textColor="#FFFFFFFF"
+                android:textColor="?attr/tnText"
                 android:textSize="15sp" />
 
             <TextView
@@ -50,9 +50,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="1dp"
                 android:fontFamily="@font/outfit"
-                android:fontVariationSettings="'wght' 400"
+                android:textFontWeight="400"
                 android:text="Pilih jenis maklumat rohani yang dipaparkan di atas jadual waktu solat"
-                android:textColor="#99A1AF"
+                android:textColor="?attr/tnMuted"
                 android:textSize="11sp" />
         </LinearLayout>
 
@@ -66,10 +66,10 @@
             android:focusable="true"
             android:gravity="center"
             android:text="✕"
-            android:textColor="#CCFFFFFF"
+            android:textColor="?attr/tnMuted"
             android:textSize="13sp"
             android:fontFamily="@font/outfit"
-            android:fontVariationSettings="'wght' 700"
+            android:textFontWeight="700"
             android:contentDescription="Tutup" />
     </LinearLayout>
 
@@ -118,11 +118,11 @@
                     android:layout_weight="1"
                     android:layout_marginStart="6dp"
                     android:fontFamily="@font/outfit"
-                    android:fontVariationSettings="'wght' 700"
+                    android:textFontWeight="700"
                     android:letterSpacing="0.05"
                     android:text="AYAT AL-QURAN"
                     android:textAllCaps="true"
-                    android:textColor="@color/sinar_amber"
+                    android:textColor="?attr/tnAmber"
                     android:textSize="9.5sp" />
 
                 <TextView
@@ -135,9 +135,9 @@
                     android:paddingEnd="10dp"
                     android:paddingBottom="3dp"
                     android:fontFamily="@font/outfit"
-                    android:fontVariationSettings="'wght' 700"
+                    android:textFontWeight="700"
                     android:text="● AKTIF"
-                    android:textColor="@color/sinar_accent"
+                    android:textColor="?attr/tnAccent"
                     android:textSize="9.5sp" />
             </LinearLayout>
 
@@ -146,9 +146,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:fontFamily="@font/outfit"
-                android:fontVariationSettings="'wght' 700"
+                android:textFontWeight="700"
                 android:text="Doa Harian"
-                android:textColor="#FFFFFFFF"
+                android:textColor="?attr/tnText"
                 android:textSize="16.5sp" />
 
             <TextView
@@ -156,9 +156,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="1dp"
                 android:fontFamily="@font/outfit"
-                android:fontVariationSettings="'wght' 400"
+                android:textFontWeight="400"
                 android:text="Ayat pilihan berganti setiap hari &amp; terjemahan Bahasa Melayu"
-                android:textColor="@color/sinar_text_muted"
+                android:textColor="?attr/tnMuted"
                 android:textSize="10.5sp"
                 android:maxLines="1"
                 android:ellipsize="end" />
@@ -186,7 +186,7 @@
                     android:lineSpacingExtra="2dp"
                     android:maxLines="2"
                     android:ellipsize="end"
-                    android:textColor="@color/sinar_amber"
+                    android:textColor="?attr/tnAmber"
                     android:textSize="13sp" />
 
                 <TextView
@@ -195,11 +195,11 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:fontFamily="@font/outfit"
-                    android:fontVariationSettings="'wght' 400"
+                    android:textFontWeight="400"
                     android:lineSpacingExtra="1dp"
                     android:maxLines="2"
                     android:ellipsize="end"
-                    android:textColor="@color/sinar_text_muted"
+                    android:textColor="?attr/tnMuted"
                     android:textSize="10sp" />
             </LinearLayout>
 
@@ -211,9 +211,9 @@
                 android:layout_marginTop="8dp"
                 android:gravity="center"
                 android:fontFamily="@font/outfit"
-                android:fontVariationSettings="'wght' 600"
+                android:textFontWeight="500"
                 android:text="✓ Sedang Dipaparkan"
-                android:textColor="@color/sinar_accent"
+                android:textColor="?attr/tnAccent"
                 android:textSize="11sp" />
         </LinearLayout>
 
@@ -252,11 +252,11 @@
                     android:layout_weight="1"
                     android:layout_marginStart="6dp"
                     android:fontFamily="@font/outfit"
-                    android:fontVariationSettings="'wght' 700"
+                    android:textFontWeight="700"
                     android:letterSpacing="0.05"
                     android:text="KHUTBAH JUMAAT"
                     android:textAllCaps="true"
-                    android:textColor="@color/sinar_accent"
+                    android:textColor="?attr/tnAccent"
                     android:textSize="9.5sp" />
 
                 <TextView
@@ -269,9 +269,9 @@
                     android:paddingEnd="10dp"
                     android:paddingBottom="3dp"
                     android:fontFamily="@font/outfit"
-                    android:fontVariationSettings="'wght' 700"
+                    android:textFontWeight="700"
                     android:text="○ PILIH"
-                    android:textColor="#80FFFFFF"
+                    android:textColor="?attr/tnMuted"
                     android:textSize="9.5sp" />
             </LinearLayout>
 
@@ -280,9 +280,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:fontFamily="@font/outfit"
-                android:fontVariationSettings="'wght' 700"
+                android:textFontWeight="700"
                 android:text="Teks Minbar"
-                android:textColor="#FFFFFFFF"
+                android:textColor="?attr/tnText"
                 android:textSize="16.5sp" />
 
             <TextView
@@ -290,9 +290,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="1dp"
                 android:fontFamily="@font/outfit"
-                android:fontVariationSettings="'wght' 400"
+                android:textFontWeight="400"
                 android:text="Intipati khutbah Jumaat mengikut zon lokasi anda"
-                android:textColor="@color/sinar_text_muted"
+                android:textColor="?attr/tnMuted"
                 android:textSize="10.5sp"
                 android:maxLines="1"
                 android:ellipsize="end" />
@@ -315,11 +315,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/outfit"
-                    android:fontVariationSettings="'wght' 700"
+                    android:textFontWeight="700"
                     android:letterSpacing="0.05"
                     android:singleLine="true"
                     android:ellipsize="end"
-                    android:textColor="@color/sinar_accent"
+                    android:textColor="?attr/tnAccent"
                     android:textSize="9sp" />
 
                 <TextView
@@ -328,10 +328,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
                     android:fontFamily="@font/outfit"
-                    android:fontVariationSettings="'wght' 700"
+                    android:textFontWeight="700"
                     android:singleLine="true"
                     android:ellipsize="end"
-                    android:textColor="#FFFFFFFF"
+                    android:textColor="?attr/tnText"
                     android:textSize="12sp" />
 
                 <TextView
@@ -340,11 +340,11 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="3dp"
                     android:fontFamily="@font/outfit"
-                    android:fontVariationSettings="'wght' 400"
+                    android:textFontWeight="400"
                     android:lineSpacingExtra="1dp"
                     android:maxLines="2"
                     android:ellipsize="end"
-                    android:textColor="@color/sinar_text_muted"
+                    android:textColor="?attr/tnMuted"
                     android:textSize="10sp" />
             </LinearLayout>
 
@@ -356,9 +356,9 @@
                 android:layout_marginTop="8dp"
                 android:gravity="center"
                 android:fontFamily="@font/outfit"
-                android:fontVariationSettings="'wght' 600"
+                android:textFontWeight="500"
                 android:text="Tekan OK untuk Pilih"
-                android:textColor="@color/sinar_text_muted"
+                android:textColor="?attr/tnMuted"
                 android:textSize="11sp" />
         </LinearLayout>
     </LinearLayout>

@@ -20,11 +20,11 @@
             android:layout_width="42dp"
             android:layout_height="wrap_content"
             android:fontFamily="@font/outfit"
-            android:fontVariationSettings="'wght' 600"
+            android:textFontWeight="500"
             android:includeFontPadding="false"
             android:singleLine="true"
             android:text="Today"
-            android:textColor="#FFFFFF"
+            android:textColor="?attr/tnText"
             android:textSize="11sp" />
 
         <LinearLayout
@@ -46,11 +46,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="2dp"
                 android:fontFamily="@font/outfit"
-                android:fontVariationSettings="'wght' 700"
+                android:textFontWeight="700"
                 android:includeFontPadding="false"
                 android:singleLine="true"
                 android:text="85%"
-                android:textColor="@color/sinar_accent"
+                android:textColor="?attr/tnAccent"
                 android:textSize="8.5sp" />
         </LinearLayout>
 
@@ -59,12 +59,12 @@
             android:layout_width="22dp"
             android:layout_height="wrap_content"
             android:fontFamily="@font/outfit"
-            android:fontVariationSettings="'wght' 500"
+            android:textFontWeight="500"
             android:gravity="end"
             android:includeFontPadding="false"
             android:singleLine="true"
             android:text="24°"
-            android:textColor="@color/sinar_text_muted"
+            android:textColor="?attr/tnMuted"
             android:textSize="11sp" />
 
         <com.gathin.tvhome.TempRangeBarView
@@ -80,12 +80,12 @@
             android:layout_width="22dp"
             android:layout_height="wrap_content"
             android:fontFamily="@font/outfit"
-            android:fontVariationSettings="'wght' 700"
+            android:textFontWeight="700"
             android:gravity="start"
             android:includeFontPadding="false"
             android:singleLine="true"
             android:text="29°"
-            android:textColor="#FFFFFF"
+            android:textColor="?attr/tnText"
             android:textSize="11sp" />
     </LinearLayout>
 

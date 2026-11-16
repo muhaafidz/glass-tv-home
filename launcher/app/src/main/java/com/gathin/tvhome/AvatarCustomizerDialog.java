@@ -197,7 +197,7 @@ public class AvatarCustomizerDialog {
         TextView tv = new TextView(context);
         tv.setText(name);
         tv.setTextSize(12.5f);
-        tv.setTextColor(0xFFF5F7FA);
+        tv.setTextColor(Design.TEXT);
         tv.setGravity(Gravity.CENTER);
         tv.setFocusable(true);
         tv.setClickable(true);
@@ -213,17 +213,17 @@ public class AvatarCustomizerDialog {
         gd.setCornerRadius(17f * density);
 
         if (focused) {
-            gd.setColor(0x332EF2C0); // Luminous cyan glass
-            gd.setStroke(Math.round(2f * density), 0xFF2EF2C0);
-            tv.setTextColor(0xFFFFFFFF);
+            gd.setColor(Design.alpha(Design.ACCENT, 0x33)); // Luminous cyan glass
+            gd.setStroke(Math.round(2f * density), Design.ACCENT);
+            tv.setTextColor(Design.TEXT);
         } else if (selected) {
-            gd.setColor(0x28FFFFFF); // Frosted white glass
+            gd.setColor(Design.ink(0x28)); // Frosted white glass
             gd.setStroke(Math.round(1.8f * density), 0xFFFFFFFF);
-            tv.setTextColor(0xFF2EF2C0);
+            tv.setTextColor(Design.ACCENT);
         } else {
-            gd.setColor(0x14FFFFFF); // Subtle soap-bubble glass
-            gd.setStroke(Math.round(1f * density), 0x22FFFFFF);
-            tv.setTextColor(0xFF98A2B3);
+            gd.setColor(Design.ink(0x14)); // Subtle soap-bubble glass
+            gd.setStroke(Math.round(1f * density), Design.ink(0x22));
+            tv.setTextColor(Design.TEXT_MUTED);
         }
         tv.setBackground(gd);
     }
@@ -263,7 +263,7 @@ public class AvatarCustomizerDialog {
         gd.setColor(color);
 
         if (focused) {
-            gd.setStroke(Math.round(3.5f * density), 0xFF2EF2C0); // Luminous cyan focus glow
+            gd.setStroke(Math.round(3.5f * density), Design.ACCENT); // Luminous cyan focus glow
             v.setScaleX(1.15f);
             v.setScaleY(1.15f);
             v.setElevation(8f * density);
@@ -273,7 +273,7 @@ public class AvatarCustomizerDialog {
             v.setScaleY(1.05f);
             v.setElevation(4f * density);
         } else {
-            gd.setStroke(Math.round(1.5f * density), 0x40FFFFFF); // Soft glass rim
+            gd.setStroke(Math.round(1.5f * density), Design.ink(0x40)); // Soft glass rim
             v.setScaleX(1.0f);
             v.setScaleY(1.0f);
             v.setElevation(0f);

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tenang design tokens (docs/REVAMP.md §3.1). Layouts and XML drawables use ?attr/tn…, Java uses Design.
+     The values live in themes_tenang.xml, one overlay per palette. -->
+<resources>
+    <attr name="tnBg1" format="color" />
+    <attr name="tnBg2" format="color" />
+    <attr name="tnBlobA" format="color" />
+    <attr name="tnBlobB" format="color" />
+    <attr name="tnSurface" format="color" />
+    <attr name="tnSurfaceRaised" format="color" />
+    <attr name="tnSurfaceFocus" format="color" />
+    <attr name="tnHairline" format="color" />
+    <attr name="tnCard" format="color" />
+    <attr name="tnChip" format="color" />
+    <attr name="tnLine" format="color" />
+    <attr name="tnText" format="color" />
+    <attr name="tnMuted" format="color" />
+    <attr name="tnAccent" format="color" />
+    <attr name="tnAccentSoft" format="color" />
+    <attr name="tnAccentDim" format="color" />
+    <attr name="tnAccentGlow" format="color" />
+    <attr name="tnOnAccent" format="color" />
+    <attr name="tnWarm" format="color" />
+    <attr name="tnAmber" format="color" />
+    <attr name="tnAmberBg" format="color" />
+    <attr name="tnGood" format="color" />
+    <attr name="tnCoral" format="color" />
+    <attr name="tnCyan" format="color" />
+    <attr name="tnViolet" format="color" />
+    <attr name="tnWave" format="color" />
+    <attr name="tnInk" format="color" />
+    <attr name="tnStars" format="float" />
+    <attr name="tnIsLight" format="boolean" />
+</resources>

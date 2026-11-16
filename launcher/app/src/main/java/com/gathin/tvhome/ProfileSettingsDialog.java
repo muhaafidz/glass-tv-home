@@ -51,14 +51,14 @@ public class ProfileSettingsDialog {
         TextView tvTitle = new TextView(context);
         tvTitle.setText("⚙️ Tetapan Profil: " + profile.name);
         tvTitle.setTextSize(20);
-        tvTitle.setTextColor(0xFFFFFFFF);
+        tvTitle.setTextColor(Design.TEXT);
         tvTitle.setTypeface(context.getResources().getFont(R.font.outfit), android.graphics.Typeface.BOLD);
         root.addView(tvTitle);
 
         TextView tvSub = new TextView(context);
         tvSub.setText("Urus nama profil, kawalan kanak-kanak, dan pilihan avatar");
         tvSub.setTextSize(12.5f);
-        tvSub.setTextColor(0xFF98A2B3);
+        tvSub.setTextColor(Design.TEXT_MUTED);
         tvSub.setPadding(0, (int) (2 * density), 0, (int) (10 * density));
         root.addView(tvSub);
 
@@ -84,19 +84,19 @@ public class ProfileSettingsDialog {
         TextView tvNameLabel = new TextView(context);
         tvNameLabel.setText("NAMA PROFIL");
         tvNameLabel.setTextSize(11);
-        tvNameLabel.setTextColor(0xFF98A2B3);
+        tvNameLabel.setTextColor(Design.TEXT_MUTED);
         tvNameLabel.setTypeface(context.getResources().getFont(R.font.outfit), android.graphics.Typeface.BOLD);
         inputCol.addView(tvNameLabel);
 
         EditText etName = new EditText(context);
         etName.setText(profile.name);
-        etName.setTextColor(0xFFFFFFFF);
+        etName.setTextColor(Design.TEXT);
         etName.setTextSize(14.5f);
         etName.setSingleLine(true);
         etName.setPadding((int) (12 * density), (int) (7 * density), (int) (12 * density), (int) (7 * density));
 
         GradientDrawable etBg = new GradientDrawable();
-        etBg.setColor(0xFF1B1E27);
+        etBg.setColor(Design.SURFACE_RAISED);
         etBg.setCornerRadius(10 * density);
         etBg.setStroke((int) (1f * density), Design.HAIRLINE);
         etName.setBackground(etBg);
@@ -104,7 +104,7 @@ public class ProfileSettingsDialog {
 
         CheckBox cbChild = new CheckBox(context);
         cbChild.setText("Aktifkan Mod Kanak-kanak (Sekat aplikasi dewasa)");
-        cbChild.setTextColor(0xFFF5F7FA);
+        cbChild.setTextColor(Design.TEXT);
         cbChild.setTextSize(12.5f);
         cbChild.setChecked(profile.isChild);
         cbChild.setPadding((int) (6 * density), (int) (4 * density), 0, 0);
@@ -117,7 +117,7 @@ public class ProfileSettingsDialog {
         TextView tvAvatarSection = new TextView(context);
         tvAvatarSection.setText("PILIH JENIS AVATAR (3 PILIHAN)");
         tvAvatarSection.setTextSize(11.5f);
-        tvAvatarSection.setTextColor(0xFF2EF2C0); // Cyan
+        tvAvatarSection.setTextColor(Design.ACCENT); // Cyan
         tvAvatarSection.setTypeface(context.getResources().getFont(R.font.outfit), android.graphics.Typeface.BOLD);
         tvAvatarSection.setPadding(0, (int) (4 * density), 0, (int) (8 * density));
         root.addView(tvAvatarSection);
@@ -179,7 +179,7 @@ public class ProfileSettingsDialog {
         if (allProfs.size() > 1) {
             TextView btnDelete = new TextView(context);
             btnDelete.setText("🗑️ Padam Profil");
-            btnDelete.setTextColor(0xFFFF6B6B); // Red
+            btnDelete.setTextColor(Design.CORAL); // Red
             btnDelete.setTextSize(13);
             btnDelete.setTypeface(context.getResources().getFont(R.font.outfit), android.graphics.Typeface.BOLD);
             btnDelete.setGravity(Gravity.CENTER);
@@ -187,7 +187,7 @@ public class ProfileSettingsDialog {
             btnDelete.setFocusable(true);
             btnDelete.setClickable(true);
             btnDelete.setOnFocusChangeListener((v, hasFocus) -> {
-                btnDelete.setTextColor(hasFocus ? 0xFFFF9B9B : 0xFFFF6B6B);
+                btnDelete.setTextColor(hasFocus ? 0xFFFF9B9B : Design.CORAL);
             });
             actionsRow.addView(btnDelete);
 
@@ -203,7 +203,7 @@ public class ProfileSettingsDialog {
 
         TextView btnCancel = new TextView(context);
         btnCancel.setText("Batal");
-        btnCancel.setTextColor(0xFF98A2B3);
+        btnCancel.setTextColor(Design.TEXT_MUTED);
         btnCancel.setTextSize(13.5f);
         btnCancel.setTypeface(context.getResources().getFont(R.font.outfit), android.graphics.Typeface.NORMAL);
         btnCancel.setGravity(Gravity.CENTER);
@@ -211,13 +211,13 @@ public class ProfileSettingsDialog {
         btnCancel.setFocusable(true);
         btnCancel.setClickable(true);
         btnCancel.setOnFocusChangeListener((v, hasFocus) -> {
-            btnCancel.setTextColor(hasFocus ? 0xFFFFFFFF : 0xFF98A2B3);
+            btnCancel.setTextColor(hasFocus ? Design.TEXT : Design.TEXT_MUTED);
         });
         actionsRow.addView(btnCancel);
 
         TextView btnSave = new TextView(context);
         btnSave.setText("Simpan Perubahan");
-        btnSave.setTextColor(0xFFFFFFFF);
+        btnSave.setTextColor(Design.TEXT);
         btnSave.setTextSize(13.5f);
         btnSave.setTypeface(context.getResources().getFont(R.font.outfit), android.graphics.Typeface.BOLD);
         btnSave.setGravity(Gravity.CENTER);
@@ -272,9 +272,9 @@ public class ProfileSettingsDialog {
         card.setPadding((int) (16 * density), (int) (11 * density), (int) (16 * density), (int) (11 * density));
 
         GradientDrawable gd = new GradientDrawable();
-        gd.setColor(0x18FFFFFF);
+        gd.setColor(Design.ink(0x18));
         gd.setCornerRadius(14 * density);
-        gd.setStroke((int) (1.2f * density), 0x22FFFFFF);
+        gd.setStroke((int) (1.2f * density), Design.ink(0x22));
         card.setBackground(gd);
 
         LinearLayout textCol = new LinearLayout(context);
@@ -283,14 +283,14 @@ public class ProfileSettingsDialog {
         TextView tvT = new TextView(context);
         tvT.setText(title);
         tvT.setTextSize(14f);
-        tvT.setTextColor(0xFFFFFFFF);
+        tvT.setTextColor(Design.TEXT);
         tvT.setTypeface(context.getResources().getFont(R.font.outfit), android.graphics.Typeface.BOLD);
         textCol.addView(tvT);
 
         TextView tvS = new TextView(context);
         tvS.setText(subtitle);
         tvS.setTextSize(11.5f);
-        tvS.setTextColor(0xFF98A2B3);
+        tvS.setTextColor(Design.TEXT_MUTED);
         tvS.setPadding(0, (int) (2 * density), 0, 0);
         textCol.addView(tvS);
 
@@ -299,7 +299,7 @@ public class ProfileSettingsDialog {
         TextView btn = new TextView(context);
         btn.setText(btnText);
         btn.setTextSize(12.5f);
-        btn.setTextColor(0xFFFFFFFF);
+        btn.setTextColor(Design.TEXT);
         btn.setTypeface(context.getResources().getFont(R.font.outfit), android.graphics.Typeface.BOLD);
         btn.setGravity(Gravity.CENTER);
         btn.setIncludeFontPadding(false);
@@ -311,9 +311,9 @@ public class ProfileSettingsDialog {
         card.addView(btn, btnLp);
 
         card.setOnFocusChangeListener((v, hasFocus) -> {
-            gd.setColor(hasFocus ? 0x332EF2C0 : 0x18FFFFFF);
-            gd.setStroke((int) (2.0f * density), hasFocus ? 0xFF2EF2C0 : 0x22FFFFFF);
-            btn.setTextColor(hasFocus ? 0xFFFFFFFF : 0xFF98A2B3);
+            gd.setColor(hasFocus ? Design.alpha(Design.ACCENT, 0x33) : Design.ink(0x18));
+            gd.setStroke((int) (2.0f * density), hasFocus ? Design.ACCENT : Design.ink(0x22));
+            btn.setTextColor(hasFocus ? Design.TEXT : Design.TEXT_MUTED);
         });
 
         card.setOnClickListener(onClick);

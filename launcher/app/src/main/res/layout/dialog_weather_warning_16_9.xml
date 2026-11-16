@@ -39,11 +39,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:fontFamily="@font/outfit"
-                android:fontVariationSettings="'wght' 700"
+                android:textFontWeight="700"
                 android:letterSpacing="0.1"
                 android:text="MET MALAYSIA"
                 android:textAllCaps="true"
-                android:textColor="@color/sinar_coral"
+                android:textColor="?attr/tnCoral"
                 android:textSize="10.5sp" />
         </LinearLayout>
 
@@ -54,11 +54,11 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="14dp"
             android:fontFamily="@font/outfit"
-            android:fontVariationSettings="'wght' 700"
+            android:textFontWeight="700"
             android:lineSpacingExtra="2dp"
             android:maxLines="3"
             android:ellipsize="end"
-            android:textColor="#FFFFFFFF"
+            android:textColor="?attr/tnText"
             android:textSize="16sp" />
 
         <View
@@ -73,12 +73,12 @@
             android:layout_height="wrap_content"
             android:background="@drawable/bg_warning_time_pill"
             android:fontFamily="@font/outfit"
-            android:fontVariationSettings="'wght' 500"
+            android:textFontWeight="500"
             android:paddingStart="10dp"
             android:paddingTop="5dp"
             android:paddingEnd="10dp"
             android:paddingBottom="5dp"
-            android:textColor="#E6FFFFFF"
+            android:textColor="?attr/tnMuted"
             android:textSize="11.5sp" />
 
         <!-- Source -->
@@ -88,8 +88,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
             android:fontFamily="@font/outfit"
-            android:fontVariationSettings="'wght' 400"
-            android:textColor="#80FFFFFF"
+            android:textFontWeight="400"
+            android:textColor="?attr/tnMuted"
             android:textSize="10.5sp" />
     </LinearLayout>
 
@@ -121,10 +121,10 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:fontFamily="@font/outfit"
-                android:fontVariationSettings="'wght' 600"
+                android:textFontWeight="500"
                 android:letterSpacing="0.08"
                 android:text="BUTIRAN AMARAN"
-                android:textColor="#80FFFFFF"
+                android:textColor="?attr/tnMuted"
                 android:textSize="10sp" />
 
             <ImageView
@@ -161,10 +161,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
                     android:fontFamily="@font/outfit"
-                    android:fontVariationSettings="'wght' 400"
+                    android:textFontWeight="400"
                     android:justificationMode="inter_word"
                     android:lineSpacingMultiplier="1.25"
-                    android:textColor="#E6FFFFFF"
+                    android:textColor="?attr/tnMuted"
                     android:textSize="11.5sp" />
 
                 <TextView
@@ -172,10 +172,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:fontFamily="@font/outfit"
-                    android:fontVariationSettings="'wght' 600"
+                    android:textFontWeight="500"
                     android:letterSpacing="0.08"
                     android:text="NASIHAT KESELAMATAN"
-                    android:textColor="#80FFFFFF"
+                    android:textColor="?attr/tnMuted"
                     android:textSize="10sp" />
 
                 <TextView
@@ -184,10 +184,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="3dp"
                     android:fontFamily="@font/outfit"
-                    android:fontVariationSettings="'wght' 400"
+                    android:textFontWeight="400"
                     android:justificationMode="inter_word"
                     android:lineSpacingMultiplier="1.25"
-                    android:textColor="#E6FFFFFF"
+                    android:textColor="?attr/tnMuted"
                     android:textSize="11.5sp" />
             </LinearLayout>
         </ScrollView>
@@ -212,7 +212,7 @@
                 android:gravity="center"
                 android:background="@drawable/selector_dlg_btn_primary"
                 android:fontFamily="@font/outfit"
-                android:fontVariationSettings="'wght' 600"
+                android:textFontWeight="500"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
                 android:text="Buka Cuaca Penuh"
@@ -232,12 +232,12 @@
                 android:gravity="center"
                 android:background="@drawable/selector_dlg_btn_secondary"
                 android:fontFamily="@font/outfit"
-                android:fontVariationSettings="'wght' 500"
+                android:textFontWeight="500"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
                 android:text="Tutup"
                 android:textAllCaps="false"
-                android:textColor="#E6FFFFFF"
+                android:textColor="?attr/tnMuted"
                 android:textSize="12sp"
                 android:includeFontPadding="false"
                 android:focusable="true"

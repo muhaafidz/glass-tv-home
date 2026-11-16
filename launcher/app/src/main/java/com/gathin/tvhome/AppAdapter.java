@@ -22,7 +22,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
 import android.view.animation.DecelerateInterpolator;
-import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -87,11 +86,13 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.Holder> {
         }
     }
 
-    static final float FOCUS_SCALE = 1.05f;
+    static final float FOCUS_SCALE = 1.07f;   // Tenang: a calm lift, no bounce
     /** Shared by every tile's zoom, so a focus move makes no new objects. */
     private static final DecelerateInterpolator ZOOM_REDUCED = new DecelerateInterpolator();
-    private static final OvershootInterpolator ZOOM_IN = new OvershootInterpolator(1.6f);
-    private static final OvershootInterpolator ZOOM_OUT = new OvershootInterpolator(0f);
+    /** Tenang's one curve, a soft ease-out (docs/REVAMP.md §3.4). */
+    private static final android.view.animation.PathInterpolator ZOOM_IN =
+            new android.view.animation.PathInterpolator(0.22f, 1f, 0.36f, 1f);
+    private static final android.view.animation.PathInterpolator ZOOM_OUT = ZOOM_IN;
     /** Design size of a tile (dp); tiles shrink from here when the columns don't fit, see tileWidthPx. */
     static final float DESIGN_W_DP = 180f, DESIGN_H_DP = 101f;
 
@@ -570,7 +571,7 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.Holder> {
                     name.animate().alpha(focused ? 1f : 0f).setDuration(90).withLayer().start();
                 } else {
                     view.animate().scaleX(s).scaleY(s)
-                            .setDuration(focused ? 180 : 140)
+                            .setDuration(focused ? 320 : 240)
                             .setInterpolator(focused ? ZOOM_IN : ZOOM_OUT)
                             .withLayer()
                             .start();

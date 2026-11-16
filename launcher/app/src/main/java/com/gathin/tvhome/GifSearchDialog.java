@@ -64,14 +64,14 @@ public class GifSearchDialog {
         TextView tvTitle = new TextView(context);
         tvTitle.setText("🔍 Cari Animasi GIF Avatar");
         tvTitle.setTextSize(20);
-        tvTitle.setTextColor(0xFFFFFFFF);
+        tvTitle.setTextColor(Design.TEXT);
         tvTitle.setTypeface(context.getResources().getFont(R.font.outfit), android.graphics.Typeface.BOLD);
         root.addView(tvTitle);
 
         TextView tvSub = new TextView(context);
         tvSub.setText("Pilih atau cari sebarang animasi GIF untuk dijadikan avatar profil anda");
         tvSub.setTextSize(13);
-        tvSub.setTextColor(0xFF98A2B3);
+        tvSub.setTextColor(Design.TEXT_MUTED);
         root.addView(tvSub);
 
         // Search Input Row
@@ -82,16 +82,16 @@ public class GifSearchDialog {
 
         EditText etSearch = new EditText(context);
         etSearch.setHint("Taip carian GIF (cth: anime, cat, gaming)...");
-        etSearch.setHintTextColor(0xFF98A2B3);
-        etSearch.setTextColor(0xFFFFFFFF);
+        etSearch.setHintTextColor(Design.TEXT_MUTED);
+        etSearch.setTextColor(Design.TEXT);
         etSearch.setTextSize(14);
         etSearch.setSingleLine(true);
         etSearch.setPadding((int) (14 * density), (int) (10 * density), (int) (14 * density), (int) (10 * density));
 
         GradientDrawable etBg = new GradientDrawable();
-        etBg.setColor(0x22FFFFFF);
+        etBg.setColor(Design.ink(0x22));
         etBg.setCornerRadius(12 * density);
-        etBg.setStroke((int) (1.2f * density), 0x33FFFFFF);
+        etBg.setStroke((int) (1.2f * density), Design.ink(0x33));
         etSearch.setBackground(etBg);
 
         LinearLayout.LayoutParams etLp = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
@@ -100,7 +100,7 @@ public class GifSearchDialog {
 
         TextView btnSearch = new TextView(context);
         btnSearch.setText("Cari 🚀");
-        btnSearch.setTextColor(0xFFFFFFFF);
+        btnSearch.setTextColor(Design.TEXT);
         btnSearch.setTextSize(13.5f);
         btnSearch.setTypeface(context.getResources().getFont(R.font.outfit), android.graphics.Typeface.BOLD);
         btnSearch.setGravity(Gravity.CENTER);
@@ -136,7 +136,7 @@ public class GifSearchDialog {
             TextView chip = new TextView(context);
             chip.setText(tag);
             chip.setTextSize(12.5f);
-            chip.setTextColor(0xFFF5F7FA);
+            chip.setTextColor(Design.TEXT);
             chip.setTypeface(context.getResources().getFont(R.font.outfit), android.graphics.Typeface.BOLD);
             chip.setGravity(Gravity.CENTER);
             chip.setIncludeFontPadding(false);
@@ -145,9 +145,9 @@ public class GifSearchDialog {
             chip.setPadding((int) (16 * density), 0, (int) (16 * density), 0);
 
             GradientDrawable chipBg = new GradientDrawable();
-            chipBg.setColor(0x18FFFFFF);
+            chipBg.setColor(Design.ink(0x18));
             chipBg.setCornerRadius(chipRadius);
-            chipBg.setStroke((int) (1.2f * density), 0x33FFFFFF);
+            chipBg.setStroke((int) (1.2f * density), Design.ink(0x33));
             chip.setBackground(chipBg);
 
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
@@ -158,9 +158,9 @@ public class GifSearchDialog {
             chip.setLayoutParams(lp);
 
             chip.setOnFocusChangeListener((v, hasFocus) -> {
-                chipBg.setColor(hasFocus ? 0x552EF2C0 : 0x18FFFFFF);
-                chipBg.setStroke((int) (2f * density), hasFocus ? 0xFF2EF2C0 : 0x33FFFFFF);
-                chip.setTextColor(hasFocus ? 0xFFFFFFFF : 0xFFF5F7FA);
+                chipBg.setColor(hasFocus ? Design.alpha(Design.ACCENT, 0x55) : Design.ink(0x18));
+                chipBg.setStroke((int) (2f * density), hasFocus ? Design.ACCENT : Design.ink(0x33));
+                chip.setTextColor(hasFocus ? Design.TEXT : Design.TEXT);
             });
 
             chip.setOnClickListener(v -> {
@@ -195,7 +195,7 @@ public class GifSearchDialog {
         // Close Button
         TextView btnClose = new TextView(context);
         btnClose.setText("Tutup");
-        btnClose.setTextColor(0xFF98A2B3);
+        btnClose.setTextColor(Design.TEXT_MUTED);
         btnClose.setTextSize(13.5f);
         btnClose.setTypeface(context.getResources().getFont(R.font.outfit), android.graphics.Typeface.BOLD);
         btnClose.setGravity(Gravity.CENTER);
@@ -203,7 +203,7 @@ public class GifSearchDialog {
         btnClose.setClickable(true);
         btnClose.setPadding((int) (18 * density), (int) (8 * density), (int) (18 * density), (int) (8 * density));
         btnClose.setOnFocusChangeListener((v, hasFocus) -> {
-            btnClose.setTextColor(hasFocus ? 0xFFFFFFFF : 0xFF98A2B3);
+            btnClose.setTextColor(hasFocus ? Design.TEXT : Design.TEXT_MUTED);
         });
 
         LinearLayout.LayoutParams closeLp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -322,8 +322,8 @@ public class GifSearchDialog {
 
             GradientDrawable gd = new GradientDrawable();
             gd.setShape(GradientDrawable.OVAL);
-            gd.setColor(0x22FFFFFF);
-            gd.setStroke((int) (1.5f * density), 0x33FFFFFF);
+            gd.setColor(Design.ink(0x22));
+            gd.setStroke((int) (1.5f * density), Design.ink(0x33));
             frame.setBackground(gd);
 
             ImageView iv = new ImageView(context);
@@ -339,8 +339,8 @@ public class GifSearchDialog {
             ProfileAvatarHelper.loadGifOrImage(iv, gifUrl, context);
 
             frame.setOnFocusChangeListener((v, hasFocus) -> {
-                gd.setColor(hasFocus ? 0x332EF2C0 : 0x22FFFFFF);
-                gd.setStroke((int) (3f * density), hasFocus ? 0xFF2EF2C0 : 0x33FFFFFF);
+                gd.setColor(hasFocus ? Design.alpha(Design.ACCENT, 0x33) : Design.ink(0x22));
+                gd.setStroke((int) (3f * density), hasFocus ? Design.ACCENT : Design.ink(0x33));
                 v.setScaleX(hasFocus ? 1.14f : 1.0f);
                 v.setScaleY(hasFocus ? 1.14f : 1.0f);
                 v.setElevation(hasFocus ? 8f * density : 0f);

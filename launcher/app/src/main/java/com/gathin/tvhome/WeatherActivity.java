@@ -57,6 +57,7 @@ public class WeatherActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Tenang.applyDark(this);
         setContentView(R.layout.activity_weather);
 
         weatherBgView = findViewById(R.id.weatherBgView);
@@ -302,7 +303,7 @@ public class WeatherActivity extends Activity {
         }
         if (humidityValText != null) {
             humidityValText.setText(w.humidity + "%");
-            humidityValText.setTextColor(0xFF2EF2C0); // Water Cyan
+            humidityValText.setTextColor(Design.ACCENT); // Water Cyan
         }
 
         if (aqiLabel != null) {
@@ -560,7 +561,7 @@ public class WeatherActivity extends Activity {
             } else {
                 humidityValText.setText(item.rainChance + "%");
             }
-            humidityValText.setTextColor(0xFF2EF2C0);
+            humidityValText.setTextColor(Design.ACCENT);
         }
 
         if (hourlyGraphView != null) {
@@ -583,21 +584,21 @@ public class WeatherActivity extends Activity {
 
     private int getConditionTempColor(WeatherBackgroundView.ConditionType type, int temp) {
         if (type == WeatherBackgroundView.ConditionType.THUNDERSTORM) {
-            return 0xFFFFB84D; // Electric Yellow (#FDE047)
+            return Design.AMBER; // Electric Yellow (#FDE047)
         } else if (type == WeatherBackgroundView.ConditionType.RAIN || type == WeatherBackgroundView.ConditionType.DRIZZLE) {
-            return 0xFF2EF2C0; // Refreshing Rain Sky Blue (#38BDF8)
+            return Design.ACCENT; // Refreshing Rain Sky Blue (#38BDF8)
         } else if (type == WeatherBackgroundView.ConditionType.NIGHT) {
-            return 0xFF4DD8FF; // Ice Blue Moonlight (#BAE6FD)
+            return Design.CYAN; // Ice Blue Moonlight (#BAE6FD)
         } else if (type == WeatherBackgroundView.ConditionType.CLOUDY) {
-            return (temp >= 28) ? 0xFFFFB84D : 0xFFF5F7FA; // Amber Gold or Slate
+            return (temp >= 28) ? Design.AMBER : Design.TEXT; // Amber Gold or Slate
         } else {
             // SUNNY / CERAH
             if (temp >= 33) {
-                return 0xFFFF6B6B; // Coral Flame Red (#FF4545) for heatwave
+                return Design.CORAL; // Coral Flame Red (#FF4545) for heatwave
             } else if (temp >= 28) {
-                return 0xFFFFB84D; // Solar Amber Gold (#FBBF24) for warm sunshine
+                return Design.AMBER; // Solar Amber Gold (#FBBF24) for warm sunshine
             } else {
-                return 0xFFFFB84D; // Bright Sunny Yellow (#FACC15)
+                return Design.AMBER; // Bright Sunny Yellow (#FACC15)
             }
         }
     }

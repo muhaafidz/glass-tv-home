@@ -44,11 +44,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/outfit"
-                    android:fontVariationSettings="'wght' 400"
+                    android:textFontWeight="400"
                     android:includeFontPadding="false"
                     android:singleLine="true"
                     android:text="Agora em"
-                    android:textColor="@color/sinar_text_muted"
+                    android:textColor="?attr/tnMuted"
                     android:textSize="17sp" />
 
                 <!-- City / Region Title -->
@@ -58,11 +58,11 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
                     android:fontFamily="@font/outfit"
-                    android:fontVariationSettings="'wght' 700"
+                    android:textFontWeight="700"
                     android:includeFontPadding="false"
                     android:singleLine="true"
                     android:text="São Paulo"
-                    android:textColor="#FFFFFF"
+                    android:textColor="?attr/tnText"
                     android:textSize="38sp" />
 
                 <!-- Giant Temperature Display -->
@@ -72,11 +72,11 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="14dp"
                     android:fontFamily="@font/outfit"
-                    android:fontVariationSettings="'wght' 500"
+                    android:textFontWeight="500"
                     android:includeFontPadding="false"
                     android:singleLine="true"
                     android:text="28°C"
-                    android:textColor="@color/sinar_coral"
+                    android:textColor="?attr/tnCoral"
                     android:textSize="72sp" />
 
                 <!-- Condition Phrase -->
@@ -86,11 +86,11 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
                     android:fontFamily="@font/outfit"
-                    android:fontVariationSettings="'wght' 400"
+                    android:textFontWeight="400"
                     android:includeFontPadding="false"
                     android:singleLine="true"
                     android:text="Alguma nebulosidade"
-                    android:textColor="@color/sinar_text"
+                    android:textColor="?attr/tnText"
                     android:textSize="21sp" />
 
                 <!-- Secondary Sub (High / Low) -->
@@ -100,11 +100,11 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
                     android:fontFamily="@font/outfit"
-                    android:fontVariationSettings="'wght' 500"
+                    android:textFontWeight="500"
                     android:includeFontPadding="false"
                     android:singleLine="true"
                     android:text="Max: 30°C  ·  Min: 21°C"
-                    android:textColor="@color/sinar_text_muted"
+                    android:textColor="?attr/tnMuted"
                     android:textSize="14sp" />
             </LinearLayout>
 
@@ -145,13 +145,13 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/outfit"
-                            android:fontVariationSettings="'wght' 700"
+                            android:textFontWeight="700"
                             android:includeFontPadding="false"
                             android:letterSpacing="0.06"
                             android:singleLine="true"
                             android:text="SENSAÇÃO"
                             android:textAllCaps="true"
-                            android:textColor="#FFFFFF"
+                            android:textColor="?attr/tnText"
                             android:textSize="12sp" />
 
                         <TextView
@@ -160,11 +160,11 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
                             android:fontFamily="@font/outfit"
-                            android:fontVariationSettings="'wght' 400"
+                            android:textFontWeight="400"
                             android:includeFontPadding="false"
                             android:singleLine="true"
                             android:text="29°C"
-                            android:textColor="@color/sinar_coral"
+                            android:textColor="?attr/tnCoral"
                             android:textSize="28sp" />
                     </LinearLayout>
 
@@ -181,13 +181,13 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/outfit"
-                            android:fontVariationSettings="'wght' 700"
+                            android:textFontWeight="700"
                             android:includeFontPadding="false"
                             android:letterSpacing="0.06"
                             android:singleLine="true"
                             android:text="UMIDADE"
                             android:textAllCaps="true"
-                            android:textColor="#FFFFFF"
+                            android:textColor="?attr/tnText"
                             android:textSize="12sp" />
 
                         <TextView
@@ -196,11 +196,11 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
                             android:fontFamily="@font/outfit"
-                            android:fontVariationSettings="'wght' 400"
+                            android:textFontWeight="400"
                             android:includeFontPadding="false"
                             android:singleLine="true"
                             android:text="79%"
-                            android:textColor="@color/sinar_accent"
+                            android:textColor="?attr/tnAccent"
                             android:textSize="28sp" />
                     </LinearLayout>
 
@@ -216,13 +216,13 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/outfit"
-                            android:fontVariationSettings="'wght' 700"
+                            android:textFontWeight="700"
                             android:includeFontPadding="false"
                             android:letterSpacing="0.06"
                             android:singleLine="true"
                             android:text="PRESSÃO"
                             android:textAllCaps="true"
-                            android:textColor="#FFFFFF"
+                            android:textColor="?attr/tnText"
                             android:textSize="12sp" />
 
                         <TextView
@@ -231,11 +231,11 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
                             android:fontFamily="@font/outfit"
-                            android:fontVariationSettings="'wght' 400"
+                            android:textFontWeight="400"
                             android:includeFontPadding="false"
                             android:singleLine="true"
                             android:text="1017hPa"
-                            android:textColor="@color/sinar_coral"
+                            android:textColor="?attr/tnCoral"
                             android:textSize="28sp" />
                     </LinearLayout>
                 </LinearLayout>
@@ -271,11 +271,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/outfit"
-                    android:fontVariationSettings="'wght' 600"
+                    android:textFontWeight="500"
                     android:includeFontPadding="false"
                     android:singleLine="true"
                     android:text="Suhu"
-                    android:textColor="#FFFFFF"
+                    android:textColor="?attr/tnText"
                     android:textSize="14.5sp" />
 
                 <!-- Google Weather yellow underline indicator -->
@@ -284,7 +284,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="2.5dp"
                     android:layout_marginTop="3dp"
-                    android:background="@color/sinar_amber" />
+                    android:background="?attr/tnAmber" />
             </LinearLayout>
 
             <!-- Tab 2: Precipitation / Kerpasan -->
@@ -300,11 +300,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/outfit"
-                    android:fontVariationSettings="'wght' 400"
+                    android:textFontWeight="400"
                     android:includeFontPadding="false"
                     android:singleLine="true"
                     android:text="Kerpasan"
-                    android:textColor="@color/sinar_text_muted"
+                    android:textColor="?attr/tnMuted"
                     android:textSize="14.5sp" />
             </LinearLayout>
 
@@ -320,11 +320,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/outfit"
-                    android:fontVariationSettings="'wght' 400"
+                    android:textFontWeight="400"
                     android:includeFontPadding="false"
                     android:singleLine="true"
                     android:text="Angin"
-                    android:textColor="@color/sinar_text_muted"
+                    android:textColor="?attr/tnMuted"
                     android:textSize="14.5sp" />
             </LinearLayout>
         </LinearLayout>

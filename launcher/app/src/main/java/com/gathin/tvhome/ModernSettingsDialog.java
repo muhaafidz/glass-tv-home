@@ -120,9 +120,9 @@ public final class ModernSettingsDialog {
         root.setClipToPadding(false);
 
         GradientDrawable dialogBg = new GradientDrawable();
-        dialogBg.setColor(0xFF0E1015);
+        dialogBg.setColor(Design.SURFACE);
         dialogBg.setCornerRadius(24 * density);
-        dialogBg.setStroke((int) (1f * density), 0xFF262B36);
+        dialogBg.setStroke((int) (1f * density), Design.HAIRLINE);
         root.setBackground(dialogBg);
         root.setClipToOutline(true);
 
@@ -157,12 +157,12 @@ public final class ModernSettingsDialog {
                 new int[]{0x14161D, 0x14161D}
         );
         searchBg.setCornerRadius(14 * density);
-        searchBg.setStroke((int) (1 * density), 0x33262B36);
+        searchBg.setStroke((int) (1 * density), Design.alpha(Design.HAIRLINE, 0x33));
         searchBox.setBackground(searchBg);
 
         ImageView searchIcon = new ImageView(activity);
         searchIcon.setImageResource(R.drawable.ic_search);
-        searchIcon.setColorFilter(0xFF98A2B3);
+        searchIcon.setColorFilter(Design.TEXT_MUTED);
         LinearLayout.LayoutParams sIconLp = new LinearLayout.LayoutParams((int) (15 * density), (int) (15 * density));
         sIconLp.setMarginEnd((int) (8 * density));
         searchBox.addView(searchIcon, sIconLp);
@@ -170,19 +170,19 @@ public final class ModernSettingsDialog {
         TextView searchPrompt = new TextView(activity);
         searchPrompt.setText(AppLanguage.strSettingsSearch(activity));
         searchPrompt.setTextSize(12.5f);
-        searchPrompt.setTextColor(0xFF98A2B3);
+        searchPrompt.setTextColor(Design.TEXT_MUTED);
         searchPrompt.setTypeface(outfit, Typeface.NORMAL);
         searchBox.addView(searchPrompt);
 
         GradientDrawable searchFocusBg = new GradientDrawable();
-        searchFocusBg.setColor(0x1F2EF2C0);
+        searchFocusBg.setColor(Design.alpha(Design.ACCENT, 0x1F));
         searchFocusBg.setCornerRadius(14 * density);
-        searchFocusBg.setStroke((int) (2f * density), 0xFF2EF2C0);
+        searchFocusBg.setStroke((int) (2f * density), Design.ACCENT);
 
         searchBox.setOnFocusChangeListener((v, hasFocus) -> {
             v.setBackground(hasFocus ? searchFocusBg : searchBg);
-            searchPrompt.setTextColor(hasFocus ? 0xFFFFFFFF : 0xFF98A2B3);
-            searchIcon.setColorFilter(hasFocus ? 0xFF2EF2C0 : 0xFF98A2B3);
+            searchPrompt.setTextColor(hasFocus ? Design.TEXT : Design.TEXT_MUTED);
+            searchIcon.setColorFilter(hasFocus ? Design.ACCENT : Design.TEXT_MUTED);
             if (animateFocus) {
                 v.animate()
                         .scaleX(hasFocus ? 1.02f : 1.0f)
@@ -235,7 +235,7 @@ public final class ModernSettingsDialog {
         TextView tvProfileName = new TextView(activity);
         tvProfileName.setText(ProfileManager.getProfileName(activity));
         tvProfileName.setTextSize(14f);
-        tvProfileName.setTextColor(0xFFFFFFFF);
+        tvProfileName.setTextColor(Design.TEXT);
         tvProfileName.setTypeface(outfit, Typeface.BOLD);
         tvProfileName.setSingleLine(true);
         profileTextCol.addView(tvProfileName);
@@ -243,7 +243,7 @@ public final class ModernSettingsDialog {
         TextView tvProfileSub = new TextView(activity);
         tvProfileSub.setText(AppLanguage.strProfileSubtitle(activity));
         tvProfileSub.setTextSize(11f);
-        tvProfileSub.setTextColor(0xFF98A2B3);
+        tvProfileSub.setTextColor(Design.TEXT_MUTED);
         tvProfileSub.setTypeface(outfit, Typeface.NORMAL);
         profileTextCol.addView(tvProfileSub);
 
@@ -255,7 +255,7 @@ public final class ModernSettingsDialog {
 
         // Vertical divider between Left and Right
         View verticalDivider = new View(activity);
-        verticalDivider.setBackgroundColor(0xFF262B36);
+        verticalDivider.setBackgroundColor(Design.HAIRLINE);
         LinearLayout.LayoutParams divLp = new LinearLayout.LayoutParams((int) (1 * density), ViewGroup.LayoutParams.MATCH_PARENT);
 
         // --- RIGHT COLUMN: Content Area ---
@@ -310,29 +310,29 @@ public final class ModernSettingsDialog {
         }
 
         List<NavItem> navItems = new ArrayList<>();
-        navItems.add(new NavItem(TAB_HOME_SCREEN, AppLanguage.strHomeScreen(activity), R.drawable.ic_home_screen, 0xFF1B1E27));
-        navItems.add(new NavItem(TAB_APPEARANCE, AppLanguage.strAppearance(activity), R.drawable.ic_appearance, 0xFF1B1E27));
-        navItems.add(new NavItem(TAB_STATUS_WEATHER, AppLanguage.strStatusBarWeather(activity), R.drawable.ic_screen_weather, 0xFF1B1E27));
-        navItems.add(new NavItem(TAB_STANDBY, AppLanguage.strStandByMode(activity), R.drawable.ic_standby_clock, 0xFF1B1E27));
-        navItems.add(new NavItem(TAB_REMOTE, AppLanguage.strRemoteAccessibility(activity), R.drawable.ic_remote, 0xFF1B1E27));
-        navItems.add(new NavItem(TAB_CHILD_MODE, AppLanguage.strChildMode(activity), R.drawable.ic_shield_child, 0xFF1B1E27));
-        navItems.add(new NavItem(TAB_GENERAL, AppLanguage.strGeneral(activity), R.drawable.ic_globe, 0xFF1B1E27));
+        navItems.add(new NavItem(TAB_HOME_SCREEN, AppLanguage.strHomeScreen(activity), R.drawable.ic_home_screen, Design.SURFACE_RAISED));
+        navItems.add(new NavItem(TAB_APPEARANCE, AppLanguage.strAppearance(activity), R.drawable.ic_appearance, Design.SURFACE_RAISED));
+        navItems.add(new NavItem(TAB_STATUS_WEATHER, AppLanguage.strStatusBarWeather(activity), R.drawable.ic_screen_weather, Design.SURFACE_RAISED));
+        navItems.add(new NavItem(TAB_STANDBY, AppLanguage.strStandByMode(activity), R.drawable.ic_standby_clock, Design.SURFACE_RAISED));
+        navItems.add(new NavItem(TAB_REMOTE, AppLanguage.strRemoteAccessibility(activity), R.drawable.ic_remote, Design.SURFACE_RAISED));
+        navItems.add(new NavItem(TAB_CHILD_MODE, AppLanguage.strChildMode(activity), R.drawable.ic_shield_child, Design.SURFACE_RAISED));
+        navItems.add(new NavItem(TAB_GENERAL, AppLanguage.strGeneral(activity), R.drawable.ic_globe, Design.SURFACE_RAISED));
         String tvLabel = AppLanguage.strTv(activity);
         if (AppUpdateManager.isUpdateAvailable(activity)) {
             tvLabel += " 🔴";
         }
-        navItems.add(new NavItem(TAB_TV, tvLabel, R.drawable.ic_tv_display, 0xFF1B1E27));
+        navItems.add(new NavItem(TAB_TV, tvLabel, R.drawable.ic_tv_display, Design.SURFACE_RAISED));
 
         Runnable[] renderRightPane = new Runnable[1];
 
         GradientDrawable profileSelectedBg = new GradientDrawable();
-        profileSelectedBg.setColor(0x1F2EF2C0);
+        profileSelectedBg.setColor(Design.alpha(Design.ACCENT, 0x1F));
         profileSelectedBg.setCornerRadius(14 * density);
-        profileSelectedBg.setStroke((int) (1.5f * density), 0xFF2EF2C0);
+        profileSelectedBg.setStroke((int) (1.5f * density), Design.ACCENT);
         GradientDrawable profileNormalBg = new GradientDrawable();
-        profileNormalBg.setColor(0xFF14161D);
+        profileNormalBg.setColor(Design.SURFACE);
         profileNormalBg.setCornerRadius(14 * density);
-        profileNormalBg.setStroke((int) (1f * density), 0xFF262B36);
+        profileNormalBg.setStroke((int) (1f * density), Design.HAIRLINE);
 
         Runnable updateSidebarSelection = () -> {
             boolean isProfile = (activeTab[0] == TAB_PROFILE);
@@ -418,7 +418,7 @@ public final class ModernSettingsDialog {
 
             ImageView iv = new ImageView(activity);
             iv.setImageResource(item.iconRes);
-            iv.setColorFilter(0xFFFFFFFF);
+            iv.setColorFilter(Design.TEXT);
             FrameLayout.LayoutParams ivLp = new FrameLayout.LayoutParams((int) (15 * density), (int) (15 * density), Gravity.CENTER);
             iconSquircle.addView(iv, ivLp);
 
@@ -430,16 +430,16 @@ public final class ModernSettingsDialog {
             item.bgNormal.setColor(Color.TRANSPARENT);
             item.bgNormal.setCornerRadius(12 * density);
             item.bgSelected = new GradientDrawable();
-            item.bgSelected.setColor(0x1F2EF2C0);
+            item.bgSelected.setColor(Design.alpha(Design.ACCENT, 0x1F));
             item.bgSelected.setCornerRadius(12 * density);
-            item.bgSelected.setStroke((int) (1.5f * density), 0xFF2EF2C0);
+            item.bgSelected.setStroke((int) (1.5f * density), Design.ACCENT);
             row.setBackground(item.bgNormal);
 
             // Label
             TextView lbl = new TextView(activity);
             lbl.setText(item.label);
             lbl.setTextSize(13f);
-            lbl.setTextColor(0xFFF5F7FA);
+            lbl.setTextColor(Design.TEXT);
             lbl.setTypeface(outfit, Typeface.NORMAL);
             row.addView(lbl);
 
@@ -493,7 +493,7 @@ public final class ModernSettingsDialog {
                 TextView tvTitle = new TextView(activity);
                 tvTitle.setText(AppLanguage.strProfileTitle(activity));
                 tvTitle.setTextSize(24);
-                tvTitle.setTextColor(0xFFFFFFFF);
+                tvTitle.setTextColor(Design.TEXT);
                 tvTitle.setTypeface(outfit, Typeface.BOLD);
                 rightContent.addView(tvTitle);
 
@@ -503,7 +503,7 @@ public final class ModernSettingsDialog {
                 TextView tvAvatars = new TextView(activity);
                 tvAvatars.setText(AppLanguage.strActiveProfileAvatarHeader(activity, activeP.name));
                 tvAvatars.setTextSize(11.5f);
-                tvAvatars.setTextColor(0xFF98A2B3);
+                tvAvatars.setTextColor(Design.TEXT_MUTED);
                 tvAvatars.setTypeface(outfit, Typeface.BOLD);
                 tvAvatars.setPadding(0, (int) (14 * density), 0, (int) (8 * density));
                 rightContent.addView(tvAvatars);
@@ -535,14 +535,14 @@ public final class ModernSettingsDialog {
                 editNameCard.setClickable(true);
 
                 GradientDrawable enBg = new GradientDrawable();
-                enBg.setColor(0xFF14161D);
+                enBg.setColor(Design.SURFACE);
                 enBg.setCornerRadius(12 * density);
                 editNameCard.setBackground(enBg);
 
                 // Pencil icon squircle
                 FrameLayout pencilSquircle = new FrameLayout(activity);
                 GradientDrawable psq = new GradientDrawable();
-                psq.setColor(0xFF14161D);
+                psq.setColor(Design.SURFACE);
                 psq.setCornerRadius(8 * density);
                 pencilSquircle.setBackground(psq);
 
@@ -558,22 +558,22 @@ public final class ModernSettingsDialog {
                 TextView tvEditLabel = new TextView(activity);
                 tvEditLabel.setText(AppLanguage.strEditName(activity));
                 tvEditLabel.setTextSize(14f);
-                tvEditLabel.setTextColor(0xFFFFFFFF);
+                tvEditLabel.setTextColor(Design.TEXT);
                 tvEditLabel.setTypeface(outfit, Typeface.BOLD);
                 editNameCard.addView(tvEditLabel, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
 
                 TextView tvCurName = new TextView(activity);
                 tvCurName.setText(activeP.name);
                 tvCurName.setTextSize(13.5f);
-                tvCurName.setTextColor(0xFF98A2B3);
+                tvCurName.setTextColor(Design.TEXT_MUTED);
                 tvCurName.setTypeface(outfit, Typeface.NORMAL);
                 editNameCard.addView(tvCurName);
 
                 editNameCard.setOnFocusChangeListener((v, hasFocus) -> {
                     GradientDrawable g = new GradientDrawable();
-                    g.setColor(hasFocus ? 0xFF20242E : 0xFF14161D);
+                    g.setColor(hasFocus ? Design.SURFACE_FOCUS : Design.SURFACE);
                     g.setCornerRadius(12 * density);
-                    if (hasFocus) g.setStroke((int) (2f * density), 0xFFFFFFFF);
+                    if (hasFocus) g.setStroke((int) (2f * density), Design.ACCENT);
                     v.setBackground(g);
                     if (animateFocus) {
                         v.animate().scaleX(hasFocus ? 1.015f : 1.0f).scaleY(hasFocus ? 1.015f : 1.0f).setDuration(120).start();
@@ -609,7 +609,7 @@ public final class ModernSettingsDialog {
                 TextView tvUserList = new TextView(activity);
                 tvUserList.setText(AppLanguage.strUserListHeader(activity, allProfiles.size()));
                 tvUserList.setTextSize(11.5f);
-                tvUserList.setTextColor(0xFF98A2B3);
+                tvUserList.setTextColor(Design.TEXT_MUTED);
                 tvUserList.setTypeface(outfit, Typeface.BOLD);
                 tvUserList.setPadding(0, 0, 0, (int) (8 * density));
                 rightContent.addView(tvUserList);
@@ -625,9 +625,9 @@ public final class ModernSettingsDialog {
                     pRow.setClickable(true);
 
                     GradientDrawable pBg = new GradientDrawable();
-                    pBg.setColor(isCur ? 0xFF1B1E27 : 0xFF14161D);
+                    pBg.setColor(isCur ? Design.SURFACE_RAISED : Design.SURFACE);
                     pBg.setCornerRadius(12 * density);
-                    if (isCur) pBg.setStroke((int) (1.5f * density), 0x552EF2C0);
+                    if (isCur) pBg.setStroke((int) (1.5f * density), Design.alpha(Design.ACCENT, 0x55));
                     pRow.setBackground(pBg);
 
                     FrameLayout ivP = new FrameLayout(activity);
@@ -640,7 +640,7 @@ public final class ModernSettingsDialog {
                     String childSuffix = p.isChild ? " (" + AppLanguage.strProfileRoleChild(activity) + ")" : "";
                     tvPName.setText(p.name + childSuffix);
                     tvPName.setTextSize(13.5f);
-                    tvPName.setTextColor(0xFFFFFFFF);
+                    tvPName.setTextColor(Design.TEXT);
                     tvPName.setTypeface(outfit, isCur ? Typeface.BOLD : Typeface.NORMAL);
                     pRow.addView(tvPName, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
 
@@ -648,24 +648,24 @@ public final class ModernSettingsDialog {
                         TextView tvTag = new TextView(activity);
                         tvTag.setText(AppLanguage.strActiveStatus(activity));
                         tvTag.setTextSize(11f);
-                        tvTag.setTextColor(0xFF2EF2C0);
+                        tvTag.setTextColor(Design.ACCENT);
                         tvTag.setTypeface(outfit, Typeface.BOLD);
                         pRow.addView(tvTag);
                     } else if (allProfiles.size() > 1) {
                         TextView tvDel = new TextView(activity);
                         tvDel.setText(AppLanguage.strDeleteUser(activity));
                         tvDel.setTextSize(11.5f);
-                        tvDel.setTextColor(0xFFFF6B6B);
+                        tvDel.setTextColor(Design.CORAL);
                         tvDel.setTypeface(outfit, Typeface.NORMAL);
                         pRow.addView(tvDel);
                     }
 
                     pRow.setOnFocusChangeListener((v, hasFocus) -> {
                         GradientDrawable g = new GradientDrawable();
-                        g.setColor(hasFocus ? 0xFF20242E : (isCur ? 0xFF1B1E27 : 0xFF14161D));
+                        g.setColor(hasFocus ? Design.SURFACE_FOCUS : (isCur ? Design.SURFACE_RAISED : Design.SURFACE));
                         g.setCornerRadius(12 * density);
-                        if (hasFocus) g.setStroke((int) (2f * density), 0xFFFFFFFF);
-                        else if (isCur) g.setStroke((int) (1.5f * density), 0x552EF2C0);
+                        if (hasFocus) g.setStroke((int) (2f * density), Design.ACCENT);
+                        else if (isCur) g.setStroke((int) (1.5f * density), Design.alpha(Design.ACCENT, 0x55));
                         v.setBackground(g);
                         if (animateFocus) {
                             v.animate().scaleX(hasFocus ? 1.015f : 1.0f).scaleY(hasFocus ? 1.015f : 1.0f).setDuration(120).start();
@@ -742,7 +742,7 @@ public final class ModernSettingsDialog {
                 TextView tvPhotos = new TextView(activity);
                 tvPhotos.setText(AppLanguage.strYourPhotos(activity));
                 tvPhotos.setTextSize(11.5f);
-                tvPhotos.setTextColor(0xFF98A2B3);
+                tvPhotos.setTextColor(Design.TEXT_MUTED);
                 tvPhotos.setTypeface(outfit, Typeface.BOLD);
                 tvPhotos.setPadding(0, (int) (12 * density), 0, (int) (4 * density));
                 rightContent.addView(tvPhotos);
@@ -842,8 +842,25 @@ public final class ModernSettingsDialog {
                 // === TAB 2: APPEARANCE ===
                 addHeader(rightContent, outfit, "Appearance");
 
+                // Tenang palette (docs/REVAMP.md P7): OK cycles Auto → Malam → Senja → Embun.
+                final String palMode = Tenang.mode(activity);
                 rightContent.addView(buildCardRow(activity, density, outfit,
-                        "🖼️ Koleksi Wallpaper 4K", "Malaysia 4K, Alam Semula Jadi, Bandar Raya, Luar Angkasa, dll.",
+                        "🎨 Tema Tenang: " + Tenang.label(activity, palMode),
+                        Tenang.describe(activity, palMode),
+                        () -> {
+                            activity.getSharedPreferences("theme_prefs", Context.MODE_PRIVATE).edit()
+                                    .putString("palette", Tenang.nextMode(palMode)).apply();
+                            if (renderRightPane[0] != null) renderRightPane[0].run();
+                        }));
+                rightContent.addView(buildSwitchRow(activity, density, outfit,
+                        "🌙 Jangan guna tema cerah",
+                        "Automatik hanya guna Malam & Senja (tiada Embun pada waktu siang)",
+                        activity.getSharedPreferences("theme_prefs", Context.MODE_PRIVATE).getBoolean("never_light", false),
+                        isChecked -> activity.getSharedPreferences("theme_prefs", Context.MODE_PRIVATE).edit()
+                                .putBoolean("never_light", isChecked).apply()));
+
+                rightContent.addView(buildCardRow(activity, density, outfit,
+                        "🖼️ Latar Belakang & Wallpaper", "Tenang (kanvas bergerak), Malaysia 4K, Alam Semula Jadi, Angkasa, dll.",
                         activity::showWallpaperDialog));
 
                 rightContent.addView(buildCardRow(activity, density, outfit,
@@ -1148,7 +1165,7 @@ public final class ModernSettingsDialog {
         TextView tv = new TextView(root.getContext());
         tv.setText(title);
         tv.setTextSize(24);
-        tv.setTextColor(0xFFFFFFFF);
+        tv.setTextColor(Design.TEXT);
         tv.setTypeface(font, Typeface.BOLD);
         tv.setPadding(0, 0, 0, (int) (14 * root.getContext().getResources().getDisplayMetrics().density));
         root.addView(tv);
@@ -1162,9 +1179,9 @@ public final class ModernSettingsDialog {
 
     private static GradientDrawable soapBubbleCardBg(float density, boolean hasFocus) {
         GradientDrawable g = new GradientDrawable();
-        g.setColor(hasFocus ? 0xFF20242E : 0xFF14161D);
+        g.setColor(hasFocus ? Design.SURFACE_FOCUS : Design.SURFACE);
         g.setCornerRadius(16 * density);
-        g.setStroke((int) ((hasFocus ? 2f : 1f) * density), hasFocus ? 0xFF2EF2C0 : 0xFF262B36);
+        g.setStroke((int) ((hasFocus ? 2f : 1f) * density), hasFocus ? Design.ACCENT : Design.HAIRLINE);
         return g;
     }
 
@@ -1183,7 +1200,7 @@ public final class ModernSettingsDialog {
         TextView tvTitle = new TextView(ctx);
         tvTitle.setText(title);
         tvTitle.setTextSize(14f);
-        tvTitle.setTextColor(0xFFFFFFFF);
+        tvTitle.setTextColor(Design.TEXT);
         tvTitle.setTypeface(font, Typeface.BOLD);
         card.addView(tvTitle);
 
@@ -1191,7 +1208,7 @@ public final class ModernSettingsDialog {
             TextView tvSub = new TextView(ctx);
             tvSub.setText(subtitle);
             tvSub.setTextSize(12);
-            tvSub.setTextColor(0xFF98A2B3);
+            tvSub.setTextColor(Design.TEXT_MUTED);
             tvSub.setTypeface(font, Typeface.NORMAL);
             tvSub.setPadding(0, (int) (2 * density), 0, 0);
             card.addView(tvSub);
@@ -1250,7 +1267,7 @@ public final class ModernSettingsDialog {
         TextView tvTitle = new TextView(ctx);
         tvTitle.setText(title);
         tvTitle.setTextSize(14f);
-        tvTitle.setTextColor(0xFFFFFFFF);
+        tvTitle.setTextColor(Design.TEXT);
         tvTitle.setTypeface(font, Typeface.BOLD);
         textCol.addView(tvTitle);
 
@@ -1258,7 +1275,7 @@ public final class ModernSettingsDialog {
             TextView tvSub = new TextView(ctx);
             tvSub.setText(subtitle);
             tvSub.setTextSize(12);
-            tvSub.setTextColor(0xFF98A2B3);
+            tvSub.setTextColor(Design.TEXT_MUTED);
             tvSub.setTypeface(font, Typeface.NORMAL);
             tvSub.setPadding(0, (int) (2 * density), 0, 0);
             textCol.addView(tvSub);
@@ -1269,7 +1286,7 @@ public final class ModernSettingsDialog {
             TextView badge = new TextView(ctx);
             badge.setText(badgeText);
             badge.setTextSize(11f);
-            badge.setTextColor(0xFF2EF2C0);
+            badge.setTextColor(Design.ACCENT);
             badge.setTypeface(font, Typeface.BOLD);
             badge.setGravity(Gravity.CENTER);
             badge.setPadding((int) (12 * density), (int) (4 * density), (int) (12 * density), (int) (4 * density));
@@ -1277,8 +1294,8 @@ public final class ModernSettingsDialog {
             GradientDrawable badgeBg = new GradientDrawable();
             badgeBg.setShape(GradientDrawable.RECTANGLE);
             badgeBg.setCornerRadius(14 * density);
-            badgeBg.setColor(0x1F2EF2C0);
-            badgeBg.setStroke((int) (1 * density), 0xFF2EF2C0);
+            badgeBg.setColor(Design.alpha(Design.ACCENT, 0x1F));
+            badgeBg.setStroke((int) (1 * density), Design.ACCENT);
             badge.setBackground(badgeBg);
 
             LinearLayout.LayoutParams badgeLp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -1337,7 +1354,7 @@ public final class ModernSettingsDialog {
         TextView tvTitle = new TextView(ctx);
         tvTitle.setText(title);
         tvTitle.setTextSize(14f);
-        tvTitle.setTextColor(0xFFFFFFFF);
+        tvTitle.setTextColor(Design.TEXT);
         tvTitle.setTypeface(font, Typeface.BOLD);
         textCol.addView(tvTitle);
 
@@ -1345,7 +1362,7 @@ public final class ModernSettingsDialog {
             TextView tvSub = new TextView(ctx);
             tvSub.setText(subtitle);
             tvSub.setTextSize(12);
-            tvSub.setTextColor(0xFF98A2B3);
+            tvSub.setTextColor(Design.TEXT_MUTED);
             tvSub.setTypeface(font, Typeface.NORMAL);
             tvSub.setPadding(0, (int) (2 * density), 0, 0);
             textCol.addView(tvSub);
@@ -1357,8 +1374,8 @@ public final class ModernSettingsDialog {
         sw.setChecked(isChecked);
         sw.setFocusable(false);
         sw.setClickable(false);
-        sw.setThumbTintList(android.content.res.ColorStateList.valueOf(0xFF2EF2C0));
-        sw.setTrackTintList(android.content.res.ColorStateList.valueOf(0x332EF2C0));
+        sw.setThumbTintList(android.content.res.ColorStateList.valueOf(Design.ACCENT));
+        sw.setTrackTintList(android.content.res.ColorStateList.valueOf(Design.alpha(Design.ACCENT, 0x33)));
         card.addView(sw);
 
         card.setOnFocusChangeListener((v, hasFocus) -> {
@@ -1403,21 +1420,21 @@ public final class ModernSettingsDialog {
         card.setPadding((int) (16 * density), (int) (10 * density), (int) (16 * density), (int) (10 * density));
 
         GradientDrawable bg = new GradientDrawable();
-        bg.setColor(0xFF14161D);
+        bg.setColor(Design.SURFACE);
         bg.setCornerRadius(12 * density);
         card.setBackground(bg);
 
         TextView tvTitle = new TextView(ctx);
         tvTitle.setText(title);
         tvTitle.setTextSize(13.5f);
-        tvTitle.setTextColor(0xFFF5F7FA);
+        tvTitle.setTextColor(Design.TEXT);
         tvTitle.setTypeface(font, Typeface.BOLD);
         card.addView(tvTitle, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
 
         TextView tvVal = new TextView(ctx);
         tvVal.setText(value);
         tvVal.setTextSize(13f);
-        tvVal.setTextColor(0xFF2EF2C0);
+        tvVal.setTextColor(Design.ACCENT);
         tvVal.setTypeface(font, Typeface.NORMAL);
         card.addView(tvVal);
 
@@ -1431,15 +1448,15 @@ public final class ModernSettingsDialog {
         EditText et = new EditText(activity);
         et.setText(ProfileManager.getProfileName(activity));
         et.setSelection(et.getText().length());
-        et.setTextColor(0xFFFFFFFF);
+        et.setTextColor(Design.TEXT);
         et.setTextSize(16);
         et.setTypeface(font, Typeface.NORMAL);
         et.setPadding((int) (16 * density), (int) (12 * density), (int) (16 * density), (int) (12 * density));
 
         GradientDrawable etBg = new GradientDrawable();
-        etBg.setColor(0xFF1B1E27);
+        etBg.setColor(Design.SURFACE_RAISED);
         etBg.setCornerRadius(10 * density);
-        etBg.setStroke((int) (1 * density), 0xFF262B36);
+        etBg.setStroke((int) (1 * density), Design.HAIRLINE);
         et.setBackground(etBg);
 
         FrameLayout container = new FrameLayout(activity);
@@ -1519,22 +1536,22 @@ public final class ModernSettingsDialog {
         pickerLayout.setPadding((int) (22 * density), (int) (18 * density), (int) (22 * density), (int) (16 * density));
 
         GradientDrawable bg = new GradientDrawable();
-        bg.setColor(0xFF14161D);
+        bg.setColor(Design.SURFACE);
         bg.setCornerRadius(20 * density);
-        bg.setStroke((int) (1.5f * density), 0xFF262B36);
+        bg.setStroke((int) (1.5f * density), Design.HAIRLINE);
         pickerLayout.setBackground(bg);
 
         TextView tvTitle = new TextView(activity);
         tvTitle.setText(isHideMode ? "👁️ Sembunyikan Aplikasi dari Skrin Utama" : "🔒 Kunci Aplikasi dengan PIN 4-Digit");
         tvTitle.setTextSize(17);
-        tvTitle.setTextColor(0xFFFFFFFF);
+        tvTitle.setTextColor(Design.TEXT);
         tvTitle.setTypeface(font, Typeface.BOLD);
         pickerLayout.addView(tvTitle);
 
         TextView tvSub = new TextView(activity);
         tvSub.setText(isHideMode ? "Aplikasi yang ditandakan tidak akan dipaparkan pada skrin utama." : "Aplikasi yang dipilih memerlukan kod PIN untuk dibuka.");
         tvSub.setTextSize(12);
-        tvSub.setTextColor(0xFF98A2B3);
+        tvSub.setTextColor(Design.TEXT_MUTED);
         tvSub.setTypeface(font, Typeface.NORMAL);
         tvSub.setPadding(0, (int) (2 * density), 0, (int) (10 * density));
         pickerLayout.addView(tvSub);
@@ -1553,7 +1570,7 @@ public final class ModernSettingsDialog {
             row.setClickable(true);
 
             GradientDrawable rbg = new GradientDrawable();
-            rbg.setColor(0xFF14161D);
+            rbg.setColor(Design.SURFACE);
             rbg.setCornerRadius(10 * density);
             row.setBackground(rbg);
 
@@ -1566,7 +1583,7 @@ public final class ModernSettingsDialog {
             TextView tv = new TextView(activity);
             tv.setText(app.label);
             tv.setTextSize(13.5f);
-            tv.setTextColor(0xFFFFFFFF);
+            tv.setTextColor(Design.TEXT);
             tv.setTypeface(font, Typeface.BOLD);
             row.addView(tv, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
 
@@ -1578,9 +1595,9 @@ public final class ModernSettingsDialog {
 
             row.setOnFocusChangeListener((v, hasFocus) -> {
                 GradientDrawable g = new GradientDrawable();
-                g.setColor(hasFocus ? 0xFF20242E : 0xFF14161D);
+                g.setColor(hasFocus ? Design.SURFACE_FOCUS : Design.SURFACE);
                 g.setCornerRadius(10 * density);
-                if (hasFocus) g.setStroke((int) (2f * density), 0xFFFFFFFF);
+                if (hasFocus) g.setStroke((int) (2f * density), Design.ACCENT);
                 v.setBackground(g);
                 if (focusAnimations(activity)) {
                     v.animate().scaleX(hasFocus ? 1.015f : 1.0f).scaleY(hasFocus ? 1.015f : 1.0f).setDuration(120).start();
@@ -1612,7 +1629,7 @@ public final class ModernSettingsDialog {
         TextView btnDone = new TextView(activity);
         btnDone.setText("SELESAI (DONE)");
         btnDone.setTextSize(13.5f);
-        btnDone.setTextColor(0xFFFFFFFF);
+        btnDone.setTextColor(Design.TEXT);
         btnDone.setTypeface(font, Typeface.BOLD);
         btnDone.setGravity(Gravity.CENTER);
         btnDone.setIncludeFontPadding(false);
@@ -1621,15 +1638,15 @@ public final class ModernSettingsDialog {
 
         int doneRadius = Math.round(12 * density);
         GradientDrawable btnBg = new GradientDrawable();
-        btnBg.setColor(0xFF1FD9AA);
+        btnBg.setColor(Design.ACCENT_DIM);
         btnBg.setCornerRadius(doneRadius);
         btnDone.setBackground(btnBg);
 
         btnDone.setOnFocusChangeListener((v, hasFocus) -> {
             GradientDrawable g = new GradientDrawable();
-            g.setColor(hasFocus ? 0xFF1FD9AA : 0xFF1FD9AA);
+            g.setColor(hasFocus ? Design.ACCENT_DIM : Design.ACCENT_DIM);
             g.setCornerRadius(doneRadius);
-            if (hasFocus) g.setStroke((int) (2 * density), 0xFFFFFFFF);
+            if (hasFocus) g.setStroke((int) (2 * density), Design.ACCENT);
             v.setBackground(g);
         });
 
@@ -1674,9 +1691,9 @@ public final class ModernSettingsDialog {
         dialogBox.setClipToPadding(false);
 
         GradientDrawable bg = new GradientDrawable();
-        bg.setColor(0xF213151B); // Deep translucent glass
+        bg.setColor(Design.alpha(Design.SURFACE, 0xF2)); // Deep translucent glass
         bg.setCornerRadius(20 * density);
-        bg.setStroke(Math.round(1.5f * density), 0x33262B36); // Subtle cyan rim
+        bg.setStroke(Math.round(1.5f * density), Design.alpha(Design.HAIRLINE, 0x33)); // Subtle cyan rim
         dialogBox.setBackground(bg);
         dialogBox.setPadding(Math.round(24 * density), Math.round(20 * density), Math.round(24 * density), Math.round(20 * density));
 
@@ -1684,7 +1701,7 @@ public final class ModernSettingsDialog {
         TextView tvTitle = new TextView(activity);
         tvTitle.setText("🏠 Tetapkan Glass TV Sebagai Default Home");
         tvTitle.setTextSize(18f);
-        tvTitle.setTextColor(0xFFFFFFFF);
+        tvTitle.setTextColor(Design.TEXT);
         tvTitle.setTypeface(font, Typeface.BOLD);
         tvTitle.setIncludeFontPadding(false);
         tvTitle.setPadding(0, 0, 0, Math.round(8 * density));
@@ -1697,7 +1714,7 @@ public final class ModernSettingsDialog {
                 : "⚠️ Pelancar aktif semasa: " + activePkg + "\nSila pilih salah satu kaedah di bawah untuk mengunci Glass TV sebagai pelancar utama:";
         tvDesc.setText(desc);
         tvDesc.setTextSize(12.5f);
-        tvDesc.setTextColor(isDefault ? 0xFF2EF2C0 : 0xFF98A2B3);
+        tvDesc.setTextColor(isDefault ? Design.ACCENT : Design.TEXT_MUTED);
         tvDesc.setTypeface(font, Typeface.NORMAL);
         tvDesc.setIncludeFontPadding(false);
         tvDesc.setPadding(0, 0, 0, Math.round(14 * density));
@@ -1722,7 +1739,7 @@ public final class ModernSettingsDialog {
                 "⚙️ Buka Tetapan Pemilih Pelancar TV",
                 "Cuba buka menu Android untuk memilih Glass TV sebagai Default Home (jika disokong oleh TV)",
                 "Buka Tetapan ⚙️",
-                0xFF2EF2C0,
+                Design.ACCENT,
                 () -> {
                     SoundEffects.playSelect();
                     try {
@@ -1751,7 +1768,7 @@ public final class ModernSettingsDialog {
                 "Jalankan arahan melalui PC:\nadb shell cmd package set-home-activity com.gathin.tvhome/.MainActivity" +
                 (isDefault ? "" : "\nNyahdayakan pelancar lama: adb shell pm disable-user --user 0 " + activePkg),
                 "Salin ADB 📋",
-                0xFF2EF2C0,
+                Design.ACCENT,
                 () -> {
                     SoundEffects.playSelect();
                     try {
@@ -1773,7 +1790,7 @@ public final class ModernSettingsDialog {
                 "📱 Tanpa PC: Gunakan Aplikasi Telefon (Glass TV Installer)",
                 "Pasang release/glass-tv-installer.apk pada telefon di Wi-Fi yang sama untuk aktifkan Home dalam 1-klik.",
                 "Buka Panduan 📱",
-                0xFF1B1E27,
+                Design.SURFACE_RAISED,
                 () -> {
                     SoundEffects.playSelect();
                     Toast.makeText(activity, "Buka glass-tv-installer.apk di telefon anda pada Wi-Fi sama.", Toast.LENGTH_SHORT).show();
@@ -1790,7 +1807,7 @@ public final class ModernSettingsDialog {
         // Bottom Action: Tutup Button (styled as uncropped focusable pill TextView)
         TextView btnClose = new TextView(activity);
         btnClose.setText("Tutup");
-        btnClose.setTextColor(0xFFFFFFFF);
+        btnClose.setTextColor(Design.TEXT);
         btnClose.setTypeface(font, Typeface.BOLD);
         btnClose.setTextSize(14f);
         btnClose.setGravity(Gravity.CENTER);
@@ -1803,9 +1820,9 @@ public final class ModernSettingsDialog {
 
         GradientDrawable closeIdle = new GradientDrawable();
         closeIdle.setShape(GradientDrawable.RECTANGLE);
-        closeIdle.setColor(0xFF262B36);
+        closeIdle.setColor(Design.HAIRLINE);
         closeIdle.setCornerRadius(closeRadius);
-        closeIdle.setStroke(Math.round(1f * density), 0x33FFFFFF);
+        closeIdle.setStroke(Math.round(1f * density), Design.ink(0x33));
         btnClose.setBackground(closeIdle);
         btnClose.setPadding(Math.round(24 * density), 0, Math.round(24 * density), 0);
 
@@ -1814,11 +1831,11 @@ public final class ModernSettingsDialog {
             g.setShape(GradientDrawable.RECTANGLE);
             g.setCornerRadius(closeRadius);
             if (hasFocus) {
-                g.setColor(0xFF262B36);
-                g.setStroke(Math.round(2f * density), 0xFF2EF2C0); // Glowing cyan rim
+                g.setColor(Design.HAIRLINE);
+                g.setStroke(Math.round(2f * density), Design.ACCENT); // Glowing cyan rim
             } else {
-                g.setColor(0xFF262B36);
-                g.setStroke(Math.round(1f * density), 0x33FFFFFF);
+                g.setColor(Design.HAIRLINE);
+                g.setStroke(Math.round(1f * density), Design.ink(0x33));
             }
             v.setBackground(g);
         });
@@ -1885,9 +1902,9 @@ public final class ModernSettingsDialog {
 
         // Idle background
         GradientDrawable idleBg = new GradientDrawable();
-        idleBg.setColor(0xFF14161D);
+        idleBg.setColor(Design.SURFACE);
         idleBg.setCornerRadius(radius);
-        idleBg.setStroke(Math.round(1f * density), 0x33262B36);
+        idleBg.setStroke(Math.round(1f * density), Design.alpha(Design.HAIRLINE, 0x33));
         row.setBackground(idleBg);
 
         // Text Column (Left)
@@ -1898,7 +1915,7 @@ public final class ModernSettingsDialog {
         TextView tvTitle = new TextView(ctx);
         tvTitle.setText(title);
         tvTitle.setTextSize(14f);
-        tvTitle.setTextColor(0xFFFFFFFF);
+        tvTitle.setTextColor(Design.TEXT);
         tvTitle.setTypeface(font, Typeface.BOLD);
         tvTitle.setIncludeFontPadding(false);
         textCol.addView(tvTitle);
@@ -1907,7 +1924,7 @@ public final class ModernSettingsDialog {
             TextView tvSub = new TextView(ctx);
             tvSub.setText(subtitle);
             tvSub.setTextSize(11.5f);
-            tvSub.setTextColor(0xFF98A2B3);
+            tvSub.setTextColor(Design.TEXT_MUTED);
             tvSub.setTypeface(font, Typeface.NORMAL);
             tvSub.setIncludeFontPadding(false);
             tvSub.setPadding(0, Math.round(4 * density), Math.round(10 * density), 0);
@@ -1919,7 +1936,7 @@ public final class ModernSettingsDialog {
         TextView btnAction = new TextView(ctx);
         btnAction.setText(actionLabel);
         btnAction.setTextSize(12f);
-        btnAction.setTextColor(0xFFFFFFFF);
+        btnAction.setTextColor(Design.TEXT);
         btnAction.setTypeface(font, Typeface.BOLD);
         btnAction.setIncludeFontPadding(false);
         btnAction.setGravity(Gravity.CENTER);
@@ -1944,19 +1961,19 @@ public final class ModernSettingsDialog {
             GradientDrawable g = new GradientDrawable();
             g.setCornerRadius(radius);
             if (hasFocus) {
-                g.setColor(0xFF20242E);
-                g.setStroke(Math.round(2f * density), 0xFF2EF2C0); // Luminous cyan glint
-                btnAction.setTextColor(0xFFFFFFFF);
+                g.setColor(Design.SURFACE_FOCUS);
+                g.setStroke(Math.round(2f * density), Design.ACCENT); // Luminous cyan glint
+                btnAction.setTextColor(Design.TEXT);
                 GradientDrawable pGlow = new GradientDrawable();
                 pGlow.setShape(GradientDrawable.RECTANGLE);
                 pGlow.setCornerRadius(pillRadius);
                 pGlow.setColor(actionColor);
-                pGlow.setStroke(Math.round(1.5f * density), 0xFFFFFFFF);
+                pGlow.setStroke(Math.round(1.5f * density), Design.ACCENT);
                 btnAction.setBackground(pGlow);
             } else {
-                g.setColor(0xFF14161D);
-                g.setStroke(Math.round(1f * density), 0x33262B36);
-                btnAction.setTextColor(0xFFF5F7FA);
+                g.setColor(Design.SURFACE);
+                g.setStroke(Math.round(1f * density), Design.alpha(Design.HAIRLINE, 0x33));
+                btnAction.setTextColor(Design.TEXT);
                 btnAction.setBackground(pillBg);
             }
             v.setBackground(g);

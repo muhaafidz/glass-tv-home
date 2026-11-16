@@ -18,9 +18,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/outfit"
-            android:fontVariationSettings="'wght' 700"
+            android:textFontWeight="700"
             android:text="🎨 Kustomisasi Avatar Watak"
-            android:textColor="#FFFFFF"
+            android:textColor="?attr/tnText"
             android:textSize="21sp" />
 
         <TextView
@@ -29,7 +29,7 @@
             android:layout_marginTop="3dp"
             android:fontFamily="@font/outfit"
             android:text="Pilih ekspresi mimik muka, warna karakter, dan warna latar belakang avatar"
-            android:textColor="@color/sinar_text_muted"
+            android:textColor="?attr/tnMuted"
             android:textSize="13sp" />
 
         <!-- Center: Live Animated Lottie Avatar Preview -->
@@ -57,9 +57,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/outfit"
-            android:fontVariationSettings="'wght' 600"
+            android:textFontWeight="500"
             android:text="Ekspresi Watak (Mimik Muka)"
-            android:textColor="@color/sinar_text"
+            android:textColor="?attr/tnText"
             android:textSize="13.5sp" />
 
         <LinearLayout
@@ -95,9 +95,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:fontFamily="@font/outfit"
-            android:fontVariationSettings="'wght' 600"
+            android:textFontWeight="500"
             android:text="Warna Badan Karakter"
-            android:textColor="@color/sinar_text"
+            android:textColor="?attr/tnText"
             android:textSize="13.5sp" />
 
         <HorizontalScrollView
@@ -125,9 +125,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:fontFamily="@font/outfit"
-            android:fontVariationSettings="'wght' 600"
+            android:textFontWeight="500"
             android:text="Warna Latar Belakang (Latar Avatar)"
-            android:textColor="@color/sinar_text"
+            android:textColor="?attr/tnText"
             android:textSize="13.5sp" />
 
         <HorizontalScrollView
@@ -166,7 +166,7 @@
                 android:focusable="true"
                 android:fontFamily="@font/outfit"
                 android:text="Batal"
-                android:textColor="@color/sinar_text_muted" />
+                android:textColor="?attr/tnMuted" />
 
             <Button
                 android:id="@+id/btnSaveAvatar"
@@ -175,7 +175,7 @@
                 android:background="@drawable/bg_dialog_btn"
                 android:focusable="true"
                 android:fontFamily="@font/outfit"
-                android:fontVariationSettings="'wght' 600"
+                android:textFontWeight="500"
                 android:paddingStart="22dp"
                 android:paddingEnd="22dp"
                 android:text="Simpan &amp; Terapkan"

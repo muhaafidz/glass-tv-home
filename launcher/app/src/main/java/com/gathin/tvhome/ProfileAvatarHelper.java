@@ -124,7 +124,7 @@ public final class ProfileAvatarHelper {
         GradientDrawable rimGd = new GradientDrawable();
         rimGd.setShape(GradientDrawable.OVAL);
         rimGd.setColor(Color.TRANSPARENT);
-        rimGd.setStroke(Math.max(1, Math.round(1.5f * density)), 0x992EF2C0);
+        rimGd.setStroke(Math.max(1, Math.round(1.5f * density)), Design.alpha(Design.ACCENT, 0x99));
         glassRim.setBackground(rimGd);
         container.addView(glassRim, new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,

@@ -503,7 +503,7 @@ final class WeatherAirQuality {
         // Separator: "  •  "
         int startDot = sb.length();
         sb.append("  •  ");
-        sb.setSpan(new ForegroundColorSpan(0x80FFFFFF), startDot, sb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        sb.setSpan(new ForegroundColorSpan(Design.ink(0x80)), startDot, sb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         // Air Quality: "IPU 112 Tidak Sihat"
         int startAqi = sb.length();

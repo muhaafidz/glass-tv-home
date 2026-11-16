@@ -18,7 +18,7 @@
             android:layout_width="26dp"
             android:layout_height="26dp"
             android:src="@drawable/ic_update"
-            android:tint="#FFFFFFFF"
+            android:tint="?attr/tnText"
             android:layout_marginEnd="10dp" />
 
         <LinearLayout
@@ -31,7 +31,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Kemas Kini Sistem &amp; Sokongan"
-                android:textColor="#FFFFFFFF"
+                android:textColor="?attr/tnText"
                 android:textSize="18sp"
                 android:fontFamily="@font/outfit"
                 android:textStyle="bold" />
@@ -41,7 +41,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Glass TV Home v3.1.4 • Enjin Auto-Update (OTA)"
-                android:textColor="#B3FFFFFF"
+                android:textColor="?attr/tnMuted"
                 android:textSize="12sp"
                 android:fontFamily="@font/outfit"
                 android:layout_marginTop="2dp" />
@@ -77,7 +77,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="✅ Auto-Update: Aktif (03:30 AM)"
-                    android:textColor="#FFFFFFFF"
+                    android:textColor="?attr/tnText"
                     android:textSize="13sp"
                     android:fontFamily="@font/outfit"
                     android:textStyle="bold" />
@@ -86,7 +86,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Kemas kini dimuat turun dan dipasang di latar belakang tanpa mengganggu tontonan."
-                    android:textColor="#99FFFFFF"
+                    android:textColor="?attr/tnMuted"
                     android:textSize="11sp"
                     android:fontFamily="@font/outfit"
                     android:layout_marginTop="3dp" />
@@ -99,7 +99,7 @@
                 android:layout_height="40dp"
                 android:background="@drawable/bg_dialog_btn"
                 android:text="🔄 Semak Kemas Kini Sekarang"
-                android:textColor="#FFFFFFFF"
+                android:textColor="?attr/tnText"
                 android:textSize="12.5sp"
                 android:fontFamily="@font/outfit"
                 android:textStyle="bold"
@@ -116,7 +116,7 @@
                 android:layout_height="40dp"
                 android:background="@drawable/bg_dialog_btn"
                 android:text="⏱️ Tukar Waktu Auto-Update"
-                android:textColor="#FFFFFFFF"
+                android:textColor="?attr/tnText"
                 android:textSize="12.5sp"
                 android:fontFamily="@font/outfit"
                 android:textStyle="bold"
@@ -134,7 +134,7 @@
                 android:layout_height="40dp"
                 android:background="@drawable/bg_dialog_btn"
                 android:text="⚡ Matikan Auto-Update"
-                android:textColor="#FFFFFFFF"
+                android:textColor="?attr/tnText"
                 android:textSize="12.5sp"
                 android:fontFamily="@font/outfit"
                 android:textStyle="bold"
@@ -173,14 +173,14 @@
                     android:layout_width="16dp"
                     android:layout_height="16dp"
                     android:src="@drawable/ic_coffee"
-                    android:tint="#FFFFFFFF"
+                    android:tint="?attr/tnText"
                     android:layout_marginEnd="6dp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Belanja Kopi"
-                    android:textColor="#FFFFFFFF"
+                    android:textColor="?attr/tnText"
                     android:textSize="14sp"
                     android:fontFamily="@font/outfit"
                     android:textStyle="bold" />
@@ -188,7 +188,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text=" @imsomangge"
+                    android:text=" @mhfiz.ms"
                     android:textColor="#FF90B8"
                     android:textSize="13sp"
                     android:fontFamily="@font/outfit"
@@ -198,8 +198,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="DuitNow QR • GXBank"
-                android:textColor="#80FFFFFF"
+                android:text="DuitNow QR • Maybank"
+                android:textColor="?attr/tnMuted"
                 android:textSize="11sp"
                 android:fontFamily="@font/outfit"
                 android:layout_marginBottom="8dp" />
@@ -211,13 +211,13 @@
                 android:layout_height="185dp"
                 android:src="@drawable/qr_coffee"
                 android:scaleType="fitCenter"
-                android:contentDescription="DuitNow QR @imsomangge" />
+                android:contentDescription="DuitNow QR Maybank @mhfiz.ms" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Imbas guna kamera fon / perbankan"
-                android:textColor="#B3FFFFFF"
+                android:textColor="?attr/tnMuted"
                 android:textSize="10.5sp"
                 android:fontFamily="@font/outfit"
                 android:layout_marginTop="6dp" />
@@ -225,8 +225,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="📧 Cadangan: ahmad.anammat@me.com"
-                android:textColor="#80FFFFFF"
+                android:text="💬 Cadangan &amp; maklum balas: @mhfiz.ms"
+                android:textColor="?attr/tnMuted"
                 android:textSize="10sp"
                 android:fontFamily="@font/outfit"
                 android:layout_marginTop="3dp" />
@@ -246,7 +246,7 @@
             android:layout_height="38dp"
             android:background="@drawable/bg_dialog_btn"
             android:text="Tutup"
-            android:textColor="#FFFFFFFF"
+            android:textColor="?attr/tnText"
             android:textSize="13sp"
             android:fontFamily="@font/outfit"
             android:textStyle="bold"
