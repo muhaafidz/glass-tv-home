@@ -225,7 +225,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="💬 Cadangan &amp; maklum balas: @mhfiz.ms"
+                android:text="📧 Cadangan &amp; maklum balas: muhaafidz@gmail.com"
                 android:textColor="?attr/tnMuted"
                 android:textSize="10sp"
                 android:fontFamily="@font/outfit"
