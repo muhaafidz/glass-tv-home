@@ -10,10 +10,10 @@ Fail pemasangan rasmi (*Official Release APK*) untuk **Glass TV Home** dan aplik
 Pelancar skrin utama (*home screen launcher*) ultra-ringan dengan rekaan *frosted glass* Apple TV dan susun atur **Quiet Canvas**, cuaca dinamik APIMS Malaysia, waktu solat automatik, RAM cleaner (tekan dua kali Home), dan bebas iklan.
 
 * **Fail APK**: [`glass-tv-home.apk`](glass-tv-home.apk)
-* **Versi Semasa**: `v5.0.0` (Sinar: permukaan rata grafit, aksen mint elektrik, fokus warna aplikasi, tanpa blur kaca)
+* **Versi Semasa**: `v6.0.0` (Tenang: tiga palet tenang yang mengikut waktu solat, kanvas bergerak perlahan, fokus lembut)
 * **Pautan Muat Turun Terus (Direct Link)**:  
   [https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-home.apk](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-home.apk)
-* **Saiz Fail**: ~2.0 MB (ringan, muat turun dalam beberapa saat & jimat memori TV)
+* **Saiz Fail**: ~1.8 MB (ringan, muat turun dalam beberapa saat & jimat memori TV)
 * **Keserasian**: Android TV & Google TV (Android 8.0 Oreo ke atas, API 26+)
 
 ---
@@ -25,7 +25,7 @@ Aplikasi pembantu telefon pintar untuk memasang Glass TV Home terus ke TV rumah 
 * **Versi Semasa**: `v1.1.0`
 * **Pautan Muat Turun Terus (Direct Link)**:  
   [https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-installer.apk](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-installer.apk)
-* **Saiz Fail**: ~6.8 MB (Dah siap ada pakej APK Glass TV di dalam aplikasi)
+* **Saiz Fail**: ~6.9 MB (Dah siap ada pakej APK Glass TV di dalam aplikasi)
 * **Keserasian**: Android 8.0 ke atas (Telefon pintar & tablet Android)
 
 ---

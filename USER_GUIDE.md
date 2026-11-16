@@ -12,7 +12,7 @@ Welcome to **Glass TV Home**! This guide is crafted specifically for everyday us
 
 Glass TV Home is a modern, lightweight home launcher replacement for Android TV and Google TV (compatible with Xiaomi Mi Box S, Mi TV Stick, Sony Bravia, TCL, Sharp, Philips, Mecool, Chromecast with Google TV, and more):
 
-* 🚀 **Zero Ads & Ultralight**: About 2.0 MB in size. Saves over 400 MB of RAM compared to sluggish stock manufacturer launchers.
+* 🚀 **Zero Ads & Ultralight**: About 1.8 MB in size. Saves over 400 MB of RAM compared to sluggish stock manufacturer launchers.
 * 🪟 **Quiet Canvas Aesthetic (tvOS Style)**: Modern Apple TV-inspired interface with a full-width glass information rail, calm weather and air-quality status line, Outfit typography, and a floating glass dock.
 * 🕌 **Islamic Prayer Timetable & Daily Ayat**: Accurate 6-phase prayer timetable (Subuh, Syuruk, Zohor, Asar, Maghrib, Isyak) with active prayer emerald highlighting and daily Quranic verses.
 * ⛅ **Weather & Air Quality (API / AQI) Dashboard**: Live ambient temperature, "feels like", humidity, UV index, wind speed, sunrise/sunset, 12-hour forecast, 7-day outlook, and official Air Quality Index readings (APIMS).
@@ -24,9 +24,9 @@ Glass TV Home is a modern, lightweight home launcher replacement for Android TV 
 
 Download the official release APKs based on your setup:
 * 📱 **For Android Phones & Tablets (Companion Installer App — Recommended)**:  
-  [**`glass-tv-installer.apk`** (6.8 MB)](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-installer.apk) — **Primary Recommendation!** Install directly to your TV and permanently lock the remote HOME button over Wi-Fi without needing a PC or cables.
-* 📺 **For Android TV & Google TV (Main Launcher v5.0)**:  
-  [**`glass-tv-home.apk`** (2.0 MB)](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-home.apk) — Latest release `v5.0.0` (Sinar design). Version `6.0.0` — **Tenang**: calm colours that follow prayer times (Malam, Senja, Embun), a softly moving background and a quieter home — is coming next; see [docs/REVAMP.md](docs/REVAMP.md).
+  [**`glass-tv-installer.apk`** (6.9 MB)](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-installer.apk) — **Primary Recommendation!** Install directly to your TV and permanently lock the remote HOME button over Wi-Fi without needing a PC or cables.
+* 📺 **For Android TV & Google TV (Main Launcher v6.0)**:  
+  [**`glass-tv-home.apk`** (1.8 MB)](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-home.apk) — Latest release `v6.0.0` — **Tenang**: calm colours that follow prayer times (Malam, Senja, Embun), a softly moving background and a quieter home; see [docs/REVAMP.md](docs/REVAMP.md).
 
 > [!CAUTION]
 > ### ⚠️ DO NOT RAW-SIDELOAD THE APK WITHOUT PROPER LAUNCHER SETUP!
@@ -51,7 +51,7 @@ Follow the guide based on what device you have, prioritized for simplicity:
 If you have an Android smartphone or tablet, this is the **easiest, fastest, and most convenient** method without needing any computer or cables!
 
 1. **Install Companion APK on Your Android Phone**:
-   - Download [**`glass-tv-installer.apk`**](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-installer.apk) (~6.8 MB) directly onto your Android device and install it.
+   - Download [**`glass-tv-installer.apk`**](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-installer.apk) (~6.9 MB) directly onto your Android device and install it.
 2. **Quick TV Setup (One-Time)**:
    - On your TV remote: Open **Settings ⚙️** $\rightarrow$ **About** $\rightarrow$ Scroll to **Build (Android TV OS Build)**.
    - Click the **OK button 7 times rapidly** until *"You are now a developer!"* pops up.
@@ -349,7 +349,7 @@ You do **not** need a computer to install Glass TV Home.
 ### Method 1: Official 'Glass TV Installer' App (Zero-Config & Easiest) 🌟
 We built a dedicated companion installer app for Android phones and tablets that embeds the launcher and installs it over Wi-Fi:
 
-* **Download Companion App**: [**`glass-tv-installer.apk`**](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-installer.apk) (~6.8 MB)
+* **Download Companion App**: [**`glass-tv-installer.apk`**](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-installer.apk) (~6.9 MB)
 
 1. **Enable Debugging on TV**:
    - Go to TV **Settings ⚙️** $\rightarrow$ **About** $\rightarrow$ Click **Android TV OS Build** 7 times.

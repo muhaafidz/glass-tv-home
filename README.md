@@ -20,12 +20,12 @@ Embun in the morning, Senja from Asar, Malam from Isyak.**
 
 <p align="center">
   <em>Tenang home in Malam, Senja and Embun (layout renders at 1080p; the app tiles are not drawn in these
-  renders). Version 6.0.0 is on its way; the download below is still 5.0.0 (Sinar).</em>
+  renders). The download below is 6.0.0 (Tenang).</em>
 </p>
 
 <p align="center">
   <a href="https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-home.apk">
-    <img src="https://img.shields.io/badge/Download_TV_Launcher-glass--tv--home.apk_(v5.0.0)-success?style=for-the-badge&logo=android" alt="Download Glass TV Home">
+    <img src="https://img.shields.io/badge/Download_TV_Launcher-glass--tv--home.apk_(v6.0.0)-success?style=for-the-badge&logo=android" alt="Download Glass TV Home">
   </a>
   &nbsp;
   <a href="https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-installer.apk">
@@ -44,8 +44,8 @@ Embun in the morning, Senja from Asar, Malam from Isyak.**
 > 2. 📱 **Kaedah 2 (Tanpa PC — Aplikasi Telefon Android)**: Pasang [**`release/glass-tv-installer.apk`**](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-installer.apk) di telefon pintar anda. Sambung ke Wi-Fi sama, dan tekan *Pasang Terus ke TV* untuk kunci butang Home dalam 1-klik tanpa komputer!
 
 > 📦 **Official APK Downloads**:
-> - 📺 **Android TV / Google TV Launcher**: [**`release/glass-tv-home.apk`**](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-home.apk) (**v5.0.0** • ~2.1 MB)
-> - 📱 **Phone / Tablet Companion Installer**: [**`release/glass-tv-installer.apk`**](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-installer.apk) (**v1.1.0** • ~7.1 MB) — Kunci butang Home TV terus dari telefon tanpa sebarang PC!
+> - 📺 **Android TV / Google TV Launcher**: [**`release/glass-tv-home.apk`**](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-home.apk) (**v6.0.0** • ~1.8 MB)
+> - 📱 **Phone / Tablet Companion Installer**: [**`release/glass-tv-installer.apk`**](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-installer.apk) (**v1.1.0** • ~6.9 MB) — Kunci butang Home TV terus dari telefon tanpa sebarang PC!
 >
 > 🤖 **AI Prompt & Audit Guide**:
 > - ⚡ **[AI_INSTALL_PROMPT.md](AI_INSTALL_PROMPT.md)**: Arahan lengkap AI untuk audit TV (1080p vs 4K, DPI, IP LAN, stock launcher), debloat, dan kunci butang Home.
@@ -57,10 +57,10 @@ Embun in the morning, Senja from Asar, Malam from Isyak.**
 
 Glass TV debloats any Android TV or Google TV over Wi-Fi, with no root and nothing that can't be undone, then
 swaps the ad-filled home screen for a calm, fast one. This fork keeps the debloat tools and the v4.1.0
-launcher features, and rebuilds the interface in **Sinar**: flat graphite surfaces, one electric-mint accent,
-app-coloured focus, and no blur or glass. The home folds a quiet weather and air-quality line, a daily ayah or
-Khutbah Minbar shelf, all six prayer times, and the app dock into one information rail. The old place caption
-is off by default, so your wallpaper stays unobstructed.
+launcher features, and rebuilds the interface in **Tenang**: three calm palettes that follow the prayer times, a
+slowly moving canvas, one soft accent ring, and no glass blur. The home folds a quiet weather and air-quality
+line, a daily ayah or Khutbah Minbar shelf, all six prayer times, and the app dock into one information rail.
+The old place caption is off by default, so your wallpaper stays unobstructed.
 
 ## What's New in 6.0 — Tenang
 

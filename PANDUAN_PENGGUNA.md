@@ -11,7 +11,7 @@ Selamat datang ke **Glass TV Home**! Panduan ini khas untuk pengguna baru (*begi
 ## 🌟 1. Apa Itu Glass TV Home?
 
 Glass TV Home ialah pengganti skrin utama (*launcher*) untuk Android TV dan Google TV (seperti Xiaomi Mi Box S, Mi TV Stick, Android TV Sharp, Sony, TCL, Philips, Mecool dsb):
-* 🚀 **Tiada Iklan & Sangat Ringan**: Bersaiz kira-kira 2.0 MB, lancar dan tidak membebankan TV (menjimatkan lebih 400 MB RAM berbanding skrin asal).
+* 🚀 **Tiada Iklan & Sangat Ringan**: Bersaiz kira-kira 1.8 MB, lancar dan tidak membebankan TV (menjimatkan lebih 400 MB RAM berbanding skrin asal).
 * 🪟 **Gaya Quiet Canvas (tvOS)**: Rekaan moden seperti Apple TV dengan rail maklumat kaca selebar skrin, baris status cuaca dan IPU yang tenang, fon Outfit, dan dock aplikasi terapung.
 * 🕌 **Waktu Solat & Ayat Harian**: Jadual 6 waktu solat Malaysia secara automatik dengan ayat al-Quran pilihan harian.
 * ⛅ **Dashboard Cuaca & Jerebu (API)**: Semakan suhu semasa, ramalan 12 jam, 7 hari, serta indeks pencemaran udara rasmi (APIMS Jabatan Alam Sekitar).
@@ -23,9 +23,9 @@ Glass TV Home ialah pengganti skrin utama (*launcher*) untuk Android TV dan Goog
 
 Sila muat turun fail pemasangan rasmi mengikut peranti anda:
 * 📱 **Untuk Telefon / Tablet Android (Aplikasi Pembantu Pemasangan — Disyorkan)**:  
-  [**`glass-tv-installer.apk`** (6.8 MB)](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-installer.apk) — **Pilihan Utama!** Pasang terus ke TV dan kunci butang Home melalui Wi-Fi tanpa perlukan komputer (PC) atau kabel.
-* 📺 **Untuk Android TV / Google TV (Launcher Utama v5.0)**:  
-  [**`glass-tv-home.apk`** (2.0 MB)](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-home.apk) — Versi terkini `v5.0.0` (reka bentuk Sinar). Versi `6.0.0` — **Tenang**: warna lembut yang mengikut waktu solat (Malam, Senja, Embun), latar bergerak perlahan dan skrin utama yang lebih tenang — akan datang; lihat [docs/REVAMP.md](docs/REVAMP.md).
+  [**`glass-tv-installer.apk`** (6.9 MB)](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-installer.apk) — **Pilihan Utama!** Pasang terus ke TV dan kunci butang Home melalui Wi-Fi tanpa perlukan komputer (PC) atau kabel.
+* 📺 **Untuk Android TV / Google TV (Launcher Utama v6.0)**:  
+  [**`glass-tv-home.apk`** (1.8 MB)](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-home.apk) — Versi terkini `v6.0.0` — **Tenang**: warna lembut yang mengikut waktu solat (Malam, Senja, Embun), latar bergerak perlahan dan skrin utama yang lebih tenang; lihat [docs/REVAMP.md](docs/REVAMP.md).
 
 > [!CAUTION]
 > ### ⚠️ JANGAN PASANG APK SECARA SIDELOAD BIASA TANPA INSTALLER / AI!
@@ -50,7 +50,7 @@ Ikuti panduan mengikut peranti yang anda miliki dengan susunan keutamaan berikut
 Jika anda mempunyai telefon pintar atau tablet Android, ini adalah kaedah **paling mudah, pantas, dan 100% automatik** tanpa memerlukan komputer atau sebarang kabel USB!
 
 1. **Muat Turun & Pasang APK Pembantu di Telefon Android Anda**:
-   - Muat turun [**`glass-tv-installer.apk`**](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-installer.apk) (~6.8 MB) terus ke telefon pintar anda dan pasang (*install*).
+   - Muat turun [**`glass-tv-installer.apk`**](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-installer.apk) (~6.9 MB) terus ke telefon pintar anda dan pasang (*install*).
 2. **Persediaan Ringkas di TV (Sekali Sahaja)**:
    - Pada remote TV: Buka **Settings (Tetapan ⚙️)** $\rightarrow$ **System / Device Preferences** $\rightarrow$ **About (Mengenai)** $\rightarrow$ Skrol ke **Build (Android TV OS Build)**.
    - Tekan butang **OK remote sebanyak 7 kali berturut-turut** sehingga muncul *"You are now a developer!"*.
@@ -355,7 +355,7 @@ Navigasi tetapan TV dengan pantas melalui reka bentuk 2-lajur moden:
 
 Kini anda tidak perlu aplikasi pihak ketiga yang rumit! Kami telah membina aplikasi rasmi **Glass TV Installer** khas untuk telefon dan tablet Android:
 
-* **Muat Turun APK Pembantu**: [**`glass-tv-installer.apk`**](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-installer.apk) (~6.8 MB)
+* **Muat Turun APK Pembantu**: [**`glass-tv-installer.apk`**](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-installer.apk) (~6.9 MB)
 
 #### Langkah Pemasangan:
 1. **Persediaan TV**:

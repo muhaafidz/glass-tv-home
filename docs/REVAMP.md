@@ -334,9 +334,9 @@ Decisions in section 9: all accepted as recommended (2026-11-16).
 - [x] README leads with Tenang: new screenshots (`docs/screenshots/tenang-*.png`) and a "What's New in 6.0"
   section; Sinar is kept as "Version 5". USER_GUIDE and PANDUAN_PENGGUNA announce 6.0.0.
 - [x] `versionCode 61`, `versionName 6.0.0`.
-- Left for publishing (after P9): building the APK with the release signing key, `release/glass-tv-home.apk`,
-  `release/version.json` and the README download badge. The key that signed 5.0.0 (`f2ebc93c…`) is not in
-  this repository; without it, TVs cannot update over OTA (see the conversation of 2026-11-16).
+- [x] Published: `release/glass-tv-home.apk` (1.82 MB, signed with the same debug certificate as 5.0.0,
+  `f2ebc93c…`, so existing TVs accept the OTA), `release/version.json` at `versionCode 61` / `6.0.0`, the
+  rebuilt `release/glass-tv-installer.apk` (bundles 6.0.0) and the README download badge.
 
 ### Release notes draft (for `release/version.json`)
 
