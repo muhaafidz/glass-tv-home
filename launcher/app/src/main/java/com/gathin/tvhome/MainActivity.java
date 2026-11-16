@@ -140,6 +140,9 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     private DockDecoration tray;
     private FrameLayout root;
     private View ambient;
+    /** The Tenang background (docs/REVAMP.md P4), shown when the wallpaper category is Tenang. */
+    private AmbientView ambientView;
+    static final String TENANG_CATEGORY = "Tenang";
     /** The focus: one dark shape gliding between tiles and pills (see Glider). */
     private Glider glider;
     /** Whether the glider is on the top menu, so a move down travels dark. */
@@ -542,7 +545,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         if (heroName != null) heroName.setMaxWidth(heroNameMaxWidth);
         if (heroDesc != null) heroDesc.setMaxWidth(heroMaxWidth);
 
-        String activeCat = getSharedPreferences("wallpaper_prefs", MODE_PRIVATE).getString("active_category", "Malaysia");
+        String activeCat = getSharedPreferences("wallpaper_prefs", MODE_PRIVATE).getString("active_category", TENANG_CATEGORY);
         if ("Custom".equalsIgnoreCase(activeCat)) {
             placesMode = false;
             File customDir = new File(getFilesDir(), "custom_wallpapers");
@@ -569,6 +572,11 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             // previously cached online category or start a network refresh in the background.
             placesMode = false;
             if (wallpapers.isEmpty()) wallpapers = Collections.singletonList(cfg.wallpaper);
+        } else if (TENANG_CATEGORY.equalsIgnoreCase(activeCat)) {
+            // The calm canvas: no pictures, nothing downloaded.
+            placesMode = false;
+            wallpapers = Collections.emptyList();
+            showAmbient(true);
         } else {
             placesMode = false;
             List<File> catFiles = OnlineWallpapers.listByCategory(this, activeCat);
@@ -1221,6 +1229,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     /** Puts a picture behind everything, cross-fading from the previous one when asked. */
     private void setWallpaper(android.graphics.Bitmap bmp, boolean fade) {
         if (bmp == null) return;
+        if (ambientView != null) showAmbient(false);
         if (wallView == null) {
             wallView = new android.widget.ImageView(this);
             wallView.setScaleType(android.widget.ImageView.ScaleType.CENTER_CROP);
@@ -1472,6 +1481,28 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         super.onStop();
     }
 
+    /** Shows (or removes) the Tenang background under everything; pictures and it never stack. */
+    private void showAmbient(boolean on) {
+        if (on) {
+            if (ambientView == null) {
+                ambientView = new AmbientView(this);
+                root.addView(ambientView, 0, new FrameLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            }
+            if (wallView != null) {
+                wallView.setImageDrawable(null);
+                wallView.setVisibility(View.GONE);
+            }
+            wallBitmap = null;
+            if (hasWindowFocus()) ambientView.start(reducedMotion);
+        } else if (ambientView != null) {
+            ambientView.stop();
+            root.removeView(ambientView);
+            ambientView = null;
+            if (wallView != null) wallView.setVisibility(View.VISIBLE);
+        }
+    }
+
     /**
      * Tenang entrance, once per TV boot like the tiles': the clock, the top buttons and the info row
      * rise 11 dp and fade in, staggered (docs/REVAMP.md §3.4). Translation and alpha only.
@@ -1647,6 +1678,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     @Override
     protected void onPause() {
         super.onPause();
+        if (ambientView != null) ambientView.stop();
         if (prayerGlowAnimator != null) {   // nothing animates while another app is in front
             prayerGlowAnimator.cancel();
             prayerGlowAnimator = null;
@@ -1680,6 +1712,11 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) showCardPrompt();
+        // The canvas drifts only while Home itself has focus: a dialog, menu or app over it pauses it.
+        if (ambientView != null) {
+            if (hasFocus && !screensaverActive) ambientView.start(reducedMotion);
+            else ambientView.stop();
+        }
     }
 
     /**
@@ -4845,7 +4882,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         File[] customFiles = customDir.listFiles((dir, name) -> name.endsWith(".jpg") || name.endsWith(".png") || name.endsWith(".jpeg"));
         int customCount = (customFiles != null) ? customFiles.length : 0;
 
-        String currentKey = getSharedPreferences("wallpaper_prefs", MODE_PRIVATE).getString("active_category", "Malaysia");
+        String currentKey = getSharedPreferences("wallpaper_prefs", MODE_PRIVATE).getString("active_category", TENANG_CATEGORY);
 
         class WallpaperOption {
             final String key;
@@ -4860,6 +4897,13 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
 
         String curLang = AppLanguage.getLanguage(this);
         List<WallpaperOption> options = new ArrayList<>();
+
+        // Category 0: Tenang, the calm moving canvas (default, offline)
+        String tTen = AppLanguage.LANG_EN.equals(curLang) ? "\u2726 Tenang (calm canvas)" : "\u2726 Tenang (kanvas tenang)";
+        String sTen = AppLanguage.LANG_EN.equals(curLang) ? "Soft drifting colours that follow prayer times \u2022 offline"
+                : (AppLanguage.LANG_ID.equals(curLang) ? "Warna lembut yang mengikut waktu solat \u2022 luring"
+                : "Warna lembut yang mengikut waktu solat \u2022 luar talian");
+        options.add(new WallpaperOption(TENANG_CATEGORY, tTen, sTen));
 
         // Category 1: Malaysia
         String tMal = AppLanguage.LANG_EN.equals(curLang) ? "🇲🇾 Attractions in Malaysia" : (AppLanguage.LANG_ID.equals(curLang) ? "🇲🇾 Tempat Wisata Malaysia" : "🇲🇾 Tempat Menarik di Malaysia");
@@ -5724,6 +5768,17 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             displayLabel = category;
         }
         Toast.makeText(this, "Kategori: " + displayLabel, Toast.LENGTH_SHORT).show();
+        if (TENANG_CATEGORY.equalsIgnoreCase(category)) {
+            placesMode = false;
+            wallpapers = Collections.emptyList();
+            if (heroShelf != null) {
+                heroShelf.animate().cancel();
+                heroShelf.setAlpha(0f);
+                heroShelf.setVisibility(View.GONE);
+            }
+            showAmbient(true);
+            return;
+        }
 
         if ("Custom".equalsIgnoreCase(category)) {
             placesMode = false;
@@ -6620,6 +6675,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         }
         closeMenu(false);
         screensaverActive = true;
+        if (ambientView != null) ambientView.stop();
         if (screensaverView == null) {
             screensaverView = getLayoutInflater().inflate(R.layout.view_nightstand, root, false);
             screensaverView.setOnClickListener(v -> dismissScreensaver());
@@ -6694,6 +6750,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     private void dismissScreensaver() {
         if (!screensaverActive || screensaverView == null) return;
         screensaverActive = false;
+        if (ambientView != null && hasWindowFocus()) ambientView.start(reducedMotion);
         lastUserInteraction = android.os.SystemClock.elapsedRealtime();
         screensaverView.animate().alpha(0f).setDuration(350).withEndAction(() -> {
             if (!screensaverActive && screensaverView != null) {

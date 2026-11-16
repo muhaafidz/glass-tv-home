@@ -64,6 +64,8 @@ class TenangSnapshots {
         }
         text(R.id.prayerPrev, "Isyak"); text(R.id.prayerNextIn, "Subuh dalam 5j 36m")
         root.findViewById<View>(R.id.islamicShelf).translationY = 185 * density
+        (root as android.widget.FrameLayout).addView(AmbientView(root.context), 0,
+            android.widget.FrameLayout.LayoutParams(android.view.ViewGroup.LayoutParams.MATCH_PARENT, android.view.ViewGroup.LayoutParams.MATCH_PARENT))
     }
 
     @Test fun homeMalam() = home(R.style.ThemeOverlay_Tenang_Malam)

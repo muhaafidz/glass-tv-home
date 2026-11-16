@@ -1,6 +1,6 @@
 # Tenang: the calm revamp (plan)
 
-Status: **P3 done, P4 next** (see the log at the end). Target release: **6.0.0**. Branch: `ccr-032626ce-bc4wjg`.
+Status: **P4 done; P5 next** (beta-ready for a TV check) (see the log at the end). Target release: **6.0.0**. Branch: `ccr-032626ce-bc4wjg`.
 Reference mockup: the "Calm TV Home" artifact (1600×900 stage, themes Malam / Senja / Embun, lite mode).
 
 This plan turns that mockup into the launcher's design language across every screen, without
@@ -292,3 +292,17 @@ Decisions in section 9: all accepted as recommended (2026-11-16).
 - [x] Entrance once per boot: clock, top buttons and info row rise 11 dp and fade in, staggered 0/80/180 ms.
 - Dropped after weighing it: the "MEMBUKA <app>" veil, because it would delay every app launch by about
   0.5 s; the app-coloured tile frame, because it would shrink the banners. The ring and glow carry the look.
+
+**P4 (ambient background)**
+- [x] `AmbientView`: the palette gradient, two radial glows drifting over 38 s and 46 s, 12 stars (6 twinkle
+  by alpha) and the two wave lines looping over 70 s. No bitmaps and no hardware layers; only translation,
+  scale and alpha change.
+- [x] It steps at **15 fps** instead of 60. The drift is a few pixels a second, so it still looks smooth and
+  the GPU repaints a quarter as often. Positions come from the clock alone, so a pause resumes in place.
+- [x] It runs only while Home has window focus: it stops for dialogs, menus, other apps, the in-app
+  screensaver and `onPause`. With reduced motion (or a low-spec TV) it draws once and never steps.
+- [x] "Tenang" is now the default wallpaper category and the first option in the Wallpaper menu (offline,
+  nothing downloaded). Choosing photos replaces it, and a picture and the canvas never stack. A pushed
+  theme with its own wallpaper, or uploaded photos, still win.
+- [x] `AmbientMathTest`; 65 tests pass; APK 1.89 MB.
+- To measure on a real TV (P9): `dumpsys gfxinfo com.gathin.tvhome` idle on Home, against the §4.5 budget.
