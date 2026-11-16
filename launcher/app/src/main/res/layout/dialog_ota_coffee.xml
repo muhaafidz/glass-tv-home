@@ -188,7 +188,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text=" @imsomangge"
+                    android:text=" @mhfiz.ms"
                     android:textColor="#FF90B8"
                     android:textSize="13sp"
                     android:fontFamily="@font/outfit"
@@ -198,7 +198,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="DuitNow QR • GXBank"
+                android:text="DuitNow QR • Maybank"
                 android:textColor="?attr/tnMuted"
                 android:textSize="11sp"
                 android:fontFamily="@font/outfit"
@@ -211,7 +211,7 @@
                 android:layout_height="185dp"
                 android:src="@drawable/qr_coffee"
                 android:scaleType="fitCenter"
-                android:contentDescription="DuitNow QR @imsomangge" />
+                android:contentDescription="DuitNow QR Maybank @mhfiz.ms" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -225,7 +225,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="📧 Cadangan: ahmad.anammat@me.com"
+                android:text="💬 Cadangan &amp; maklum balas: @mhfiz.ms"
                 android:textColor="?attr/tnMuted"
                 android:textSize="10sp"
                 android:fontFamily="@font/outfit"

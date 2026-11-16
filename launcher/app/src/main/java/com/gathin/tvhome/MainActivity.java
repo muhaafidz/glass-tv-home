@@ -4560,7 +4560,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         if (imgQrCoffee != null) {
             imgQrCoffee.setOnClickListener(v -> {
                 SoundEffects.playSelect();
-                Toast.makeText(this, "☕ Terima kasih atas sokongan belanja kopi! (@imsomangge)", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "☕ Terima kasih atas sokongan belanja kopi! (@mhfiz.ms)", Toast.LENGTH_SHORT).show();
             });
         }
 
