@@ -1,20 +1,26 @@
-# Glass TV — Sinar
+# Glass TV — Tenang
 
-**Make your Android TV or Google TV fast and ad-free again, then come home to a calmer screen: Sinar folds
-the weather, daily ayah and prayer times into one flat information rail above the dock, with one vivid accent
-and no glass, blur or heavy shadows.**
+**Make your Android TV or Google TV fast and ad-free again, then come home to a calm screen: Tenang sets the
+clock, weather, daily ayah and prayer times over a softly drifting canvas whose colours follow the day —
+Embun in the morning, Senja from Asar, Malam from Isyak.**
 
 > A fork of [Glass TV](https://github.com/aqmangge/glass-tv-home) by [@aqmangge](https://github.com/aqmangge).
 > The launcher engine and every feature from Glass TV v4.1.0 are here; the home screen, settings, dialogs,
-> typography and wallpaper set are rebuilt in this fork with the Sinar design language. The fork's own home is
+> typography and wallpaper set are rebuilt in this fork, now in the Tenang design language (6.0). The fork's own home is
 > [muhaafidz/glass-tv-home](https://github.com/muhaafidz/glass-tv-home).
 
 <p align="center">
-  <img src="docs/screenshots/sinar-home.jpg" width="100%" alt="Sinar home: flat graphite surfaces, mint accent, clock, weather and air-quality line, ayah and prayer rail, and app dock">
+  <img src="docs/screenshots/tenang-malam.png" width="100%" alt="Tenang home in Malam: thin clock and greeting, weather, air-quality and warning chips, ayah and prayer-time cards over a drifting teal and violet canvas">
 </p>
 
 <p align="center">
-  <em>Sinar home on a Xiaomi Mi TV (Android TV 10). Flat graphite surfaces, one electric-mint accent, and app-coloured focus.</em>
+  <img src="docs/screenshots/tenang-senja.png" width="49%" alt="Tenang home in Senja, the warm dusk palette">
+  <img src="docs/screenshots/tenang-embun.png" width="49%" alt="Tenang home in Embun, the light morning palette">
+</p>
+
+<p align="center">
+  <em>Tenang home in Malam, Senja and Embun (layout renders at 1080p; the app tiles are not drawn in these
+  renders). Version 6.0.0 is on its way; the download below is still 5.0.0 (Sinar).</em>
 </p>
 
 <p align="center">
@@ -56,7 +62,23 @@ app-coloured focus, and no blur or glass. The home folds a quiet weather and air
 Khutbah Minbar shelf, all six prayer times, and the app dock into one information rail. The old place caption
 is off by default, so your wallpaper stays unobstructed.
 
-## What's New in This Fork — Sinar
+## What's New in 6.0 — Tenang
+
+- **Colours that follow the day.** Three palettes — Malam (deep teal night), Senja (warm dusk) and Embun
+  (light morning dew) — switch by themselves at Syuruk, Asar and Isyak using the JAKIM times, with a soft
+  fade. Settings → Appearance → *Tema Tenang* fixes one, and *Jangan guna tema cerah* keeps the daytime dark.
+- **A calm moving canvas.** Two soft glows drift over 38 and 46 seconds, a few stars twinkle and a faint wave
+  passes. It is the default background, works offline, steps at 15 fps, and stops whenever Home is not in
+  front. Photos are one choice away in the Wallpaper menu.
+- **A quieter home.** A thin Outfit clock with a greeting, weather, IPU and warning chips, and two cards: the
+  daily ayah in Amiri, and prayer times with the next prayer softly outlined and a countdown bar.
+- **Gentle focus.** One accent ring with a soft glow on every tile and button; tiles lift without bouncing.
+- **Lighter.** The real Outfit typeface in five weights replaces a mislabelled 834 KB font pair: the APK is
+  about 250 KB smaller.
+- The plan, decisions and progress are in [docs/REVAMP.md](docs/REVAMP.md); preview the look in a browser
+  with [preview/tenang.html](preview/tenang.html).
+
+## Version 5 — Sinar
 
 - **Flat, vivid, lightweight.** The glass blur, translucent rims and heavy shadows are gone. Surfaces are flat
   graphite, the primary accent is electric mint, and every focused tile or pill gets a crisp accent edge in the

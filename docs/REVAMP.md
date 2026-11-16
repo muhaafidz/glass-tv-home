@@ -1,6 +1,6 @@
 # Tenang: the calm revamp (plan)
 
-Status: **P0–P7 done; P8 (package) in progress; P9 needs the TV** (see the log at the end). Target release: **6.0.0**. Branch: `ccr-032626ce-bc4wjg`.
+Status: **P0–P8 done; P9 (real TV, then publish) is next** (see the log at the end). Target release: **6.0.0**. Branch: `ccr-032626ce-bc4wjg`.
 Reference mockup: the "Calm TV Home" artifact (1600×900 stage, themes Malam / Senja / Embun, lite mode).
 
 This plan turns that mockup into the launcher's design language across every screen, without
@@ -328,3 +328,22 @@ Decisions in section 9: all accepted as recommended (2026-11-16).
   "🌙 Jangan guna tema cerah" (Auto uses only Malam and Senja). Home switches with its fade as soon as
   Settings closes. "Mod Kelancaran TV Rendah" remains the Lite switch.
 - [x] 66 tests pass.
+
+**P8 (package)**
+- [x] `themes/tenang/` (palette auto, no pictures, nothing downloaded) and its row in themes/README.md.
+- [x] README leads with Tenang: new screenshots (`docs/screenshots/tenang-*.png`) and a "What's New in 6.0"
+  section; Sinar is kept as "Version 5". USER_GUIDE and PANDUAN_PENGGUNA announce 6.0.0.
+- [x] `versionCode 61`, `versionName 6.0.0`.
+- Left for publishing (after P9): building the APK with the release signing key, `release/glass-tv-home.apk`,
+  `release/version.json` and the README download badge. The key that signed 5.0.0 (`f2ebc93c…`) is not in
+  this repository; without it, TVs cannot update over OTA (see the conversation of 2026-11-16).
+
+### Release notes draft (for `release/version.json`)
+
+✨ Glass TV v6.0.0 — Tenang:
+• Tema baharu yang tenang: Malam, Senja dan Embun bertukar sendiri mengikut waktu solat (Syuruk, Asar, Isyak).
+• Latar kanvas bergerak perlahan (cahaya lembut, bintang, ombak) — lalai, tanpa internet, berhenti bila aplikasi lain dibuka.
+• Skrin utama lebih tenang: jam nipis dengan ucapan, cip cuaca/IPU/amaran, kad ayat dan kad waktu solat dengan kiraan detik.
+• Fokus lembut: satu cincin aksen dengan cahaya halus; jubin naik tanpa melantun.
+• Tetapan → Penampilan: "Tema Tenang" dan "Jangan guna tema cerah".
+• Fon Outfit sebenar; APK lebih kecil (~250 KB).
