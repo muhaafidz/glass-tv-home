@@ -2,6 +2,13 @@ plugins {
     id 'com.android.application'
 }
 
+// Opt-in layout snapshots of the Tenang screens; see the root build.gradle.
+def snapshots = project.hasProperty('snapshots')
+if (snapshots) {
+    apply plugin: 'org.jetbrains.kotlin.android'
+    apply plugin: 'app.cash.paparazzi'
+}
+
 android {
     namespace 'com.gathin.tvhome'
     compileSdk 34
@@ -28,6 +35,11 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
+    }
+
+    if (snapshots) {
+        sourceSets.test.java.srcDirs += 'src/snapshotTest/kotlin'
+        kotlinOptions { jvmTarget = '17' }
     }
 }
 
