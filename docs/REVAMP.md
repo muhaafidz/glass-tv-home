@@ -1,6 +1,6 @@
 # Tenang: the calm revamp (plan)
 
-Status: **P0 in progress** (see the log at the end). Target release: **6.0.0**. Branch: `ccr-032626ce-bc4wjg`.
+Status: **P0 done, P1 next** (see the log at the end). Target release: **6.0.0**. Branch: `ccr-032626ce-bc4wjg`.
 Reference mockup: the "Calm TV Home" artifact (1600×900 stage, themes Malam / Senja / Embun, lite mode).
 
 This plan turns that mockup into the launcher's design language across every screen, without
@@ -244,5 +244,6 @@ Decisions in section 9: all accepted as recommended (2026-11-16).
 - [x] `preview/tenang.html`: the mockup adapted as the visual reference (bundled fonts, banner-style
   dock tiles, preview-only palette and Lite toolbar).
 - [x] "Before" baseline: the 5.0.0 screenshots already in `docs/screenshots/sinar-*.jpg`.
-- [ ] Release build and unit tests with the new fonts. Waits on the Android SDK licence (the person
-  accepts it).
+- [x] Release build and unit tests with the new fonts: 48 tests pass; release APK 1.88 MB (was 2.14 MB).
+
+**P0 done.** Next: P1, tokens and theming engine.
