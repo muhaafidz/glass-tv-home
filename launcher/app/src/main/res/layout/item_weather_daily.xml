@@ -22,7 +22,7 @@
         android:textColor="?attr/tnMuted"
         android:textSize="12sp"
         android:fontFamily="@font/outfit"
-        android:fontVariationSettings="'wght' 500"
+        android:textFontWeight="500"
         android:singleLine="true" />
 
     <ImageView
@@ -40,7 +40,7 @@
         android:textColor="#FFFFFFFF"
         android:textSize="14sp"
         android:fontFamily="@font/outfit"
-        android:fontVariationSettings="'wght' 600"
+        android:textFontWeight="500"
         android:singleLine="true" />
 
     <TextView
@@ -51,6 +51,6 @@
         android:textColor="?attr/tnAccent"
         android:textSize="11sp"
         android:fontFamily="@font/outfit"
-        android:fontVariationSettings="'wght' 600"
+        android:textFontWeight="500"
         android:singleLine="true" />
 </LinearLayout>

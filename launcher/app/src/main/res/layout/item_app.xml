@@ -68,7 +68,7 @@
         android:textColor="?attr/tnAccent"
         android:textSize="15sp"
         android:fontFamily="@font/outfit"
-        android:fontVariationSettings="'wght' 500"
+        android:textFontWeight="500"
         android:letterSpacing="0.02"
         android:shadowColor="#99000000"
         android:shadowDx="0"

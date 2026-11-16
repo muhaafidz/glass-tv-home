@@ -210,7 +210,7 @@ public class LocationActivity extends Activity {
         t.setTextSize(sp);
         t.setTextColor(color);
         t.setTypeface(outfit);
-        t.setFontVariationSettings("'wght' " + weight);
+        Fonts.variation(t, "'wght' " + weight);
         return t;
     }
 

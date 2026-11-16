@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Clear normally, accent ring when focused: a focusable area inside a chip that paints its own fill. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_focused="true">
+        <shape android:shape="rectangle">
+            <corners android:radius="100dp" />
+            <stroke android:width="2dp" android:color="?attr/tnAccent" />
+        </shape>
+    </item>
+    <item android:drawable="@android:color/transparent" />
+</selector>

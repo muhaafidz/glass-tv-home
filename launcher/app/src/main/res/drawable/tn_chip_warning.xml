@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tenang warning chip: soft amber wash, no border; focused adds the accent ring. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_focused="true">
+        <shape android:shape="rectangle">
+            <corners android:radius="100dp" />
+            <solid android:color="?attr/tnAmberBg" />
+            <stroke android:width="2dp" android:color="?attr/tnAccent" />
+        </shape>
+    </item>
+    <item>
+        <shape android:shape="rectangle">
+            <corners android:radius="100dp" />
+            <solid android:color="?attr/tnAmberBg" />
+        </shape>
+    </item>
+</selector>

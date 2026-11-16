@@ -21,7 +21,7 @@
         android:textColor="?attr/tnText"
         android:textSize="11sp"
         android:fontFamily="@font/outfit"
-        android:fontVariationSettings="'wght' 600"
+        android:textFontWeight="500"
         android:includeFontPadding="false"
         android:gravity="center"
         android:singleLine="true" />
@@ -41,7 +41,7 @@
         android:textColor="?attr/tnAccent"
         android:textSize="8.5sp"
         android:fontFamily="@font/outfit"
-        android:fontVariationSettings="'wght' 700"
+        android:textFontWeight="700"
         android:includeFontPadding="false"
         android:gravity="center"
         android:singleLine="true" />
@@ -54,7 +54,7 @@
         android:textColor="#FFFFFF"
         android:textSize="13sp"
         android:fontFamily="@font/outfit"
-        android:fontVariationSettings="'wght' 700"
+        android:textFontWeight="700"
         android:includeFontPadding="false"
         android:gravity="center"
         android:singleLine="true" />

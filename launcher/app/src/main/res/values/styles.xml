@@ -118,4 +118,15 @@
         <item name="android:textColor">@drawable/top_text</item>
         <item name="android:drawableTint">@drawable/top_text</item>
     </style>
+
+    <!-- Tenang eyebrow: small caps label above a card's content ("WAKTU SOLAT · SHAH ALAM"). -->
+    <style name="TenangEyebrow">
+        <item name="android:fontFamily">@font/outfit</item>
+        <item name="android:textFontWeight">500</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:letterSpacing">0.1</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">end</item>
+    </style>
 </resources>

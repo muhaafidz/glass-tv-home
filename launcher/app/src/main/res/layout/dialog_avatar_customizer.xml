@@ -18,7 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/outfit"
-            android:fontVariationSettings="'wght' 700"
+            android:textFontWeight="700"
             android:text="🎨 Kustomisasi Avatar Watak"
             android:textColor="#FFFFFF"
             android:textSize="21sp" />
@@ -57,7 +57,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/outfit"
-            android:fontVariationSettings="'wght' 600"
+            android:textFontWeight="500"
             android:text="Ekspresi Watak (Mimik Muka)"
             android:textColor="?attr/tnText"
             android:textSize="13.5sp" />
@@ -95,7 +95,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:fontFamily="@font/outfit"
-            android:fontVariationSettings="'wght' 600"
+            android:textFontWeight="500"
             android:text="Warna Badan Karakter"
             android:textColor="?attr/tnText"
             android:textSize="13.5sp" />
@@ -125,7 +125,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:fontFamily="@font/outfit"
-            android:fontVariationSettings="'wght' 600"
+            android:textFontWeight="500"
             android:text="Warna Latar Belakang (Latar Avatar)"
             android:textColor="?attr/tnText"
             android:textSize="13.5sp" />
@@ -175,7 +175,7 @@
                 android:background="@drawable/bg_dialog_btn"
                 android:focusable="true"
                 android:fontFamily="@font/outfit"
-                android:fontVariationSettings="'wght' 600"
+                android:textFontWeight="500"
                 android:paddingStart="22dp"
                 android:paddingEnd="22dp"
                 android:text="Simpan &amp; Terapkan"

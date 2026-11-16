@@ -40,7 +40,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:fontFamily="@font/outfit"
-                android:fontVariationSettings="'wght' 700"
+                android:textFontWeight="700"
                 android:letterSpacing="0.08"
                 android:text="KHUTBAH MINBAR"
                 android:textAllCaps="true"
@@ -55,7 +55,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:fontFamily="@font/outfit"
-            android:fontVariationSettings="'wght' 700"
+            android:textFontWeight="700"
             android:lineSpacingExtra="2dp"
             android:maxLines="3"
             android:ellipsize="end"
@@ -70,7 +70,7 @@
             android:layout_marginTop="8dp"
             android:background="@drawable/bg_warning_time_pill"
             android:fontFamily="@font/outfit"
-            android:fontVariationSettings="'wght' 500"
+            android:textFontWeight="500"
             android:paddingStart="10dp"
             android:paddingTop="4dp"
             android:paddingEnd="10dp"
@@ -85,7 +85,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
             android:fontFamily="@font/outfit"
-            android:fontVariationSettings="'wght' 400"
+            android:textFontWeight="400"
             android:textColor="#80FFFFFF"
             android:textSize="10sp" />
 
@@ -106,7 +106,7 @@
             android:paddingTop="9dp"
             android:paddingBottom="9dp"
             android:fontFamily="@font/outfit"
-            android:fontVariationSettings="'wght' 700"
+            android:textFontWeight="700"
             android:text="🔁 Tukar Paparan"
             android:textColor="@color/selector_dlg_btn_cyan_text"
             android:textSize="12sp" />
@@ -123,7 +123,7 @@
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
             android:fontFamily="@font/outfit"
-            android:fontVariationSettings="'wght' 600"
+            android:textFontWeight="500"
             android:text="📑 Pilihan Kandungan..."
             android:textColor="#E6FFFFFF"
             android:textSize="11.5sp" />
@@ -140,7 +140,7 @@
             android:paddingTop="6dp"
             android:paddingBottom="6dp"
             android:fontFamily="@font/outfit"
-            android:fontVariationSettings="'wght' 500"
+            android:textFontWeight="500"
             android:text="Tutup"
             android:textColor="#B3FFFFFF"
             android:textSize="11sp" />
@@ -173,7 +173,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:fontFamily="@font/outfit"
-                android:fontVariationSettings="'wght' 700"
+                android:textFontWeight="700"
                 android:letterSpacing="0.08"
                 android:text="KANDUNGAN PENUH"
                 android:textAllCaps="true"
@@ -192,7 +192,7 @@
                 android:textColor="#CCFFFFFF"
                 android:textSize="13sp"
                 android:fontFamily="@font/outfit"
-                android:fontVariationSettings="'wght' 700"
+                android:textFontWeight="700"
                 android:contentDescription="Tutup" />
         </LinearLayout>
 
@@ -230,7 +230,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/outfit"
-                    android:fontVariationSettings="'wght' 700"
+                    android:textFontWeight="700"
                     android:textColor="?attr/tnAccent"
                     android:textSize="12.5sp"
                     android:lineSpacingExtra="2dp"
@@ -243,7 +243,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:fontFamily="@font/outfit"
-                    android:fontVariationSettings="'wght' 400"
+                    android:textFontWeight="400"
                     android:lineSpacingMultiplier="1.35"
                     android:justificationMode="inter_word"
                     android:textColor="?attr/tnText"

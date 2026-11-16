@@ -232,7 +232,7 @@ public class AzanActivity extends Activity {
         t.setTextSize(sp);
         t.setTextColor(color);
         t.setGravity(Gravity.CENTER);
-        if (font != null) t.setFontVariationSettings("'wght' " + weight);
+        if (font != null) Fonts.variation(t, "'wght' " + weight);
         return t;
     }
 

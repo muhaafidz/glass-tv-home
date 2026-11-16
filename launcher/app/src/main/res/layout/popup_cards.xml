@@ -20,7 +20,7 @@
         android:textColor="#E6FFFFFF"
         android:textSize="13sp"
         android:fontFamily="@font/outfit"
-        android:fontVariationSettings="'wght' 700"
+        android:textFontWeight="700"
         android:textStyle="bold"
         android:shadowColor="#CC000000"
         android:shadowDx="0"

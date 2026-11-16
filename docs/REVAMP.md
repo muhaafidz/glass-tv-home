@@ -1,6 +1,6 @@
 # Tenang: the calm revamp (plan)
 
-Status: **P1 done, P2 next** (see the log at the end). Target release: **6.0.0**. Branch: `ccr-032626ce-bc4wjg`.
+Status: **P2 done, P3 next** (see the log at the end). Target release: **6.0.0**. Branch: `ccr-032626ce-bc4wjg`.
 Reference mockup: the "Calm TV Home" artifact (1600×900 stage, themes Malam / Senja / Embun, lite mode).
 
 This plan turns that mockup into the launcher's design language across every screen, without
@@ -265,3 +265,21 @@ Decisions in section 9: all accepted as recommended (2026-11-16).
   palettes. 55 tests pass; APK 1.88 MB.
 - Not yet: the 684 colour literals in Java (custom weather views, dialogs built in code) still use
   Sinar-era values. Those are P5 (dark) and P6 (Embun).
+
+**P2 (home layout)**
+- [x] Font weights: the app's 122 XML and 47 Java "variable-font weight" settings never worked (the old
+  file had one weight). They now pick real Outfit cuts: `android:textFontWeight` in layouts,
+  `Fonts.weight()` in code (550/600 → 500).
+- [x] Clock in Outfit ExtraLight at 90 sp; date in Light ("16 Nov 2026"); new greeting line in the accent
+  colour, by hour and language (`HomeText`).
+- [x] Info row as chips: weather, a separate IPU chip with a status dot in the API colour, and the warning
+  chip (amber wash, slowly breathing dot, round ✕ inside).
+- [x] Information rail as two cards (`tn_card`) of equal height (`EqualHeightRow`): ayah card with an
+  eyebrow, Amiri in `warm`, right-aligned; prayer card with six equal cells, the next one outlined and
+  breathing, and a countdown row ("Isyak ━━━ Subuh dalam 5j 36m", the bar is a `scaleX`).
+- [x] Breathing stops in `onPause`, so nothing animates behind another app.
+- [x] `HomeTextTest` (greetings, dates, durations, prayer window across midnight and Syuruk, progress,
+  font cuts): 63 tests pass. APK 1.89 MB.
+- [x] Snapshots of Home in all three palettes in `launcher/app/src/test/snapshots/images/`.
+- Moved to P3: the dock tiles' faint app tint and the focus ring/glow on tiles (they belong with the focus
+  work).
