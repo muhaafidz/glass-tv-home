@@ -1,6 +1,6 @@
 # Tenang: the calm revamp (plan)
 
-Status: **plan, not started**. Target release: **6.0.0**. Branch: `ccr-032626ce-bc4wjg`.
+Status: **P0 in progress** (see the log at the end). Target release: **6.0.0**. Branch: `ccr-032626ce-bc4wjg`.
 Reference mockup: the "Calm TV Home" artifact (1600×900 stage, themes Malam / Senja / Embun, lite mode).
 
 This plan turns that mockup into the launcher's design language across every screen, without
@@ -229,3 +229,20 @@ P0–P4 alone (about 5 sessions) already give the full new Home in the dark pale
 7. **Embun scope.** *Recommendation:* do it (P6), but after P0–P5 ship, so the dark look reaches the TV
    first.
 8. **Name.** "Tenang" for the design language and version 6.0.0. Change it if you prefer another word.
+
+## 10. Progress log
+
+Decisions in section 9: all accepted as recommended (2026-11-16).
+
+**P0 (groundwork)**
+- [x] Removed `res/font/inter.ttf` (an unused, byte-identical copy of the font shipped as `outfit.ttf`).
+- [x] Replaced `outfit.ttf`, which was really Inter Medium, with the real Outfit (OFL, google/fonts
+  `ofl/outfit/Outfit[wght].ttf`): static cuts at 200, 300, 400, 500 and 700, hinting removed, about
+  52 KB each, collected in the `res/font/outfit.xml` family. `@font/outfit` and `R.font.outfit` keep
+  working; fonts go from 834 KB to 261 KB.
+- [x] CI's APK limit raised from 400 KB to 2.5 MB; AGENTS.md step 4 updated to match.
+- [x] `preview/tenang.html`: the mockup adapted as the visual reference (bundled fonts, banner-style
+  dock tiles, preview-only palette and Lite toolbar).
+- [x] "Before" baseline: the 5.0.0 screenshots already in `docs/screenshots/sinar-*.jpg`.
+- [ ] Release build and unit tests with the new fonts. Waits on the Android SDK licence (the person
+  accepts it).

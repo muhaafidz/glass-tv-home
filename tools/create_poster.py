@@ -78,7 +78,7 @@ def draw_bezel_window(base_img, screen_img, pos, size, radius=16, border_color=(
 def main():
     repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     assets_dir = os.path.join(repo_root, "docs", "screenshots")
-    font_path = os.path.join(repo_root, "launcher", "app", "src", "main", "res", "font", "outfit.ttf")
+    font_path = os.path.join(repo_root, "launcher", "app", "src", "main", "res", "font", "outfit_regular.ttf")
     
     # Load fonts
     font_title = ImageFont.truetype(font_path, 42)
