@@ -63,7 +63,32 @@ class TenangSnapshots {
             if (i == 0) (l.parent as View).setBackgroundResource(R.drawable.tn_prayer_next)
         }
         text(R.id.prayerPrev, "Isyak"); text(R.id.prayerNextIn, "Subuh dalam 5j 36m")
-        root.findViewById<View>(R.id.islamicShelf).translationY = 185 * density
+        // Same rule as MainActivity.infoRailTop: centred between the chips and the dock (top at 409 dp on 1080p).
+        val dockTop = 409 * density
+        val shelf = root.findViewById<View>(R.id.islamicShelf)
+        val weather = root.findViewById<View>(R.id.weatherRow)
+        shelf.viewTreeObserver.addOnPreDrawListener {
+            val a = android.graphics.Rect(0, 0, weather.width, weather.height)
+            (root as android.view.ViewGroup).offsetDescendantRectToMyCoords(weather, a)
+            val gap = maxOf(18 * density, (dockTop - a.bottom - shelf.height) / 2f)
+            shelf.y = minOf(a.bottom + gap, dockTop - 18 * density - shelf.height)
+            true
+        }
+        // Stand-in dock tiles, so the spacing reads as on the TV.
+        val dock = android.widget.LinearLayout(root.context)
+        for (i in 0 until 6) {
+            val tile = View(root.context)
+            tile.background = android.graphics.drawable.GradientDrawable().apply {
+                cornerRadius = 12 * density; setColor(0x22FFFFFF)
+            }
+            dock.addView(tile, android.widget.LinearLayout.LayoutParams(0, (68 * density).toInt(), 1f).apply {
+                marginEnd = (14 * density).toInt()
+            })
+        }
+        (root as android.widget.FrameLayout).addView(dock, android.widget.FrameLayout.LayoutParams(
+            android.view.ViewGroup.LayoutParams.MATCH_PARENT, (68 * density).toInt()).apply {
+            topMargin = dockTop.toInt(); leftMargin = (56 * density).toInt(); rightMargin = (42 * density).toInt()
+        })
         (root as android.widget.FrameLayout).addView(AmbientView(root.context), 0,
             android.widget.FrameLayout.LayoutParams(android.view.ViewGroup.LayoutParams.MATCH_PARENT, android.view.ViewGroup.LayoutParams.MATCH_PARENT))
     }

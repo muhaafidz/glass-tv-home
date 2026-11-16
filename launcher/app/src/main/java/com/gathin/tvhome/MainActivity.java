@@ -845,7 +845,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             timeIsyak = findViewById(R.id.timeIsyak);
 
             islamicShelf.addOnLayoutChangeListener((v, l, t, r, b, ol, ot, orr, ob) -> {
-                if (infoRailBottom > 0) v.setY(infoRailBottom - v.getHeight());
+                if (infoRailBottom > 0) v.setY(infoRailTop(v.getHeight()));
             });
             updateIslamicShelf();
         }
@@ -1916,7 +1916,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         infoRailBottom = dockTopInRoot - INFO_RAIL_GAP_DP * density;
 
         if (islamicShelf != null) {
-            float iy = infoRailBottom - islamicShelf.getHeight();
+            float iy = infoRailTop(islamicShelf.getHeight());
             islamicShelf.setY(iy);
             islamicShelf.animate().cancel();
             if (!heroShown) {
@@ -2224,7 +2224,27 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         Rect r = new Rect(0, 0, card.getWidth(), card.getHeight());
         root.offsetDescendantRectToMyCoords(card, r);
         infoRailBottom = r.top - INFO_RAIL_GAP_DP * density;
-        islamicShelf.setY(infoRailBottom - islamicShelf.getHeight());
+        islamicShelf.setY(infoRailTop(islamicShelf.getHeight()));
+    }
+
+    /**
+     * Tenang: the information rail sits in the middle of the free space between the info chips (or
+     * the now-playing card) and the dock, so the gap above it matches the gap below, at least 18 dp
+     * each. Hanging it a fixed distance above the dock left it pressed against the chips once the
+     * clock grew.
+     */
+    private float infoRailTop(int railHeight) {
+        float dockTop = infoRailBottom + INFO_RAIL_GAP_DP * density;
+        float minGap = 18 * density;
+        View above = nowPlayingCard != null && nowPlayingCard.getVisibility() == View.VISIBLE
+                ? nowPlayingCard : findViewById(R.id.weatherRow);
+        if (above == null || above.getHeight() == 0) return infoRailBottom - railHeight;
+        Rect a = new Rect(0, 0, above.getWidth(), above.getHeight());
+        root.offsetDescendantRectToMyCoords(above, a);
+        float free = dockTop - a.bottom - railHeight;
+        float gap = Math.max(minGap, free / 2f);
+        // Never into the dock: when space is short the rail keeps its minimum gap below instead.
+        return Math.min(a.bottom + gap, dockTop - minGap - railHeight);
     }
 
     /**
