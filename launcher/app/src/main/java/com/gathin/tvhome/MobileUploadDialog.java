@@ -41,14 +41,14 @@ public class MobileUploadDialog {
         TextView tvTitle = new TextView(context);
         tvTitle.setText("📲 Muat Naik Avatar Dari Telefon");
         tvTitle.setTextSize(20);
-        tvTitle.setTextColor(0xFFFFFFFF);
+        tvTitle.setTextColor(Design.TEXT);
         tvTitle.setTypeface(context.getResources().getFont(R.font.outfit), android.graphics.Typeface.BOLD);
         root.addView(tvTitle);
 
         TextView tvSub = new TextView(context);
         tvSub.setText("Sambungkan telefon pintar ke Wi-Fi yang sama untuk menghantar gambar atau animasi GIF");
         tvSub.setTextSize(13);
-        tvSub.setTextColor(0xFF98A2B3);
+        tvSub.setTextColor(Design.TEXT_MUTED);
         tvSub.setPadding(0, (int) (4 * density), 0, (int) (16 * density));
         root.addView(tvSub);
 
@@ -62,22 +62,22 @@ public class MobileUploadDialog {
         urlBox.setPadding((int) (20 * density), (int) (18 * density), (int) (20 * density), (int) (18 * density));
 
         GradientDrawable urlBg = new GradientDrawable();
-        urlBg.setColor(0x1F2EF2C0); // Cyan glass glow
+        urlBg.setColor(Design.alpha(Design.ACCENT, 0x1F)); // Cyan glass glow
         urlBg.setCornerRadius(18 * density);
-        urlBg.setStroke((int) (1.8f * density), 0xFF2EF2C0);
+        urlBg.setStroke((int) (1.8f * density), Design.ACCENT);
         urlBox.setBackground(urlBg);
 
         TextView tvUrlLabel = new TextView(context);
         tvUrlLabel.setText("🌐 BUKA PAUTAN INI DI TELEFON ANDA:");
         tvUrlLabel.setTextSize(12);
-        tvUrlLabel.setTextColor(0xFF2EF2C0);
+        tvUrlLabel.setTextColor(Design.ACCENT);
         tvUrlLabel.setTypeface(context.getResources().getFont(R.font.outfit), android.graphics.Typeface.BOLD);
         urlBox.addView(tvUrlLabel);
 
         TextView tvUrl = new TextView(context);
         tvUrl.setText(url);
         tvUrl.setTextSize(24);
-        tvUrl.setTextColor(0xFFFFFFFF);
+        tvUrl.setTextColor(Design.TEXT);
         tvUrl.setTypeface(context.getResources().getFont(R.font.outfit), android.graphics.Typeface.BOLD);
         tvUrl.setPadding(0, (int) (6 * density), 0, (int) (6 * density));
         urlBox.addView(tvUrl);
@@ -85,7 +85,7 @@ public class MobileUploadDialog {
         TextView tvHelp = new TextView(context);
         tvHelp.setText("Ketik pautan di atas pada pelayar web (Safari / Chrome) di telefon anda.");
         tvHelp.setTextSize(12.5f);
-        tvHelp.setTextColor(0xFFF5F7FA);
+        tvHelp.setTextColor(Design.TEXT);
         urlBox.addView(tvHelp);
 
         root.addView(urlBox);
@@ -99,13 +99,13 @@ public class MobileUploadDialog {
         TextView tvDot = new TextView(context);
         tvDot.setText("● ");
         tvDot.setTextSize(14);
-        tvDot.setTextColor(0xFF2EF2C0); // Emerald green
+        tvDot.setTextColor(Design.ACCENT); // Emerald green
         statusRow.addView(tvDot);
 
         TextView tvStatus = new TextView(context);
         tvStatus.setText("Pelayan aktif. Menunggu anda memilih fail dari telefon...");
         tvStatus.setTextSize(13);
-        tvStatus.setTextColor(0xFF2EF2C0);
+        tvStatus.setTextColor(Design.ACCENT);
         statusRow.addView(tvStatus);
         root.addView(statusRow);
 
@@ -117,7 +117,7 @@ public class MobileUploadDialog {
 
         Button btnClose = new Button(context, null, android.R.attr.borderlessButtonStyle);
         btnClose.setText("Batal");
-        btnClose.setTextColor(0xFF98A2B3);
+        btnClose.setTextColor(Design.TEXT_MUTED);
         btnClose.setFocusable(true);
         actionsRow.addView(btnClose);
 

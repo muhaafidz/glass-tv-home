@@ -28,6 +28,7 @@
     <attr name="tnCyan" format="color" />
     <attr name="tnViolet" format="color" />
     <attr name="tnWave" format="color" />
+    <attr name="tnInk" format="color" />
     <attr name="tnStars" format="float" />
     <attr name="tnIsLight" format="boolean" />
 </resources>

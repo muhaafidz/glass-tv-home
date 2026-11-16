@@ -62,8 +62,17 @@ public class TenangTest {
     }
 
     @Test
-    public void autoNeverPicksEmbunUntilEveryScreenIsMigrated() {
-        assertEquals(false, Tenang.EMBUN_IN_AUTO);
+    public void autoMayPickEmbunNowThatEveryScreenIsMigrated() {
+        assertEquals(true, Tenang.EMBUN_IN_AUTO);
+    }
+
+    @Test
+    public void settingsCycleThroughEveryMode() {
+        assertEquals("malam", Tenang.nextMode("auto"));
+        assertEquals("senja", Tenang.nextMode("malam"));
+        assertEquals("embun", Tenang.nextMode("senja"));
+        assertEquals("auto", Tenang.nextMode("embun"));
+        assertEquals("malam", Tenang.nextMode("rubbish"));
     }
 
     @Test

@@ -21,6 +21,8 @@ final class Design {
     static int ON_ACCENT = 0xFF0C1A26, WARM = 0xFFF1D3A1;
     static int AMBER = 0xFFF2C27B, AMBER_BG = 0x1FF2C27B, GOOD = 0xFF8FD6A5, CORAL = 0xFFF08A8A;
     static int CYAN = 0xFF8CCFE6, VIOLET = 0xFFA79BE8, WAVE = 0x12FFFFFF;
+    /** White on the dark palettes, dark ink on Embun: for translucent washes and lines over the background. */
+    static int INK = 0xFFFFFFFF;
     static float STARS = 1f;
     static boolean IS_LIGHT = false;
     /** Sinar name for the screen background. */
@@ -32,7 +34,7 @@ final class Design {
             R.attr.tnCard, R.attr.tnChip, R.attr.tnLine, R.attr.tnText, R.attr.tnMuted,
             R.attr.tnAccent, R.attr.tnAccentSoft, R.attr.tnAccentDim, R.attr.tnAccentGlow,
             R.attr.tnOnAccent, R.attr.tnWarm, R.attr.tnAmber, R.attr.tnAmberBg, R.attr.tnGood,
-            R.attr.tnCoral, R.attr.tnCyan, R.attr.tnViolet, R.attr.tnWave, R.attr.tnStars, R.attr.tnIsLight,
+            R.attr.tnCoral, R.attr.tnCyan, R.attr.tnViolet, R.attr.tnWave, R.attr.tnInk, R.attr.tnStars, R.attr.tnIsLight,
     };
 
     /** Reads every token from the context's theme; a missing token keeps its current value. */
@@ -52,12 +54,23 @@ final class Design {
             AMBER = a.getColor(i++, AMBER); AMBER_BG = a.getColor(i++, AMBER_BG); GOOD = a.getColor(i++, GOOD);
             CORAL = a.getColor(i++, CORAL); CYAN = a.getColor(i++, CYAN); VIOLET = a.getColor(i++, VIOLET);
             WAVE = a.getColor(i++, WAVE);
+            INK = a.getColor(i++, INK);
             STARS = a.getFloat(i++, STARS);
             IS_LIGHT = a.getBoolean(i, IS_LIGHT);
             CANVAS = BG1;
         } finally {
             a.recycle();
         }
+    }
+
+    /** The colour with its alpha replaced, 0..255. */
+    static int alpha(int color, int alpha) {
+        return (alpha << 24) | (color & 0x00FFFFFF);
+    }
+
+    /** INK at an alpha: the Tenang way to write the old 0xXXFFFFFF washes. */
+    static int ink(int alpha) {
+        return alpha(INK, alpha);
     }
 
     private Design() {}

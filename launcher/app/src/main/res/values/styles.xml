@@ -31,6 +31,7 @@
         <item name="tnCyan">#8CCFE6</item>
         <item name="tnViolet">#A79BE8</item>
         <item name="tnWave">#12FFFFFF</item>
+        <item name="tnInk">#FFFFFFFF</item>
         <item name="tnStars">1.0</item>
         <item name="tnIsLight">false</item>
     </style>

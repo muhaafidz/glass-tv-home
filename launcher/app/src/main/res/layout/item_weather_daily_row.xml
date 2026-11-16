@@ -24,7 +24,7 @@
             android:includeFontPadding="false"
             android:singleLine="true"
             android:text="Today"
-            android:textColor="#FFFFFF"
+            android:textColor="?attr/tnText"
             android:textSize="11sp" />
 
         <LinearLayout
@@ -85,7 +85,7 @@
             android:includeFontPadding="false"
             android:singleLine="true"
             android:text="29°"
-            android:textColor="#FFFFFF"
+            android:textColor="?attr/tnText"
             android:textSize="11sp" />
     </LinearLayout>
 

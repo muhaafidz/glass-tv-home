@@ -51,7 +51,7 @@
                 android:includeFontPadding="false"
                 android:singleLine="true"
                 android:text="↑ 30°C"
-                android:textColor="#FFFFFF"
+                android:textColor="?attr/tnText"
                 android:textSize="17sp" />
 
             <TextView

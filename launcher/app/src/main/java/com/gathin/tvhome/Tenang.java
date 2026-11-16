@@ -17,10 +17,11 @@ final class Tenang {
     static final String MALAM = "malam", SENJA = "senja", EMBUN = "embun", AUTO = "auto";
 
     /**
-     * Whether Auto may pick the light palette. Stays false until every screen is migrated to the
-     * tokens (REVAMP P6); "embun" chosen explicitly still works, for testing.
+     * Whether Auto may pick the light palette (Syuruk to Asar). Every screen reads the tokens since
+     * REVAMP P6; the weather sky and the azan card stay dark (applyDark). Settings can turn it off
+     * per TV ("never_light").
      */
-    static final boolean EMBUN_IN_AUTO = false;
+    static final boolean EMBUN_IN_AUTO = true;
 
     /** Prayer-time indexes in PrayerTimes order: Subuh, Syuruk, Zohor, Asar, Maghrib, Isyak. */
     private static final int SYURUK = 1, ASAR = 3, ISYAK = 5;
@@ -89,6 +90,37 @@ final class Tenang {
         return pref != null ? normaliseMode(pref) : normaliseMode(Config.paletteMode(ctx));
     }
 
+    /** The Settings row cycles through the modes in this order. */
+    static String nextMode(String mode) {
+        switch (normaliseMode(mode)) {
+            case AUTO: return MALAM;
+            case MALAM: return SENJA;
+            case SENJA: return EMBUN;
+            default: return AUTO;
+        }
+    }
+
+    static String label(Context ctx, String mode) {
+        boolean en = AppLanguage.LANG_EN.equals(AppLanguage.getLanguage(ctx));
+        switch (normaliseMode(mode)) {
+            case MALAM: return "Malam";
+            case SENJA: return "Senja";
+            case EMBUN: return "Embun";
+            default: return en ? "Auto" : "Automatik";
+        }
+    }
+
+    static String describe(Context ctx, String mode) {
+        boolean en = AppLanguage.LANG_EN.equals(AppLanguage.getLanguage(ctx));
+        switch (normaliseMode(mode)) {
+            case MALAM: return en ? "Deep teal night, always" : "Biru kehijauan malam, sepanjang masa";
+            case SENJA: return en ? "Warm dusk, always" : "Senja hangat, sepanjang masa";
+            case EMBUN: return en ? "Light morning dew, always" : "Embun pagi yang cerah, sepanjang masa";
+            default: return en ? "Follows prayer times: Embun by day, Senja from Asar, Malam from Isyak • OK to change"
+                    : "Ikut waktu solat: Embun siang, Senja dari Asar, Malam dari Isyak • Tekan OK untuk tukar";
+        }
+    }
+
     static int overlayFor(String palette) {
         if (SENJA.equals(palette)) return R.style.ThemeOverlay_Tenang_Senja;
         if (EMBUN.equals(palette)) return R.style.ThemeOverlay_Tenang_Embun;
@@ -101,6 +133,12 @@ final class Tenang {
      */
     static String apply(Activity activity) {
         return apply(activity, current(activity));
+    }
+
+    /** For screens drawn for the dark (the weather sky, the azan card): Embun becomes Malam. */
+    static String applyDark(Activity activity) {
+        String p = current(activity);
+        return apply(activity, EMBUN.equals(p) ? MALAM : p);
     }
 
     static String apply(Activity activity, String palette) {

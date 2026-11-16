@@ -65,8 +65,8 @@ public class LocationActivity extends Activity {
                 break;
         }
 
-        page.addView(text(title, 34, 0xFFFFFFFF, 500));
-        TextView sub = text(subtitle, 15, 0xA6FFFFFF, 400);
+        page.addView(text(title, 34, Design.TEXT, 500));
+        TextView sub = text(subtitle, 15, Design.ink(0xA6), 400);
         sub.setPadding(0, dp(4), 0, dp(20));
         page.addView(sub);
 
@@ -88,7 +88,7 @@ public class LocationActivity extends Activity {
         columns.addView(zoneScroll, zlp);
         page.addView(columns, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f));
 
-        hint = text(hintText, 13, 0x80FFFFFF, 400);
+        hint = text(hintText, 13, Design.ink(0x80), 400);
         hint.setPadding(0, dp(14), 0, 0);
         page.addView(hint);
         setContentView(page);
@@ -96,13 +96,13 @@ public class LocationActivity extends Activity {
         View focus = null;
         String nowState = now == null ? null : now.state;
         for (String s : Location.states()) {
-            TextView row = text(s, 18, 0xFFFFFFFF, 500);
+            TextView row = text(s, 18, Design.TEXT, 500);
             row.setPadding(dp(18), dp(10), dp(18), dp(10));
             row.setFocusable(true);
             row.setClickable(true);
             row.setId(View.generateViewId());
             row.setTextColor(new ColorStateList(new int[][]{{android.R.attr.state_focused}, {android.R.attr.state_selected}, {}},
-                    new int[]{0xFF000000, 0xFFFFFFFF, 0xB3FFFFFF}));
+                    new int[]{Design.ON_ACCENT, Design.TEXT, Design.ink(0xB3)}));
             row.setBackground(pill());
             row.setOnFocusChangeListener((v, has) -> {
                 if (!has) return;
@@ -137,14 +137,14 @@ public class LocationActivity extends Activity {
             LinearLayout top = new LinearLayout(this);
             top.setOrientation(LinearLayout.HORIZONTAL);
             top.setGravity(Gravity.CENTER_VERTICAL);
-            TextView town = text(z.town, 18, 0xFFFFFFFF, 500);
+            TextView town = text(z.town, 18, Design.TEXT, 500);
             top.addView(town, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
             boolean isNow = z.code.equals(current);
             String nowPrefix = AppLanguage.strNowBadge(this);
-            TextView code = text(isNow ? nowPrefix + "  ·  " + z.code : z.code, 13, isNow ? 0xFF30D158 : 0x99FFFFFF, 600);
+            TextView code = text(isNow ? nowPrefix + "  ·  " + z.code : z.code, 13, isNow ? 0xFF30D158 : Design.ink(0x99), 600);
             top.addView(code);
             row.addView(top);
-            TextView districts = text(z.districts, 13, 0x99FFFFFF, 400);
+            TextView districts = text(z.districts, 13, Design.ink(0x99), 400);
             districts.setSingleLine(true);
             districts.setEllipsize(TextUtils.TruncateAt.END);
             districts.setPadding(0, dp(3), 0, 0);
@@ -174,13 +174,13 @@ public class LocationActivity extends Activity {
         if (land != null) stateRow.setNextFocusRightId(land.getId());
     }
 
-    /** A state: white when focused, a faint pill when it is the one shown on the right. */
+    /** A state: the accent when focused, a faint pill when it is the one shown on the right. */
     private StateListDrawable pill() {
         GradientDrawable on = new GradientDrawable();
-        on.setColor(0xFFFFFFFF);
+        on.setColor(Design.ACCENT);
         on.setCornerRadius(dp(22));
         GradientDrawable sel = new GradientDrawable();
-        sel.setColor(0x24FFFFFF);
+        sel.setColor(Design.ink(0x24));
         sel.setCornerRadius(dp(22));
         StateListDrawable s = new StateListDrawable();
         s.addState(new int[]{android.R.attr.state_focused}, on);
@@ -192,11 +192,11 @@ public class LocationActivity extends Activity {
     /** A zone: glass, with a bright ring when focused. */
     private StateListDrawable card() {
         GradientDrawable on = new GradientDrawable();
-        on.setColor(0x33FFFFFF);
+        on.setColor(Design.ink(0x33));
         on.setCornerRadius(dp(14));
         on.setStroke(dp(2), 0xFF64D2FF);
         GradientDrawable off = new GradientDrawable();
-        off.setColor(0x14FFFFFF);
+        off.setColor(Design.ink(0x14));
         off.setCornerRadius(dp(14));
         StateListDrawable s = new StateListDrawable();
         s.addState(new int[]{android.R.attr.state_focused}, on);

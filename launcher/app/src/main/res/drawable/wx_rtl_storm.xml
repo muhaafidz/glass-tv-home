@@ -14,16 +14,16 @@
     <!-- Front Cloud (Pure White) -->
     <path
         android:pathData="M14,30 L30,30 A6,6 0 0,0 36,24 A6,6 0 0,0 30,18 L14,18 A6,6 0 0,0 8,24 A6,6 0 0,0 14,30 Z"
-        android:fillColor="#FFFFFF" />
+        android:fillColor="?attr/tnText" />
     <path
         android:pathData="M21,17m-9,0a9,9 0 1,0 18,0a9,9 0 1,0 -18,0"
-        android:fillColor="#FFFFFF" />
+        android:fillColor="?attr/tnText" />
     <path
         android:pathData="M13,21m-6,0a6,6 0 1,0 12,0a6,6 0 1,0 -12,0"
-        android:fillColor="#FFFFFF" />
+        android:fillColor="?attr/tnText" />
     <path
         android:pathData="M29,21m-6,0a6,6 0 1,0 12,0a6,6 0 1,0 -12,0"
-        android:fillColor="#FFFFFF" />
+        android:fillColor="?attr/tnText" />
 
     <!-- Electric Yellow Lightning Bolt striking down -->
     <path
@@ -35,10 +35,10 @@
         android:pathData="M13,36 L11,40"
         android:strokeWidth="2.2"
         android:strokeLineCap="round"
-        android:strokeColor="#FFFFFF" />
+        android:strokeColor="?attr/tnText" />
     <path
         android:pathData="M28,36 L26,40"
         android:strokeWidth="2.2"
         android:strokeLineCap="round"
-        android:strokeColor="#FFFFFF" />
+        android:strokeColor="?attr/tnText" />
 </vector>

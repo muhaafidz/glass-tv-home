@@ -58,7 +58,7 @@
                 android:layout_marginTop="16dp"
                 android:fontFamily="@font/outfit"
                 android:text="Close All"
-                android:textColor="#FFFFFFFF"
+                android:textColor="?attr/tnText"
                 android:textSize="14sp"
                 android:textStyle="bold" />
         </LinearLayout>

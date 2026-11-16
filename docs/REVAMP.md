@@ -1,6 +1,6 @@
 # Tenang: the calm revamp (plan)
 
-Status: **P4 done; P5 next** (beta-ready for a TV check) (see the log at the end). Target release: **6.0.0**. Branch: `ccr-032626ce-bc4wjg`.
+Status: **P0–P7 done; P8 (package) in progress; P9 needs the TV** (see the log at the end). Target release: **6.0.0**. Branch: `ccr-032626ce-bc4wjg`.
 Reference mockup: the "Calm TV Home" artifact (1600×900 stage, themes Malam / Senja / Embun, lite mode).
 
 This plan turns that mockup into the launcher's design language across every screen, without
@@ -306,3 +306,25 @@ Decisions in section 9: all accepted as recommended (2026-11-16).
   theme with its own wallpaper, or uploaded photos, still win.
 - [x] `AmbientMathTest`; 65 tests pass; APK 1.89 MB.
 - To measure on a real TV (P9): `dumpsys gfxinfo com.gathin.tvhome` idle on Home, against the §4.5 budget.
+
+**P5 (every other screen, dark palettes)** and **P6 (Embun)**
+- [x] 350 colour literals in 19 Java files now read the tokens: the old Sinar values map one to one
+  (`0xFF2EF2C0` → `Design.ACCENT` …), translucent whites become `Design.ink(alpha)` (white on dark
+  palettes, ink on Embun), and white text and icon tints become `Design.TEXT`. Focused text on the accent
+  fill is `ON_ACCENT`; focus strokes in Settings are the accent.
+- [x] 106 XML files: white icons and text use `?attr/tnText`, translucent white text `?attr/tnMuted`, old
+  Sinar surfaces `?attr/tnSurface`, and the recent-apps backdrop the palette gradient. The notification
+  icon, banner and launcher icon keep fixed colours (the system draws them without our theme).
+- Kept on purpose: semantic colours (air-quality levels, weather visuals, VPN badge, avatar, brand colours
+  such as Spotify green), scrims and shadows.
+- [x] The weather screen and the azan card always use a dark palette (`Tenang.applyDark`); the
+  screensavers are always Malam. Home reloads its own palette on resume.
+- [x] Snapshots of eight secondary layouts in Malam and Embun
+  (`launcher/app/src/snapshotTest/.../ScreensSnapshots.kt`).
+
+**P7 (Auto and Settings)**
+- [x] Auto now includes Embun from Syuruk to Asar (`EMBUN_IN_AUTO = true`).
+- [x] Settings → Appearance: "🎨 Tema Tenang" (OK cycles Automatik → Malam → Senja → Embun) and
+  "🌙 Jangan guna tema cerah" (Auto uses only Malam and Senja). Home switches with its fade as soon as
+  Settings closes. "Mod Kelancaran TV Rendah" remains the Lite switch.
+- [x] 66 tests pass.

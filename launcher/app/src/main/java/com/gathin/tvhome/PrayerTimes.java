@@ -646,14 +646,14 @@ final class PrayerTimes {
                 sb.setSpan(new ForegroundColorSpan(0xFF4ADE80), start, sb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 sb.setSpan(new StyleSpan(Typeface.BOLD), start, sb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             } else {
-                sb.setSpan(new ForegroundColorSpan(0xE6FFFFFF), start, sb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                sb.setSpan(new ForegroundColorSpan(Design.ink(0xE6)), start, sb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 sb.setSpan(new StyleSpan(Typeface.BOLD), start, sb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
 
             if (i < displayIndices.length - 1) {
                 int dotStart = sb.length();
                 sb.append("  •  ");
-                sb.setSpan(new ForegroundColorSpan(0x80FFFFFF), dotStart, sb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                sb.setSpan(new ForegroundColorSpan(Design.ink(0x80)), dotStart, sb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
         }
 

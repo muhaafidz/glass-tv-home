@@ -59,7 +59,7 @@
             android:lineSpacingExtra="2dp"
             android:maxLines="3"
             android:ellipsize="end"
-            android:textColor="#FFFFFFFF"
+            android:textColor="?attr/tnText"
             android:textSize="15.5sp" />
 
         <!-- Meta Badge (Date / Zone / Reference) -->
@@ -75,7 +75,7 @@
             android:paddingTop="4dp"
             android:paddingEnd="10dp"
             android:paddingBottom="4dp"
-            android:textColor="#E6FFFFFF"
+            android:textColor="?attr/tnMuted"
             android:textSize="11sp" />
 
         <!-- Source / Authority -->
@@ -86,7 +86,7 @@
             android:layout_marginTop="6dp"
             android:fontFamily="@font/outfit"
             android:textFontWeight="400"
-            android:textColor="#80FFFFFF"
+            android:textColor="?attr/tnMuted"
             android:textSize="10sp" />
 
         <View
@@ -125,7 +125,7 @@
             android:fontFamily="@font/outfit"
             android:textFontWeight="500"
             android:text="📑 Pilihan Kandungan..."
-            android:textColor="#E6FFFFFF"
+            android:textColor="?attr/tnMuted"
             android:textSize="11.5sp" />
 
         <TextView
@@ -142,7 +142,7 @@
             android:fontFamily="@font/outfit"
             android:textFontWeight="500"
             android:text="Tutup"
-            android:textColor="#B3FFFFFF"
+            android:textColor="?attr/tnMuted"
             android:textSize="11sp" />
     </LinearLayout>
 
@@ -177,7 +177,7 @@
                 android:letterSpacing="0.08"
                 android:text="KANDUNGAN PENUH"
                 android:textAllCaps="true"
-                android:textColor="#80FFFFFF"
+                android:textColor="?attr/tnMuted"
                 android:textSize="10.5sp" />
 
             <TextView
@@ -189,7 +189,7 @@
                 android:focusable="true"
                 android:gravity="center"
                 android:text="✕"
-                android:textColor="#CCFFFFFF"
+                android:textColor="?attr/tnMuted"
                 android:textSize="13sp"
                 android:fontFamily="@font/outfit"
                 android:textFontWeight="700"

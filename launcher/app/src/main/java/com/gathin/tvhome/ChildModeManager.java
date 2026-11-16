@@ -133,15 +133,15 @@ public final class ChildModeManager {
 
         // Background
         GradientDrawable bg = new GradientDrawable();
-        bg.setColor(0xF0181A22);
+        bg.setColor(Design.alpha(Design.SURFACE, 0xF0));
         bg.setCornerRadius(24 * density);
-        bg.setStroke((int) (1.5f * density), 0x44FFFFFF);
+        bg.setStroke((int) (1.5f * density), Design.ink(0x44));
         root.setBackground(bg);
 
         // Icon
         ImageView iconView = new ImageView(ctx);
         iconView.setImageResource(R.drawable.ic_lock);
-        iconView.setColorFilter(0xFFFFB84D);
+        iconView.setColorFilter(Design.AMBER);
         LinearLayout.LayoutParams icLp = new LinearLayout.LayoutParams((int) (38 * density), (int) (38 * density));
         icLp.bottomMargin = (int) (10 * density);
         root.addView(iconView, icLp);
@@ -150,7 +150,7 @@ public final class ChildModeManager {
         TextView tvTitle = new TextView(ctx);
         tvTitle.setText(title != null ? title : "Keselamatan PIN");
         tvTitle.setTextSize(19);
-        tvTitle.setTextColor(0xFFFFFFFF);
+        tvTitle.setTextColor(Design.TEXT);
         tvTitle.setTypeface(outfit, Typeface.BOLD);
         tvTitle.setGravity(Gravity.CENTER);
         root.addView(tvTitle);
@@ -159,7 +159,7 @@ public final class ChildModeManager {
         TextView tvSub = new TextView(ctx);
         tvSub.setText(subtitle != null ? subtitle : "Masukkan PIN 4-digit untuk meneruskan");
         tvSub.setTextSize(13);
-        tvSub.setTextColor(0xB3FFFFFF);
+        tvSub.setTextColor(Design.ink(0xB3));
         tvSub.setTypeface(outfit, Typeface.NORMAL);
         tvSub.setGravity(Gravity.CENTER);
         tvSub.setPadding(0, (int) (4 * density), 0, (int) (16 * density));
@@ -176,7 +176,7 @@ public final class ChildModeManager {
             TextView dot = new TextView(ctx);
             dot.setText("○");
             dot.setTextSize(26);
-            dot.setTextColor(0x88FFFFFF);
+            dot.setTextColor(Design.ink(0x88));
             dot.setPadding((int) (10 * density), 0, (int) (10 * density), 0);
             dots[i] = dot;
             dotsRow.addView(dot);
@@ -187,10 +187,10 @@ public final class ChildModeManager {
             for (int i = 0; i < 4; i++) {
                 if (i < pinBuilder.length()) {
                     dots[i].setText("●");
-                    dots[i].setTextColor(0xFFFFB84D);
+                    dots[i].setTextColor(Design.AMBER);
                 } else {
                     dots[i].setText("○");
-                    dots[i].setTextColor(0x88FFFFFF);
+                    dots[i].setTextColor(Design.ink(0x88));
                 }
             }
         };
@@ -208,24 +208,24 @@ public final class ChildModeManager {
             btn.setText(k);
             btn.setTextSize(18);
             btn.setTypeface(outfit, Typeface.BOLD);
-            btn.setTextColor(0xFFFFFFFF);
+            btn.setTextColor(Design.TEXT);
             btn.setFocusable(true);
             btn.setClickable(true);
 
             StateListDrawable sld = new StateListDrawable();
             GradientDrawable f = new GradientDrawable();
-            f.setColor(k.equals("OK") ? 0xFF2EF2C0 : 0xFF2EF2C0);
+            f.setColor(k.equals("OK") ? Design.ACCENT : Design.ACCENT);
             f.setCornerRadius(14 * density);
             GradientDrawable u = new GradientDrawable();
-            u.setColor(0x22FFFFFF);
+            u.setColor(Design.ink(0x22));
             u.setCornerRadius(14 * density);
-            u.setStroke((int) (1 * density), 0x33FFFFFF);
+            u.setStroke((int) (1 * density), Design.ink(0x33));
             sld.addState(new int[]{android.R.attr.state_focused}, f);
             sld.addState(new int[]{}, u);
             btn.setBackground(sld);
 
             btn.setOnFocusChangeListener((v, hasFocus) -> {
-                btn.setTextColor(hasFocus ? 0xFF000000 : 0xFFFFFFFF);
+                btn.setTextColor(hasFocus ? Design.ON_ACCENT : Design.TEXT);
                 v.animate().scaleX(hasFocus ? 1.08f : 1.0f).scaleY(hasFocus ? 1.08f : 1.0f).setDuration(120).start();
             });
 
@@ -284,12 +284,12 @@ public final class ChildModeManager {
         btnCancel.setText("Batal");
         btnCancel.setTextSize(13);
         btnCancel.setTypeface(outfit, Typeface.NORMAL);
-        btnCancel.setTextColor(0xAAFFFFFF);
+        btnCancel.setTextColor(Design.ink(0xAA));
         btnCancel.setBackgroundColor(Color.TRANSPARENT);
         btnCancel.setFocusable(true);
         btnCancel.setPadding(0, (int) (8 * density), 0, 0);
         btnCancel.setOnFocusChangeListener((v, hasFocus) -> {
-            btnCancel.setTextColor(hasFocus ? 0xFFFFFFFF : 0xAAFFFFFF);
+            btnCancel.setTextColor(hasFocus ? Design.TEXT : Design.ink(0xAA));
         });
         btnCancel.setOnClickListener(v -> {
             if (dialogHolder[0] != null) dialogHolder[0].dismiss();

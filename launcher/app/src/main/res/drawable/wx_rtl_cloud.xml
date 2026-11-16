@@ -14,14 +14,14 @@
     <!-- Front Cloud (Pure White) -->
     <path
         android:pathData="M14,38 L30,38 A6,6 0 0,0 36,32 A6,6 0 0,0 30,26 L14,26 A6,6 0 0,0 8,32 A6,6 0 0,0 14,38 Z"
-        android:fillColor="#FFFFFF" />
+        android:fillColor="?attr/tnText" />
     <path
         android:pathData="M21,24m-10,0a10,10 0 1,0 20,0a10,10 0 1,0 -20,0"
-        android:fillColor="#FFFFFF" />
+        android:fillColor="?attr/tnText" />
     <path
         android:pathData="M13,28m-7,0a7,7 0 1,0 14,0a7,7 0 1,0 -14,0"
-        android:fillColor="#FFFFFF" />
+        android:fillColor="?attr/tnText" />
     <path
         android:pathData="M29,28m-6.5,0a6.5,6.5 0 1,0 13,0a6.5,6.5 0 1,0 -13,0"
-        android:fillColor="#FFFFFF" />
+        android:fillColor="?attr/tnText" />
 </vector>

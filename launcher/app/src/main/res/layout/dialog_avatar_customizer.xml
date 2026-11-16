@@ -20,7 +20,7 @@
             android:fontFamily="@font/outfit"
             android:textFontWeight="700"
             android:text="🎨 Kustomisasi Avatar Watak"
-            android:textColor="#FFFFFF"
+            android:textColor="?attr/tnText"
             android:textSize="21sp" />
 
         <TextView

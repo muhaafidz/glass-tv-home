@@ -16,7 +16,7 @@
         android:layout_marginTop="40dp"
         android:fontFamily="@font/outfit"
         android:text="Recent Apps"
-        android:textColor="#FFFFFFFF"
+        android:textColor="?attr/tnText"
         android:textSize="28sp"
         android:textStyle="bold" />
 
@@ -60,7 +60,7 @@
         android:layout_gravity="center"
         android:fontFamily="@font/outfit"
         android:text="No recent apps running"
-        android:textColor="#88FFFFFF"
+        android:textColor="?attr/tnMuted"
         android:textSize="18sp"
         android:visibility="gone" />
 
@@ -86,7 +86,7 @@
         android:layout_marginBottom="40dp"
         android:fontFamily="@font/outfit"
         android:text="Press ▲ on an app to close it"
-        android:textColor="#90FFFFFF"
+        android:textColor="?attr/tnMuted"
         android:textSize="14sp" />
 
 </FrameLayout>

@@ -58,7 +58,7 @@
             android:lineSpacingExtra="2dp"
             android:maxLines="3"
             android:ellipsize="end"
-            android:textColor="#FFFFFFFF"
+            android:textColor="?attr/tnText"
             android:textSize="16sp" />
 
         <View
@@ -78,7 +78,7 @@
             android:paddingTop="5dp"
             android:paddingEnd="10dp"
             android:paddingBottom="5dp"
-            android:textColor="#E6FFFFFF"
+            android:textColor="?attr/tnMuted"
             android:textSize="11.5sp" />
 
         <!-- Source -->
@@ -89,7 +89,7 @@
             android:layout_marginTop="6dp"
             android:fontFamily="@font/outfit"
             android:textFontWeight="400"
-            android:textColor="#80FFFFFF"
+            android:textColor="?attr/tnMuted"
             android:textSize="10.5sp" />
     </LinearLayout>
 
@@ -124,7 +124,7 @@
                 android:textFontWeight="500"
                 android:letterSpacing="0.08"
                 android:text="BUTIRAN AMARAN"
-                android:textColor="#80FFFFFF"
+                android:textColor="?attr/tnMuted"
                 android:textSize="10sp" />
 
             <ImageView
@@ -164,7 +164,7 @@
                     android:textFontWeight="400"
                     android:justificationMode="inter_word"
                     android:lineSpacingMultiplier="1.25"
-                    android:textColor="#E6FFFFFF"
+                    android:textColor="?attr/tnMuted"
                     android:textSize="11.5sp" />
 
                 <TextView
@@ -175,7 +175,7 @@
                     android:textFontWeight="500"
                     android:letterSpacing="0.08"
                     android:text="NASIHAT KESELAMATAN"
-                    android:textColor="#80FFFFFF"
+                    android:textColor="?attr/tnMuted"
                     android:textSize="10sp" />
 
                 <TextView
@@ -187,7 +187,7 @@
                     android:textFontWeight="400"
                     android:justificationMode="inter_word"
                     android:lineSpacingMultiplier="1.25"
-                    android:textColor="#E6FFFFFF"
+                    android:textColor="?attr/tnMuted"
                     android:textSize="11.5sp" />
             </LinearLayout>
         </ScrollView>
@@ -237,7 +237,7 @@
                 android:paddingEnd="16dp"
                 android:text="Tutup"
                 android:textAllCaps="false"
-                android:textColor="#E6FFFFFF"
+                android:textColor="?attr/tnMuted"
                 android:textSize="12sp"
                 android:includeFontPadding="false"
                 android:focusable="true"

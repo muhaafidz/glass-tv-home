@@ -29,7 +29,7 @@ public class DockDecoration extends RecyclerView.ItemDecoration {
     DockDecoration(int dockSize, float density) {
         this.dockSize = dockSize;
         this.density = density;
-        band.setColor(0xF214161D);
+        band.setColor(Design.alpha(Design.SURFACE, 0xF2));
         edge.setStyle(Paint.Style.STROKE);
         edge.setStrokeWidth(1f * density);
         edge.setColor(Design.HAIRLINE);

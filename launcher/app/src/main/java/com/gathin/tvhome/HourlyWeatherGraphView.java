@@ -92,7 +92,7 @@ public class HourlyWeatherGraphView extends View {
         timeTextPaint.setTextAlign(Paint.Align.CENTER);
         timeTextPaint.setTypeface(outfitTypeface != null ? outfitTypeface : Typeface.DEFAULT);
 
-        baselinePaint.setColor(0x1AFFFFFF); // Subtle dotted/soft guide
+        baselinePaint.setColor(Design.ink(0x1A)); // Subtle dotted/soft guide
         baselinePaint.setStrokeWidth(1.0f * density);
         baselinePaint.setStyle(Paint.Style.STROKE);
     }
