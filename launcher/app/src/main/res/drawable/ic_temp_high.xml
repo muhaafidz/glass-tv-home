@@ -14,9 +14,9 @@
         android:pathData="M12,16 L12,7"
         android:strokeWidth="2.4"
         android:strokeLineCap="round"
-        android:strokeColor="@color/sinar_coral" />
+        android:strokeColor="?attr/tnCoral" />
     <!-- Filled Mercury Bulb -->
     <path
         android:pathData="M12,17m-2.4,0a2.4,2.4 0 1,0 4.8,0a2.4,2.4 0 1,0 -4.8,0"
-        android:fillColor="@color/sinar_coral" />
+        android:fillColor="?attr/tnCoral" />
 </vector>

@@ -226,6 +226,11 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     private boolean moduleCards;
     /** Calmer motion for weak GPUs (config.xml, reduced_motion): stiff spring, short fades, no replay. */
     private boolean reducedMotion;
+    /** The Tenang palette this activity was created with; a different one means recreate (see paletteCheck). */
+    private String appliedPalette;
+    private boolean paletteSwitching;
+    /** Set just before a palette recreate, so the new Home fades in instead of popping. */
+    private static boolean sFadeInAfterPaletteSwitch;
     /** hidden_apps as the adapter sees them (config.xml or a theme's config.json): a hidden app gets no card either. */
     private Set<String> hiddenApps = Collections.emptySet();
     private List<Cards.Card> cards = Collections.emptyList();
@@ -334,6 +339,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             refreshOnlineWallpapersIfDue();
             checkInactivity();
             handler.postDelayed(this, MINUTE_MS);
+            paletteCheck(false);
         }
     };
 
@@ -483,9 +489,17 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        appliedPalette = Tenang.apply(this);
         sInstance = new java.lang.ref.WeakReference<>(this);
         SoundEffects.init(this);
         setContentView(R.layout.activity_main);
+        if (sFadeInAfterPaletteSwitch) {
+            sFadeInAfterPaletteSwitch = false;
+            View content = findViewById(android.R.id.content);
+            content.setAlpha(0f);
+            content.animate().alpha(1f).setDuration(450).setStartDelay(60)
+                    .setInterpolator(new android.view.animation.PathInterpolator(0.22f, 1f, 0.36f, 1f)).start();
+        }
         density = getResources().getDisplayMetrics().density;
         // config.xml, overlaid by config.json from a pushed theme (see Config and tools/theme.sh).
         Config cfg = Config.load(this);
@@ -507,7 +521,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         if (Math.abs(launch.getLong("boot_at", 0) - bootAt) < 60_000) tilesAnimatedOnce = true;
         else launch.edit().putLong("boot_at", bootAt).apply();
         ensureSystemScreensaverAndSleepSettings();
-        root.setBackgroundColor(cfg.backgroundColor);
+        root.setBackgroundColor(cfg.backgroundColor != 0 ? cfg.backgroundColor : Design.BG1);
         config = cfg;
         wallpapers = cfg.wallpapers;
         wallpaperIntervalMs = getWallpaperIntervalMs();
@@ -1448,9 +1462,34 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         super.onStop();
     }
 
+    /**
+     * Recreates Home behind a short fade when the Tenang palette due now differs from the one on
+     * screen (Auto crossing Asar or Isyak, or the setting changed). Skipped while a dialog has focus.
+     * Returns true when a switch started.
+     */
+    private boolean paletteCheck(boolean fromResume) {
+        if (paletteSwitching || appliedPalette == null || isFinishing()) return false;
+        // On the minute tick, only switch while Home itself has focus: no dialog, menu or other app.
+        if (!fromResume && !hasWindowFocus()) return false;
+        String due = Tenang.current(this);
+        if (due.equals(appliedPalette)) return false;
+        paletteSwitching = true;
+        sFadeInAfterPaletteSwitch = !reducedMotion;
+        View content = findViewById(android.R.id.content);
+        if (content == null || reducedMotion) {
+            recreate();
+            return true;
+        }
+        content.animate().alpha(0f).setDuration(450)
+                .setInterpolator(new android.view.animation.PathInterpolator(0.22f, 1f, 0.36f, 1f))
+                .withEndAction(this::recreate).start();
+        return true;
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
+        paletteCheck(true);   // never returns early: onPause expects what onResume registers
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             registerReceiver(packageReceiver, packageFilter, Context.RECEIVER_NOT_EXPORTED);
         } else {

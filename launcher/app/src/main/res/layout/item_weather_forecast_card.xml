@@ -24,7 +24,7 @@
         android:includeFontPadding="false"
         android:singleLine="true"
         android:text="Quarta-feira"
-        android:textColor="@color/sinar_text_muted"
+        android:textColor="?attr/tnMuted"
         android:textSize="14.5sp" />
 
     <!-- Bottom Content: Left Thermometer Temp Stack + Right Weather Icon -->
@@ -64,7 +64,7 @@
                 android:includeFontPadding="false"
                 android:singleLine="true"
                 android:text="↓ 21°C"
-                android:textColor="@color/sinar_text_muted"
+                android:textColor="?attr/tnMuted"
                 android:textSize="14.5sp" />
         </LinearLayout>
 

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tenang palettes (docs/REVAMP.md §3.1). Applied over each activity's theme by Tenang.apply().
+     Theme.TvHome (styles.xml) carries the Malam values too, for contexts without an activity. -->
+<resources>
+    <style name="ThemeOverlay.Tenang.Malam" parent="">
+        <item name="tnBg1">#0C1A26</item>
+        <item name="tnBg2">#16303A</item>
+        <item name="tnBlobA">#5758AAAA</item>
+        <item name="tnBlobB">#427C74C8</item>
+        <item name="tnSurface">#182531</item>
+        <item name="tnSurfaceRaised">#1F2C37</item>
+        <item name="tnSurfaceFocus">#27333E</item>
+        <item name="tnHairline">#222F3A</item>
+        <item name="tnCard">#0DFFFFFF</item>
+        <item name="tnChip">#12FFFFFF</item>
+        <item name="tnLine">#17FFFFFF</item>
+        <item name="tnText">#E9F0F1</item>
+        <item name="tnMuted">#8FA6AB</item>
+        <item name="tnAccent">#9FD8C9</item>
+        <item name="tnAccentSoft">#1F9FD8C9</item>
+        <item name="tnAccentDim">#7FC4B3</item>
+        <item name="tnAccentGlow">#739FD8C9</item>
+        <item name="tnOnAccent">#0C1A26</item>
+        <item name="tnWarm">#F1D3A1</item>
+        <item name="tnAmber">#F2C27B</item>
+        <item name="tnAmberBg">#1FF2C27B</item>
+        <item name="tnGood">#8FD6A5</item>
+        <item name="tnCoral">#F08A8A</item>
+        <item name="tnCyan">#8CCFE6</item>
+        <item name="tnViolet">#A79BE8</item>
+        <item name="tnWave">#12FFFFFF</item>
+        <item name="tnStars">1.0</item>
+        <item name="tnIsLight">false</item>
+    </style>
+    <style name="ThemeOverlay.Tenang.Senja" parent="">
+        <item name="tnBg1">#221B30</item>
+        <item name="tnBg2">#3A2A3E</item>
+        <item name="tnBlobA">#4DF09E84</item>
+        <item name="tnBlobB">#4D9676CE</item>
+        <item name="tnSurface">#2D263A</item>
+        <item name="tnSurfaceRaised">#342D41</item>
+        <item name="tnSurfaceFocus">#3A3447</item>
+        <item name="tnHairline">#383245</item>
+        <item name="tnCard">#0EFFFFFF</item>
+        <item name="tnChip">#14FFFFFF</item>
+        <item name="tnLine">#1AFFFFFF</item>
+        <item name="tnText">#F7EEF0</item>
+        <item name="tnMuted">#BBA8B5</item>
+        <item name="tnAccent">#F6B9A2</item>
+        <item name="tnAccentSoft">#1FF6B9A2</item>
+        <item name="tnAccentDim">#E8A28A</item>
+        <item name="tnAccentGlow">#73F6B9A2</item>
+        <item name="tnOnAccent">#221B30</item>
+        <item name="tnWarm">#F8DCAE</item>
+        <item name="tnAmber">#F2C27B</item>
+        <item name="tnAmberBg">#1FF2C27B</item>
+        <item name="tnGood">#8FD6A5</item>
+        <item name="tnCoral">#F59A9A</item>
+        <item name="tnCyan">#9DCBE8</item>
+        <item name="tnViolet">#B6A3EC</item>
+        <item name="tnWave">#14FFDCD2</item>
+        <item name="tnStars">0.5</item>
+        <item name="tnIsLight">false</item>
+    </style>
+    <style name="ThemeOverlay.Tenang.Embun" parent="">
+        <item name="tnBg1">#E3ECE8</item>
+        <item name="tnBg2">#CDDFD9</item>
+        <item name="tnBlobA">#BFFFFFFF</item>
+        <item name="tnBlobB">#7396C6BA</item>
+        <item name="tnSurface">#F1F6F4</item>
+        <item name="tnSurfaceRaised">#F7FAF9</item>
+        <item name="tnSurfaceFocus">#FFFFFF</item>
+        <item name="tnHairline">#D4DDDA</item>
+        <item name="tnCard">#80FFFFFF</item>
+        <item name="tnChip">#99FFFFFF</item>
+        <item name="tnLine">#1422363A</item>
+        <item name="tnText">#22363A</item>
+        <item name="tnMuted">#5F7679</item>
+        <item name="tnAccent">#357E74</item>
+        <item name="tnAccentSoft">#1F357E74</item>
+        <item name="tnAccentDim">#2A6A61</item>
+        <item name="tnAccentGlow">#59357E74</item>
+        <item name="tnOnAccent">#FFFFFF</item>
+        <item name="tnWarm">#9A6A32</item>
+        <item name="tnAmber">#A8661A</item>
+        <item name="tnAmberBg">#24D6963C</item>
+        <item name="tnGood">#2F8A55</item>
+        <item name="tnCoral">#B8473F</item>
+        <item name="tnCyan">#2C7DA0</item>
+        <item name="tnViolet">#6A5AC0</item>
+        <item name="tnWave">#1422363A</item>
+        <item name="tnStars">0.0</item>
+        <item name="tnIsLight">true</item>
+    </style>
+</resources>

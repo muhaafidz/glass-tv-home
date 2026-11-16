@@ -4,8 +4,8 @@
     <gradient
         android:type="linear"
         android:angle="0"
-        android:startColor="@color/sinar_accent"
-        android:centerColor="@color/sinar_amber"
-        android:endColor="@color/sinar_coral" />
+        android:startColor="?attr/tnAccent"
+        android:centerColor="?attr/tnAmber"
+        android:endColor="?attr/tnCoral" />
     <corners android:radius="3dp" />
 </shape>

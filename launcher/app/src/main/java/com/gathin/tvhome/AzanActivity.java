@@ -41,6 +41,7 @@ public class AzanActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Tenang.apply(this);
         // Over the screensaver too: turn the screen on and come in front of it.
         setShowWhenLocked(true);
         setTurnScreenOn(true);

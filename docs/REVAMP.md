@@ -1,6 +1,6 @@
 # Tenang: the calm revamp (plan)
 
-Status: **P0 done, P1 next** (see the log at the end). Target release: **6.0.0**. Branch: `ccr-032626ce-bc4wjg`.
+Status: **P1 done, P2 next** (see the log at the end). Target release: **6.0.0**. Branch: `ccr-032626ce-bc4wjg`.
 Reference mockup: the "Calm TV Home" artifact (1600×900 stage, themes Malam / Senja / Embun, lite mode).
 
 This plan turns that mockup into the launcher's design language across every screen, without
@@ -56,7 +56,7 @@ is 0.6.
 | `blobB` | violet 26 % | violet 30 % | sage 45 % | Ambient glow, bottom right |
 | `text` | `#E9F0F1` | `#F7EEF0` | `#22363A` | Primary text |
 | `muted` | `#8FA6AB` | `#BBA8B5` | `#5F7679` | Labels, eyebrows |
-| `accent` | `#9FD8C9` | `#F6B9A2` | `#3D8B80` | Focus ring, next prayer, highlights |
+| `accent` | `#9FD8C9` | `#F6B9A2` | `#357E74` (mockup `#3D8B80` failed 3:1 on `bg2`) | Focus ring, next prayer, highlights |
 | `accentGlow` | accent 45 % | accent 45 % | accent 35 % | Glow under the focus ring |
 | `warm` | `#F1D3A1` | `#F8DCAE` | `#9A6A32` | Arabic text, bar end |
 | `card` | white 5 % | white 5.5 % | white 50 % | Card fill |
@@ -247,3 +247,21 @@ Decisions in section 9: all accepted as recommended (2026-11-16).
 - [x] Release build and unit tests with the new fonts: 48 tests pass; release APK 1.88 MB (was 2.14 MB).
 
 **P0 done.** Next: P1, tokens and theming engine.
+
+**P1 (tokens and theming engine)**
+- [x] 28 tokens as theme attributes (`res/values/attrs_tenang.xml`), three overlays
+  (`themes_tenang.xml`); `Theme.TvHome` carries Malam for contexts without an activity.
+- [x] 224 `@color/sinar_*` / `canvas_*` references in 90 layout, drawable and colour files now use
+  `?attr/tn…`. The legacy colour names stay, holding Malam values, for anything missed.
+- [x] `Design` loads the tokens from the activity theme (same field names, so existing Java works);
+  `Tenang` resolves the palette (Settings pref `palette`, theme key `palette`, default `auto`) and applies it
+  in all six activities before their layouts inflate.
+- [x] Home re-checks the palette on resume and on the minute tick (only while Home has focus), fades out
+  450 ms, recreates and fades back in. `reduced_motion` skips the fades.
+- [x] `background_color` now defaults to the palette background.
+- [x] Embun accent darkened from the mockup's `#3D8B80` to `#357E74`: the contrast test found 2.91:1
+  against `bg2`.
+- [x] `TenangTest`: palette choice at every Auto boundary, fallbacks, and WCAG contrast for all three
+  palettes. 55 tests pass; APK 1.88 MB.
+- Not yet: the 684 colour literals in Java (custom weather views, dialogs built in code) still use
+  Sinar-era values. Those are P5 (dark) and P6 (Embun).

@@ -6,10 +6,10 @@
     <!-- Back Cloud (Slate Gray) -->
     <path
         android:pathData="M24,26 L36,26 A5,5 0 0,0 41,21 A5,5 0 0,0 36,16 L24,16 A5,5 0 0,0 19,21 A5,5 0 0,0 24,26 Z"
-        android:fillColor="@color/sinar_text_muted" />
+        android:fillColor="?attr/tnMuted" />
     <path
         android:pathData="M30,16m-7,0a7,7 0 1,0 14,0a7,7 0 1,0 -14,0"
-        android:fillColor="@color/sinar_text_muted" />
+        android:fillColor="?attr/tnMuted" />
 
     <!-- Front Cloud (Pure White) -->
     <path
@@ -30,15 +30,15 @@
         android:pathData="M15,38 L13,42"
         android:strokeWidth="2.4"
         android:strokeLineCap="round"
-        android:strokeColor="@color/sinar_accent" />
+        android:strokeColor="?attr/tnAccent" />
     <path
         android:pathData="M22,38 L20,42"
         android:strokeWidth="2.4"
         android:strokeLineCap="round"
-        android:strokeColor="@color/sinar_accent" />
+        android:strokeColor="?attr/tnAccent" />
     <path
         android:pathData="M29,38 L27,42"
         android:strokeWidth="2.4"
         android:strokeLineCap="round"
-        android:strokeColor="@color/sinar_accent" />
+        android:strokeColor="?attr/tnAccent" />
 </vector>

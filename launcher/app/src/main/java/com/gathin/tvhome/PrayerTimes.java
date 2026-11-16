@@ -541,6 +541,13 @@ final class PrayerTimes {
         }
     }
 
+    /** Today's six prayer times (epoch ms, PrayerTimes order), from the JAKIM cache or the calculation. */
+    static long[] todayTimes(Context context) {
+        Calendar now = Calendar.getInstance();
+        long[] times = getTimesForToday(context, now.get(Calendar.DAY_OF_MONTH));
+        return times != null && times.length >= 6 ? times : calculateFallback(context, now);
+    }
+
     /** Returns all 6 prayers for today with formatted times and status. */
     static PrayerItem[] getPrayerItems(Context context) {
         Calendar now = Calendar.getInstance();

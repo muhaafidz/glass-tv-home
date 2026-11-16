@@ -48,7 +48,7 @@
                     android:includeFontPadding="false"
                     android:singleLine="true"
                     android:text="Agora em"
-                    android:textColor="@color/sinar_text_muted"
+                    android:textColor="?attr/tnMuted"
                     android:textSize="17sp" />
 
                 <!-- City / Region Title -->
@@ -76,7 +76,7 @@
                     android:includeFontPadding="false"
                     android:singleLine="true"
                     android:text="28°C"
-                    android:textColor="@color/sinar_coral"
+                    android:textColor="?attr/tnCoral"
                     android:textSize="72sp" />
 
                 <!-- Condition Phrase -->
@@ -90,7 +90,7 @@
                     android:includeFontPadding="false"
                     android:singleLine="true"
                     android:text="Alguma nebulosidade"
-                    android:textColor="@color/sinar_text"
+                    android:textColor="?attr/tnText"
                     android:textSize="21sp" />
 
                 <!-- Secondary Sub (High / Low) -->
@@ -104,7 +104,7 @@
                     android:includeFontPadding="false"
                     android:singleLine="true"
                     android:text="Max: 30°C  ·  Min: 21°C"
-                    android:textColor="@color/sinar_text_muted"
+                    android:textColor="?attr/tnMuted"
                     android:textSize="14sp" />
             </LinearLayout>
 
@@ -164,7 +164,7 @@
                             android:includeFontPadding="false"
                             android:singleLine="true"
                             android:text="29°C"
-                            android:textColor="@color/sinar_coral"
+                            android:textColor="?attr/tnCoral"
                             android:textSize="28sp" />
                     </LinearLayout>
 
@@ -200,7 +200,7 @@
                             android:includeFontPadding="false"
                             android:singleLine="true"
                             android:text="79%"
-                            android:textColor="@color/sinar_accent"
+                            android:textColor="?attr/tnAccent"
                             android:textSize="28sp" />
                     </LinearLayout>
 
@@ -235,7 +235,7 @@
                             android:includeFontPadding="false"
                             android:singleLine="true"
                             android:text="1017hPa"
-                            android:textColor="@color/sinar_coral"
+                            android:textColor="?attr/tnCoral"
                             android:textSize="28sp" />
                     </LinearLayout>
                 </LinearLayout>
@@ -284,7 +284,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="2.5dp"
                     android:layout_marginTop="3dp"
-                    android:background="@color/sinar_amber" />
+                    android:background="?attr/tnAmber" />
             </LinearLayout>
 
             <!-- Tab 2: Precipitation / Kerpasan -->
@@ -304,7 +304,7 @@
                     android:includeFontPadding="false"
                     android:singleLine="true"
                     android:text="Kerpasan"
-                    android:textColor="@color/sinar_text_muted"
+                    android:textColor="?attr/tnMuted"
                     android:textSize="14.5sp" />
             </LinearLayout>
 
@@ -324,7 +324,7 @@
                     android:includeFontPadding="false"
                     android:singleLine="true"
                     android:text="Angin"
-                    android:textColor="@color/sinar_text_muted"
+                    android:textColor="?attr/tnMuted"
                     android:textSize="14.5sp" />
             </LinearLayout>
         </LinearLayout>

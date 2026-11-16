@@ -34,6 +34,7 @@ public class LocationActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Tenang.apply(this);
         density = getResources().getDisplayMetrics().density;
         outfit = getResources().getFont(R.font.outfit);
         Location.Zone now = Location.chosen(this);
