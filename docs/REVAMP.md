@@ -1,6 +1,6 @@
 # Tenang: the calm revamp (plan)
 
-Status: **P2 done, P3 next** (see the log at the end). Target release: **6.0.0**. Branch: `ccr-032626ce-bc4wjg`.
+Status: **P3 done, P4 next** (see the log at the end). Target release: **6.0.0**. Branch: `ccr-032626ce-bc4wjg`.
 Reference mockup: the "Calm TV Home" artifact (1600×900 stage, themes Malam / Senja / Embun, lite mode).
 
 This plan turns that mockup into the launcher's design language across every screen, without
@@ -283,3 +283,12 @@ Decisions in section 9: all accepted as recommended (2026-11-16).
 - [x] Snapshots of Home in all three palettes in `launcher/app/src/test/snapshots/images/`.
 - Moved to P3: the dock tiles' faint app tint and the focus ring/glow on tiles (they belong with the focus
   work).
+
+**P3 (motion and focus)**
+- [x] Focus ring: always the palette accent (no longer the app's colour), 2 dp, with a soft glow of three
+  faint outer strokes. No blur, so it costs the same on every GPU; reduced motion keeps the ring only.
+  `Glider` redraws 13 dp around the shape, so the glow leaves no trails.
+- [x] Tiles zoom to ×1.07 on the Tenang curve (320 ms in, 240 ms out) instead of bouncing.
+- [x] Entrance once per boot: clock, top buttons and info row rise 11 dp and fade in, staggered 0/80/180 ms.
+- Dropped after weighing it: the "MEMBUKA <app>" veil, because it would delay every app launch by about
+  0.5 s; the app-coloured tile frame, because it would shrink the banners. The ring and glow carry the look.

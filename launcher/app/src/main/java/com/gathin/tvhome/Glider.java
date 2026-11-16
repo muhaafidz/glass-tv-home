@@ -54,7 +54,7 @@ final class Glider extends View {
     private final float[] edges = new float[5];
     private final SpringAnimation[] springs = new SpringAnimation[5];
     private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private final RectF shape = new RectF();
+    private final RectF shape = new RectF(), glowRect = new RectF();
     private int style = DARK;
     private boolean paneHidden;
     private int accentColor = Design.ACCENT;
@@ -208,11 +208,12 @@ final class Glider extends View {
         changed();
     }
 
-    /** The focused app's colour drives the ring, so every tile lights its own edge. */
+    /**
+     * Tenang: the ring is always the palette's accent, so focus reads the same on every tile and in
+     * every menu. The app's colour is ignored here (callers still pass it).
+     */
     void setAccentColor(int color) {
-        float[] hsv = new float[3];
-        Color.colorToHSV(color, hsv);
-        if (hsv[1] < 0.45f) color = Design.ACCENT;
+        color = Design.ACCENT;
         if (accentColor == color) return;
         accentColor = color;
         changed();
@@ -269,23 +270,41 @@ final class Glider extends View {
         shape.set(edges[LEFT] + dx, t + dy, edges[RIGHT] + dx, b + dy);
         if (paneHidden) return;
         int alpha = Math.round(255 * opacity);
+        int rgb = accentColor & 0x00FFFFFF;
         if (style == DARK) {
+            // Menus: a raised fill under the accent ring.
             paint.setStyle(Paint.Style.FILL);
             paint.setColor((Math.round(0xF0 * opacity) << 24) | (Design.SURFACE_RAISED & 0x00FFFFFF));
             canvas.drawRoundRect(shape, r, r, paint);
-            paint.setStyle(Paint.Style.STROKE);
-            paint.setStrokeWidth(1.5f * density);
-            paint.setColor((Math.round(0x99 * opacity) << 24) | (accentColor & 0x00FFFFFF));
-            canvas.drawRoundRect(shape, r, r, paint);
-            paint.setStyle(Paint.Style.FILL);
+            drawRing(canvas, r, rgb, alpha, 2f);
             return;
         }
         paint.setStyle(Paint.Style.FILL);
-        paint.setColor((Math.round(0x1F * opacity) << 24) | (accentColor & 0x00FFFFFF));
+        paint.setColor((Math.round(0x14 * opacity) << 24) | rgb);
         canvas.drawRoundRect(shape, r, r, paint);
+        drawRing(canvas, r, rgb, alpha, 2f);
+    }
+
+    /**
+     * The Tenang focus ring: a solid accent stroke with a soft glow outside it. The glow is three
+     * faint strokes stepping outwards; no blur, so it costs the same on every GPU. Reduced motion
+     * keeps the ring and drops the glow.
+     */
+    private void drawRing(Canvas canvas, float r, int rgb, int alpha, float widthDp) {
         paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(2.5f * density);
-        paint.setColor((alpha << 24) | (accentColor & 0x00FFFFFF));
+        if (!reducedMotion) {
+            final float[] step = {3.5f, 6.5f, 9.5f};
+            final int[] glow = {0x40, 0x22, 0x10};
+            for (int i = 0; i < step.length; i++) {
+                float o = step[i] * density;
+                paint.setStrokeWidth(3f * density);
+                paint.setColor((Math.round(glow[i] * alpha / 255f) << 24) | rgb);
+                glowRect.set(shape.left - o, shape.top - o, shape.right + o, shape.bottom + o);
+                canvas.drawRoundRect(glowRect, r + o, r + o, paint);
+            }
+        }
+        paint.setStrokeWidth(widthDp * density);
+        paint.setColor((alpha << 24) | rgb);
         canvas.drawRoundRect(shape, r, r, paint);
         paint.setStyle(Paint.Style.FILL);
     }
@@ -310,7 +329,7 @@ final class Glider extends View {
         if (companions.isEmpty()) return;
         dirty.set(drawn);
         if (isShowing()) {
-            float reach = 6f * density + 2f;
+            float reach = 13f * density + 2f;   // ring plus its outermost glow stroke
             drawn.set(edges[LEFT] - reach, edges[TOP] + yShift - reach,
                     edges[RIGHT] + reach, edges[BOTTOM] + yShift + reach);
             dirty.union(drawn);

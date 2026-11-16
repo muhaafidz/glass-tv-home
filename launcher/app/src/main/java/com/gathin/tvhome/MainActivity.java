@@ -941,6 +941,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         // the animation arms it for the grid's first draw, so on any later fresh start (Android
         // closing Home while an app was open) it is not set at all: armed, it drew the dock's tray
         // empty while the apps faded in.
+        if (!tilesAnimatedOnce && !reducedMotion) playHeaderEntrance();
         if (!tilesAnimatedOnce) {
             int enterAnim = reducedMotion ? R.anim.tile_enter_reduced : R.anim.tile_enter;
             float enterDelay = reducedMotion ? 0f : 0.06f;
@@ -1469,6 +1470,24 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         handler.removeCallbacks(cacheClean);
         handler.removeCallbacks(nowPlayingPoll);
         super.onStop();
+    }
+
+    /**
+     * Tenang entrance, once per TV boot like the tiles': the clock, the top buttons and the info row
+     * rise 11 dp and fade in, staggered (docs/REVAMP.md §3.4). Translation and alpha only.
+     */
+    private void playHeaderEntrance() {
+        int[] ids = {R.id.leftBlock, R.id.topButtons, R.id.weatherRow};
+        long[] delays = {0, 80, 180};
+        android.view.animation.PathInterpolator ease = new android.view.animation.PathInterpolator(0.22f, 1f, 0.36f, 1f);
+        for (int i = 0; i < ids.length; i++) {
+            View v = findViewById(ids[i]);
+            if (v == null) continue;
+            v.setAlpha(0f);
+            v.setTranslationY(11 * density);
+            v.animate().alpha(1f).translationY(0f).setStartDelay(delays[i]).setDuration(900)
+                    .setInterpolator(ease).start();
+        }
     }
 
     /**
