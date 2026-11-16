@@ -6189,7 +6189,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
 
         // Watermark credit
         TextView credit = new TextView(this);
-        credit.setText("✨ Powered by @imsomangge");
+        credit.setText("✨ Powered by @mhfiz.ms");
         credit.setTextColor(Design.TEXT_MUTED);
         credit.setTypeface(getResources().getFont(R.font.outfit), Typeface.BOLD);
         Fonts.variation(credit, "'wght' 600");

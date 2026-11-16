@@ -740,7 +740,7 @@ public class WallpaperUploadServer {
                 "</head>\n" +
                 "<body>\n" +
                 "  <div class=\"card\">\n" +
-                "    <div class=\"badge\">Glass TV OS • by @imsomangge</div>\n" +
+                "    <div class=\"badge\">Glass TV OS • by @mhfiz.ms</div>\n" +
                 "    <h1>Muat Naik Wallpaper</h1>\n" +
                 "    <p class=\"subtitle\">Pilih mana-mana foto dari galeri telefon untuk dipaparkan secara langsung pada skrin TV anda.</p>\n" +
                 "\n" +
@@ -766,7 +766,7 @@ public class WallpaperUploadServer {
                 "    </div>\n" +
                 "\n" +
                 "    <div class=\"status-msg\" id=\"status-msg\"></div>\n" +
-                "    <div class=\"watermark\">✨ Powered by <strong>@imsomangge</strong></div>\n" +
+                "    <div class=\"watermark\">✨ Powered by <strong>@mhfiz.ms</strong></div>\n" +
                 "  </div>\n" +
                 "\n" +
                 "  <div class=\"gallery-card\">\n" +
@@ -782,7 +782,7 @@ public class WallpaperUploadServer {
                 "\n" +
                 "  <footer>\n" +
                 "    <div>Bersambung terus ke TV melalui Wi-Fi Tempatan</div>\n" +
-                "    <div style=\"margin-top: 6px; font-weight: 600; color: #64748b;\">Powered by @imsomangge</div>\n" +
+                "    <div style=\"margin-top: 6px; font-weight: 600; color: #64748b;\">Powered by @mhfiz.ms</div>\n" +
                 "  </footer>\n" +
                 "\n" +
                 "  <script>\n" +
