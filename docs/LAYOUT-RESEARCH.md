@@ -257,3 +257,13 @@ belongs at the top or on the right.
 it needs a new background in `AmbientView`, its entry in `Tenang.CHOICES`, and a snapshot test.
 What stays in `MainActivity` by design: the top buttons' focus paths with the `Glider` highlight and the app grid's
 own focus and scroll handling, which every look shares.
+
+## 13. Sorot background, revamped (2026-11-22)
+
+The stretched 32×18 banner looked blocky (bilinear upscaling shows soft squares, and logos smear). Sorot now
+paints a colour field from the app's colours instead (`AmbientView.SpotLayer`): a deep tint of the app's main
+colour at the top fading into the palette's dark base, a large soft glow of the main colour from the top right
+and a smaller glow of a second colour from the left. `AppAdapter.spotColoursAt` gives {main, second}: the vivid
+colour already sampled for the dock, and the most colourful banner pixel at least 35° of hue away (or the main
+colour turned 35° and dimmed). No bitmaps; shaders built once per app change, two layers crossfading over 0.6 s,
+nothing animating afterwards. The shades over it are lighter, so more colour shows while text stays readable.

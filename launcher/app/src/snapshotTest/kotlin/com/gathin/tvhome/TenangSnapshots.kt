@@ -112,12 +112,8 @@ class TenangSnapshots {
                 view.offsetDescendantRectToMyCoords(chips, c); shelf.y = c.bottom + 18 * d; true }
         } else {
             val ambient = view.getChildAt(0) as AmbientView
-            val tiny = android.graphics.Bitmap.createBitmap(32, 18, android.graphics.Bitmap.Config.ARGB_8888)
-            val c = android.graphics.Canvas(tiny)
-            c.drawColor(art)
-            c.drawRect(20f, 2f, 30f, 9f, android.graphics.Paint().apply { color = 0xFF3D0A0D.toInt() })
-            c.drawRect(0f, 12f, 32f, 18f, android.graphics.Paint().apply { color = 0xFF140203.toInt() })
-            ambient.setArt(tiny, false)
+            // As AppAdapter.spotColoursAt gives them: the app's main colour and a second one.
+            ambient.setSpot(intArrayOf(art, AppAdapter.secondColor(null, art)), false)
             LookType.apply(view)
             // Sorot: strip under the chips, the app row, the hero, and the ayah beside the hero on the right.
             view.findViewById<TextView>(R.id.prayerStrip).text =
