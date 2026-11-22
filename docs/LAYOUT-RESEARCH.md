@@ -1,0 +1,115 @@
+# Looks and layouts: research (Lautan, silhouette, vertical Home menu)
+
+Status: **research, nothing built yet**. Follows [REVAMP.md](REVAMP.md) §11 and the mockup
+[preview/lautan.html](../preview/lautan.html). Three questions: can Lautan have a blue anime-style silhouette
+character, can Home be a vertical menu, and how do we keep one base layout that different looks restyle.
+
+## 1. A blue silhouette character
+
+**Yes, as an original character. Not the Persona protagonist.** The Persona 3 Reload menu's protagonist is a
+character model made by Atlus specifically for that UI; the look, the hair over one eye and the headphones are
+theirs. Shipping a likeness of him in a public APK is a copyright and trade-dress problem. An original
+character (our own design, drawn as a flat blue silhouette with a few light cut-lines) gives the same feeling:
+a figure suspended in the water beside the menu.
+
+Who the character is, is your call (AGENTS.md rule 9). Some directions that fit the app and its audience:
+- a Malaysian teen in a school uniform with a songkok or a tudung, eyes closed, drifting;
+- a figure with headphones in a baju Melayu, side profile (headphones alone are generic; the combination of
+  shape, hair and pose is what must be ours);
+- a non-human mascot (a seahorse or a kingfisher, *pekaka*) for a family TV with children.
+- Your own art: possible if you own it or have the rights.
+
+**Cost on a 1 GB TV.** A large picture is the expensive part of that look, so we pick the format carefully:
+
+| Format | APK | Memory on screen | First draw | Verdict |
+|---|---|---|---|---|
+| Full-colour PNG, 700×1080 | 150–400 KB | ~3 MB (ARGB) | fast | No: no palette tint, biggest |
+| VectorDrawable at full height | 10–30 KB | ~3 MB bitmap cache at drawn size; rebuilt if the size changes | slow (ms per frame-size raster; Android advises ≤ 200 dp vectors) | Only for small icons |
+| **One-colour PNG decoded as `ALPHA_8`, tinted by the palette** | 30–60 KB | **~0.75 MB** (1 byte per pixel) | fast | **Recommended** |
+
+With `ALPHA_8` the silhouette takes the palette's colour (blue in Lautan, but it would also work in Senja or
+Embun) and costs a quarter of a normal picture. Motion stays in the Lautan budget: a slow bob (translationY
+~8 dp over ~6 s) and a slight sway, stepped by the same 15 fps tick as the water, stopped with Home not in front;
+Lite shows it still.
+
+## 2. A vertical Home menu
+
+**Feasible, and it suits a TV remote.** Android's TV guidance: categories on the vertical axis and items within
+a category on the horizontal axis, one obvious focus, and no deeply nested layouts. A vertical menu on the left,
+with each entry's content to its right, follows that exactly.
+
+The one risk is speed to the apps. Today an app is **one press** from Home (focus starts on the dock). A pure
+Persona-style menu would make it APLIKASI → Right → app: three presses, every time. So:
+
+**Recommended: a menu-led Home that still opens on the apps.**
+- Left: the slanted vertical menu: APLIKASI, INPUT, WALLPAPER, TEMA, CUACA, SOLAT, PROFIL, TETAPAN.
+- Each entry shows its content on the right when focused (APLIKASI: the favourite-apps row; INPUT: the HDMI
+  list; SOLAT: the prayer card; CUACA: weather and IPU). Right moves into that content, Left or Back returns to
+  the menu.
+- Home opens (and Back on Home returns) with focus on **APLIKASI's first app**, so launching stays one press;
+  Left from the first app goes to the menu.
+- The top bar (Inputs, Wi-Fi, mic, profile, settings) folds into the menu; the mic stays a remote button.
+
+The alternative, the mockup as it is (dock row at the bottom and a menu that opens with a key), is simpler but
+less like the screenshot. Both use the same components (section 3).
+
+## 3. One base layout, many looks
+
+Today one class, `MainActivity` (7,375 lines, about 170 `findViewById` calls), both fetches the data (apps,
+weather, IPU, warnings, prayer times, ayah, khutbah, now playing) and decides where each view sits. A second
+layout would mean a second copy of that class. The fix is to separate the three things a look changes.
+
+```
+ data (once)            components (shared)            a look (per style)
+ ───────────            ───────────────────            ──────────────────
+ HomeWeather    ─┐      ClockBlock                      layout XML: which components, where
+ PrayerTimes     │      StatusList (weather/IPU/warn)   theme overlay: colours, type, corners,
+ WeeklyAyah      ├──►   PrayerBlock (next+list+count)     skew, focus shape (tokens)
+ MinbarManager   │      AyahBlock                       backdrop: Tenang glows | Lautan water
+ apps / inputs   │      AppRow (RecyclerView)             (+ silhouette)
+ now playing    ─┘      MenuList (vertical, staggered)  focus shape: ring | slash
+   = HomeState          FocusHighlight (Glider)
+```
+
+- **HomeState**: an immutable snapshot built from the existing data classes on the minute tick and on
+  events. Components only render it; nothing fetches twice.
+- **Components** are plain Views with the same IDs everywhere, styled only by tokens. The current Tenang tokens
+  grow a few *shape* tokens: `tnSkew` (0° Tenang, −12° Lautan), `tnCorner`, `tnFocusShape` (ring | slash),
+  `tnDisplayFont` and `tnDisplayWeight`.
+- **A look** = one layout XML (`home_tenang.xml`, `home_lautan.xml`) + one theme overlay + a backdrop
+  renderer. Most new looks need no Java: copy an XML, move the components, change tokens.
+- **Switching**: `theme_prefs` `look` (`tenang` | `lautan`), separate from the Tenang `palette`, so going back
+  to Tenang returns exactly the old look. Changing look reuses the palette switch (fade or slash wipe, recreate).
+- **Safety net**: the Paparazzi snapshots already render Home. Extraction must keep Tenang's snapshots
+  unchanged, pixel for pixel; that is the test that the base layout did not move.
+
+## 4. Plan and size
+
+| Step | Work | Sessions |
+|---|---|---|
+| L0 | Extract HomeState and the components from `MainActivity`, Tenang unchanged (snapshots identical) | 3–4 |
+| L1 | Look switch: `look` pref and theme key, Tema menu with LAUTAN and the Tenang entries, wipe | 1 |
+| L2 | Lautan backdrop (water, light shafts, shards) and the `ALPHA_8` silhouette with bob and sway | 1–2 |
+| L3 | Lautan layout: vertical menu with per-entry content, slash focus, slanted blocks | 2–3 |
+| L4 | Polish, Lite tier, real-TV check (gfxinfo budget from REVAMP §4.5) | 1 |
+
+L0 is the investment; after it, Lautan and later looks are mostly XML and tokens.
+
+## 5. Decisions needed
+
+1. **Character**: which direction (section 1), or your own art? I can draft 2–3 original silhouettes as an
+   update to the mockup for you to choose from.
+2. **Home**: menu-led with focus starting on the apps (recommended), or the mockup's dock plus a pop-up menu?
+3. **Order**: start with L0 (the shared base) before any Lautan code? Recommended, because it is what keeps
+   both looks maintainable.
+
+## Sources
+
+- Android TV navigation: [Navigation on TV](https://developer.android.com/design/ui/tv/guides/foundations/navigation-on-tv),
+  [TV navigation (D-pad)](https://developer.android.com/training/tv/get-started/navigation),
+  [Focus system](https://d.android.com/design/ui/tv/guides/styles/focus-system)
+- Vector cost: [VectorDrawable reference (one bitmap cache per drawable)](https://developer.android.com/reference/android/graphics/drawable/VectorDrawable),
+  [VectorDrawableCompat (rebuilt on size change)](https://developer.android.com/reference/androidx/vectordrawable/graphics/drawable/VectorDrawableCompat),
+  [Optimizing the performance of vector drawables](https://upday.github.io/blog/vector_drawables_optimisation)
+- The Persona 3 Reload menu: [Automaton: what ideas went into its design](https://automaton-media.com/en/news/20240207-26873/),
+  [GamesRadar: Persona 3 Reload's UI](https://www.gamesradar.com/persona-3-reloads-ui-goes-hard-and-one-indie-dev-reckons-theyve-figured-out-why)
