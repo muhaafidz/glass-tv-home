@@ -347,3 +347,19 @@ Decisions in section 9: all accepted as recommended (2026-11-16).
 • Fokus lembut: satu cincin aksen dengan cahaya halus; jubin naik tanpa melantun.
 • Tetapan → Penampilan: "Tema Tenang" dan "Jangan guna tema cerah".
 • Fon Outfit sebenar; APK lebih kecil (~250 KB).
+
+## 11. Next: Lautan, a second look (proposal, mockup only)
+
+A bold deep-sea look offered **next to** Tenang, not instead of it. An original design: slanted heavy Outfit,
+a red-and-white slash behind what is focused, light shafts through deep water; no characters, logos or art
+from any game. Mockup: [preview/lautan.html](../preview/lautan.html) (M opens the menu, T the Tema picker).
+
+- **Switching and going back.** One stored choice, `theme_prefs` `look` = `tenang` or `lautan`, with the Tenang
+  palette (`palette`) kept as it was. Settings → Tema lists LAUTAN, TENANG · AUTO, MALAM, SENJA, EMBUN; picking
+  any of them switches with a slash wipe (recreate, as the palette fade does). Choosing a Tenang entry brings
+  back exactly the old look, and the theme key `"look"` can pin one for a pushed theme.
+- **Cost on the TV.** Same rules as Tenang: no new font (Outfit Bold, skewed), no pictures, gradients that only
+  move at 15 fps and stop when Home is not in front; the slash is the focus highlight's shape, scaled in. Lite
+  keeps the look and drops the motion.
+- **Scope (to confirm):** Home, the menus (Settings, Inputs, Wallpaper, Tema) as stacked slanted words, and the
+  slash focus. App banners stay straight.
