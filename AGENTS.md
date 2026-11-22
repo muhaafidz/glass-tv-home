@@ -1,7 +1,7 @@
 # Instructions for AI agents
 
 You are helping someone set up **Glass TV** on their own TV: on Android TV and Google TV, debloat it and install
-this launcher as the home screen, with pictures of places behind it; on LG webOS, install the webOS app. This file is the playbook. It is written for any brand and for any
+this launcher as the home screen, with a calm background of its own; on LG webOS, install the webOS app. This file is the playbook. It is written for any brand and for any
 AI model, large or small. Follow it in order, and read [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md)
 before you improvise a fix.
 
@@ -95,8 +95,8 @@ Written so that any model can follow it to the letter:
    bloat but is the Miracast screen. When unsure, leave it on and ask.
 8. **Credentials stay with the person.** They type passwords, PINs and pairing codes themselves. Never write an
    API key or token into the repository.
-9. **Family-friendly by default.** The places pictures skip any picture with people in it; keep it that way.
-   Ask about the person's preferences for any images you show them or put in docs.
+9. **Family-friendly by default.** Ask about the person's preferences for any images you show them or put in
+   docs.
 10. **Downloads need a yes.** Say the file name, source and size before downloading tools (Android platform
     tools, JDK 17, Android SDK, GitHub CLI).
 
@@ -200,9 +200,9 @@ A theme is a folder with `config.json` (and optional `wallpaper.jpg` or `wallpap
 
 - `dock_apps` beyond the dock's size continue as the first grid rows, in order, so the person can order the
   grid too.
-- **Places**: on by default, nothing to set up. The first week's pictures arrive within a minute of Home first
-  starting with internet; until then the background is plain. `"places": false` uses the theme's own pictures
-  and keeps the launcher offline.
+- **Latar (background)**: it belongs to the look. Settings → Appearance → Latar: Bergerak (the look's own slow
+  background, default), Pegun (the same, still; the lightest), or Foto saya (the person's photos, uploaded from a
+  phone by QR, shown under the palette's tint; not in Sorot). Nothing is downloaded for the background.
 - **App order**: the person can arrange the apps themselves on the TV (hold OK on an app → Move); once they
   have, their order wins over `dock_apps`.
 - **Android 10 quirk**: the first time the launcher gains the internet permission, sockets fail with `EPERM`
@@ -240,11 +240,10 @@ A theme is a folder with `config.json` (and optional `wallpaper.jpg` or `wallpap
   `cd launcher && ./gradlew testReleaseUnitTest assembleRelease`.
 - The original Clean Your TV guide lives in [docs/CLEANYOURTV-README.md](docs/CLEANYOURTV-README.md); the tests
   read its TV table and counts. Keep its relative links pointing one level up (`../`).
-- Keep the launcher light: no new background services, no network use but the weekly places pictures (none with
-  `"places": false`), one wallpaper bitmap
+- Keep the launcher light: no new background services, no network use beyond weather, air quality, prayer times
+  and update checks (nothing is downloaded for backgrounds), one wallpaper bitmap
   in memory, decoding off the main thread, nothing running while another app is in front.
 - Commits carry only the human author's identity. Don't add AI attribution lines.
 - Credit stays: this project is based on [Clean Your TV](https://github.com/Gathin23/cleanyourtv) by Gathin (MIT).
-  Keep `LICENSE`, `launcher/FONT-LICENSE-OFL.txt` and the note in the README on where the places pictures
-  come from.
+  Keep `LICENSE` and `launcher/FONT-LICENSE-OFL.txt`.
 - [PROMPT.md](PROMPT.md) is the original one-paste prompt; this file adds the safety rules and the lessons above.

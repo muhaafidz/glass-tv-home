@@ -267,3 +267,18 @@ and a smaller glow of a second colour from the left. `AppAdapter.spotColoursAt` 
 colour already sampled for the dock, and the most colourful banner pixel at least 35° of hue away (or the main
 colour turned 35° and dimmed). No bitmaps; shaders built once per app change, two layers crossfading over 0.6 s,
 nothing animating afterwards. The shades over it are lighter, so more colour shows while text stays readable.
+
+## 14. Backgrounds belong to the look (6.2.0, 2026-11-22)
+
+Owner's direction: anything that does not look good or has no point goes; each look conveys its own mood
+(Tenang soothing, Lautan stylish and calm, Sorot a spotlight), practical and soothing.
+
+- **Latar** (Settings → Appearance; `Backdrop`): Bergerak (the look's own background, default), Pegun (the same
+  without motion; the lightest), Foto saya (uploaded photos under a palette tint, `SRC_ATOP` of `BG1` at 55 %;
+  not in Sorot). Migration: uploads chosen before → Foto saya, anything else → Bergerak.
+- **Removed**: the online collections (Malaysia, Natural, Skyscraper, Space, Ocean, Minimalist), the weekly
+  places pictures, the dark-mode filter (Obsidian, OLED, auto), the place caption, the weather particle overlay
+  on Home (the weather screen keeps its sky), and the seven wallpaper theme folders (about 45 MB) plus
+  `preview/quiet-canvas.html`. `OnlineWallpapers`, `PlaceWallpapers` and their tests are deleted; the old
+  downloads are deleted once on the TV (`Backdrop.dropOldDownloads`). `MainActivity` is about 745 lines shorter.
+- Nothing is downloaded for backgrounds any more; AGENTS.md's network rule says so.

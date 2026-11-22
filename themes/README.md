@@ -5,54 +5,25 @@ launcher's dock, layout and look on the TV without rebuilding the APK: the launc
 `config.json` as an overlay over its built-in `config.xml` the next time it starts.
 
 ```bash
-TV_HOST=192.168.1.50 tools/theme.sh themes/aurora          # push a theme and restart Home
+TV_HOST=192.168.1.50 tools/theme.sh themes/lautan          # push a theme and restart Home
 TV_HOST=192.168.1.50 tools/theme.sh --reset                # back to the built-in config.xml
-powershell -ExecutionPolicy Bypass -File tools\theme.ps1 -TvHost 192.168.1.50 themes\aurora
+powershell -ExecutionPolicy Bypass -File tools\theme.ps1 -TvHost 192.168.1.50 themes\lautan
 ```
 
 | Theme | What it does |
 |---|---|
 | `default/` | The built-in look written out as JSON, as a starting point for your own |
-| `aurora/` | A dark aurora wallpaper (teal and violet on navy, darker at the bottom) with a matching background colour |
-| `quiet-canvas/` | A five-image rotating collection: cool, ember, forest, graphite and sand gradients tuned for white launcher text |
+| `six-columns/` | Six smaller tiles per row and one grid row visible under the dock |
+| `tenang/` | Tenang: calm palettes that follow the prayer times, with its slow moving background |
 | `lautan/` | Lautan (6.1): deep sea, a drifting star lattice, a slanted list of apps on the left and the prayer times and ayah on the right |
 | `sorot/` | Sorot (6.1): the focused app's colours fill the screen; prayer strip at the top, the ayah beside the app's name |
-| `tenang/` | Tenang (6.0): the moving canvas with colours that follow prayer times (Malam, Senja, Embun); no pictures, nothing downloaded |
-| `sinar/` | Sinar: five flat graphite gradients (mint, violet, ember, forest, sand) with one vivid accent zone, tuned for the Sinar UI |
-| `quiet-canvas-ember/` | The warm ember still on its own, if you prefer a single colourway |
-| `six-columns/` | Six smaller tiles per row and one grid row visible under the dock |
 
-## Quiet Canvas samples
+The background belongs to the look (Settings → Appearance → Latar: Bergerak, Pegun or Foto saya), so themes no
+longer ship wallpaper collections. A theme may still bring pictures (`wallpaper.jpg` or `wallpapers/`): they
+are shown as Foto saya, under the palette's tint.
 
-![Quiet Canvas cool gradient sample](quiet-canvas/wallpaper.jpg)
-
-<p>
-  <img src="quiet-canvas/wallpapers/02_ember.jpg" width="32%" alt="Quiet Canvas Ember">
-  <img src="quiet-canvas/wallpapers/03_forest.jpg" width="32%" alt="Quiet Canvas Forest">
-  <img src="quiet-canvas/wallpapers/04_graphite.jpg" width="32%" alt="Quiet Canvas Graphite">
-</p>
-
-<p>
-  <img src="quiet-canvas/wallpapers/05_sand.jpg" width="49%" alt="Quiet Canvas Sand">
-  <img src="quiet-canvas/wallpapers/01_cool.jpg" width="49%" alt="Quiet Canvas Cool">
-</p>
-
-The `quiet-canvas` theme now rotates through five 1920×1080 colourways: cool, ember, forest, graphite and sand.
-Each leaves calm dark space behind the clock and widgets, with a low-contrast wash and a thin horizon accent.
-Every JPEG is about 38–39 KB at quality 88; editable SVGs for the new colourways are in
-`quiet-canvas/wallpapers/*-source.svg`. The collection changes every 30 minutes by default; change
-`wallpaper_minutes` in its `config.json` to taste.
-
-These files are already small enough: further JPEG compression would save only a few kilobytes and does not
-reduce the decoded `RGB_565` bitmap (about 4 MiB at 1080p), while it risks visible banding in the gradients.
-The launcher decodes only the current wallpaper; the other four files are just paths on disk. The redesigned home uses a full-width information rail above
-the dock, removes the place-caption shelf by default, and uses Outfit with quiet surfaces—without adding
-dependencies or background work. Apply it with `TV_HOST=<tv-ip> tools/theme.sh themes/quiet-canvas`.
-For a quick desktop styling mock (no emulator), open [`preview/quiet-canvas.html`](../preview/quiet-canvas.html)
-in a browser and switch between wallpapers or tweak its CSS variables. It is illustrative; the Android release
-build remains the source of truth.
-
-Colours: each look's palette lives in one block of `themes_tenang.xml`; see [docs/PALETTES.md](../docs/PALETTES.md) for the tokens and how to change them.
+Colours: each look's palettes live in `themes_tenang.xml`; see [docs/PALETTES.md](../docs/PALETTES.md) for the
+tokens and how to change them.
 
 ## Keys
 
@@ -82,7 +53,6 @@ is ignored, and a file that doesn't parse is ignored as a whole, so a theme can 
 | `wallpaper_seconds` | 5 to 86400 | Seconds between pictures; when set, it wins over `wallpaper_minutes` |
 | `wallpaper_minutes` | 0 to 1440 | Minutes between pictures when the theme has a `wallpapers/` folder; 0 changes only when Home starts. Default 30 |
 | `cache_clean_days` | 0 to 90 | Days between clearing the TV's app caches, which the TV does itself (default 15); `0` turns it off. See [docs/cache-clean.md](../docs/cache-clean.md) |
-| `places` | bool | Pictures of places to visit (Bing's daily images, no key), renewed weekly with last week's deleted, each named with its country and a few lines about it; pictures with people in them are skipped. On by default, and they replace the theme's own pictures. `false`: the theme's own pictures, and the launcher never goes online |
 
 ## Wallpapers
 

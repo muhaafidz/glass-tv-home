@@ -60,7 +60,7 @@ final class Config {
     final List<File> wallpapers;
     /** Time between wallpaper changes (wallpaper_seconds, else wallpaper_minutes); 0 changes only when Home starts. */
     final long wallpaperIntervalMs;
-    /** Pictures of places to visit, renewed weekly (see PlaceWallpapers); "places": false keeps them off. */
+    /** Always false since 6.2: places pictures were removed (Latar is the look's background or the person's photos). */
     final boolean places;
     /** Dynamic online wallpaper fetching (Unsplash 4K or custom web server feed). */
     final boolean wallpaperOnline;
@@ -184,23 +184,11 @@ final class Config {
         int wallpaperMinutes = json != null ? integer(json, "wallpaper_minutes", 30, 0, 1440) : 30;
         int wallpaperSeconds = json != null ? integer(json, "wallpaper_seconds", 0, 5, 86400) : 0;
         long wallpaperIntervalMs = wallpaperSeconds > 0 ? wallpaperSeconds * 1000L : wallpaperMinutes * 60_000L;
-        // On unless a theme says otherwise: a fresh install shows places with nothing to set up.
-        boolean places = wallpaperOn && (json == null || bool(json, "places", true));
-        String wallpaperFeed = json != null ? string(json, "wallpaper_feed", "") : "";
-        boolean wallpaperOnline = wallpaperOn && json != null && (bool(json, "wallpaper_online", false) || !wallpaperFeed.isEmpty());
-        if (dir != null && wallpaperOnline) {
-            File onlineDir = OnlineWallpapers.dir(ctx);
-            File[] onlinePics = onlineDir != null ? onlineDir.listFiles() : null;
-            if (onlinePics != null) {
-                for (File f : onlinePics) {
-                    String n = f.getName().toLowerCase(java.util.Locale.ROOT);
-                    if (f.isFile() && f.length() > 0 && (n.endsWith(".jpg") || n.endsWith(".jpeg") || n.endsWith(".png"))) {
-                        if (!wallpapers.contains(f)) wallpapers.add(f);
-                    }
-                }
-                Collections.sort(wallpapers);
-            }
-        }
+        // No downloaded pictures any more (places and online collections were removed): Latar is the look's own
+        // background or the person's photos. "places", "wallpaper_online" and "wallpaper_feed" are ignored.
+        boolean places = false;
+        String wallpaperFeed = "";
+        boolean wallpaperOnline = false;
         int cacheCleanDays = json != null ? integer(json, "cache_clean_days", CacheCleaner.DEFAULT_DAYS, 0, 90)
                 : CacheCleaner.DEFAULT_DAYS;
 
