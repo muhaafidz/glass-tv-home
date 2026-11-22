@@ -77,6 +77,36 @@ public class TenangTest {
     }
 
     @Test
+    public void everyLookHasAtLeastFivePalettes() {
+        for (String look : Tenang.LOOKS) {
+            assertTrue(look, Tenang.palettesOf(look).length >= 5);
+        }
+    }
+
+    @Test
+    public void palettesNormaliseAndCycle() {
+        assertEquals("biru", Tenang.normalisePalette("lautan", null));
+        assertEquals("bulan", Tenang.normalisePalette("lautan", " BULAN "));
+        assertEquals("gelap", Tenang.normalisePalette("sorot", "malam"));
+        assertEquals("hutan", Tenang.normalisePalette("tenang", "hutan"));
+        assertEquals("auto", Tenang.normalisePalette("tenang", "karang"));
+        assertEquals("karang", Tenang.next(Tenang.LAUTAN_PALETTES, "biru"));
+        assertEquals("gelap", Tenang.next(Tenang.SOROT_PALETTES, "mawar"));
+        assertEquals("lautan", Tenang.next(Tenang.LOOKS, "tenang"));
+        assertEquals("tenang", Tenang.next(Tenang.LOOKS, "sorot"));
+    }
+
+    @Test
+    public void everyPaletteHasAnOverlay() {
+        for (String p : Tenang.LAUTAN_PALETTES) {
+            if (!p.equals("biru")) assertTrue(p, Tenang.lookPaletteOverlay(p) != 0);
+        }
+        for (String p : Tenang.SOROT_PALETTES) {
+            if (!p.equals("gelap")) assertTrue(p, Tenang.lookPaletteOverlay(p) != 0);
+        }
+    }
+
+    @Test
     public void unknownLookIsTenang() {
         assertEquals("tenang", Tenang.normaliseLook(null));
         assertEquals("tenang", Tenang.normaliseLook("ps5"));
@@ -96,7 +126,7 @@ public class TenangTest {
     @Test
     public void palettesMeetTextContrast() throws Exception {
         Map<String, Map<String, Integer>> palettes = readPalettes();
-        assertEquals(3, palettes.size());
+        assertEquals("6 Tenang, 5 Lautan, 5 Sorot", 16, palettes.size());
         for (Map.Entry<String, Map<String, Integer>> e : palettes.entrySet()) {
             Map<String, Integer> p = e.getValue();
             int bg1 = p.get("tnBg1"), bg2 = p.get("tnBg2"), surface = p.get("tnSurface");
@@ -107,6 +137,10 @@ public class TenangTest {
                 assertContrast(e.getKey() + " accent", p.get("tnAccent"), bg, 3.0);
             }
             assertContrast(e.getKey() + " on-accent", p.get("tnOnAccent"), p.get("tnAccent"), 3.0);
+            if (e.getKey().startsWith("Look.Lautan")) {
+                // Lautan's clock sits over the light water at the top of the screen.
+                assertContrast(e.getKey() + " clock on shallow water", p.get("tnText"), p.get("tnBlobA") | 0xFF000000, 4.5);
+            }
         }
     }
 
@@ -143,7 +177,7 @@ public class TenangTest {
         if (!f.isFile()) f = new File("app/src/main/res/values/themes_tenang.xml");
         String xml = new String(Files.readAllBytes(f.toPath()), StandardCharsets.UTF_8);
         Map<String, Map<String, Integer>> out = new HashMap<>();
-        Matcher style = Pattern.compile("<style name=\"ThemeOverlay\\.Tenang\\.(\\w+)\"[^>]*>(.*?)</style>", Pattern.DOTALL).matcher(xml);
+        Matcher style = Pattern.compile("<style name=\"ThemeOverlay\\.((?:Tenang|Look)\\.[\\w.]+)\"[^>]*>(.*?)</style>", Pattern.DOTALL).matcher(xml);
         Pattern item = Pattern.compile("<item name=\"(tn\\w+)\">#([0-9A-Fa-f]{6,8})</item>");
         while (style.find()) {
             Map<String, Integer> tokens = new HashMap<>();

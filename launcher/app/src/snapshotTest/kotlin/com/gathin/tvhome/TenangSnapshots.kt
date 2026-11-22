@@ -86,9 +86,10 @@ class TenangSnapshots {
     }
 
     /** A look on top of Malam, as Tenang.applyLook does, placed as MainActivity places it. */
-    private fun look(overlay: Int, art: Int?) {
+    private fun look(overlay: Int, art: Int?, palette: Int = 0, name: String? = null) {
         paparazzi.context.theme.applyStyle(R.style.ThemeOverlay_Tenang_Malam, true)
         paparazzi.context.theme.applyStyle(overlay, true)
+        if (palette != 0) paparazzi.context.theme.applyStyle(palette, true)
         Design.load(paparazzi.context)
         val view = LayoutInflater.from(paparazzi.context).inflate(R.layout.activity_main, null) as android.widget.FrameLayout
         fill(view)
@@ -127,10 +128,23 @@ class TenangSnapshots {
             hero.y = (180 + 68 + 20) * d
             shelf.viewTreeObserver.addOnPreDrawListener { shelf.y = hero.y; true }
         }
-        paparazzi.snapshot(view)
+        if (name != null) paparazzi.snapshot(view, name) else paparazzi.snapshot(view)
     }
 
     @Test fun lookLautan() = look(R.style.ThemeOverlay_Look_Lautan, null)
+
+    // Every palette of every look (docs/PALETTES.md), one render each.
+    @Test fun paletteTenangSubuh() = home(R.style.ThemeOverlay_Tenang_Subuh)
+    @Test fun paletteTenangHutan() = home(R.style.ThemeOverlay_Tenang_Hutan)
+    @Test fun paletteTenangPasir() = home(R.style.ThemeOverlay_Tenang_Pasir)
+    @Test fun paletteLautanKarang() = look(R.style.ThemeOverlay_Look_Lautan, null, R.style.ThemeOverlay_Look_Lautan_Karang)
+    @Test fun paletteLautanBulan() = look(R.style.ThemeOverlay_Look_Lautan, null, R.style.ThemeOverlay_Look_Lautan_Bulan)
+    @Test fun paletteLautanZamrud() = look(R.style.ThemeOverlay_Look_Lautan, null, R.style.ThemeOverlay_Look_Lautan_Zamrud)
+    @Test fun paletteLautanSenjakala() = look(R.style.ThemeOverlay_Look_Lautan, null, R.style.ThemeOverlay_Look_Lautan_Senjakala)
+    @Test fun paletteSorotArang() = look(R.style.ThemeOverlay_Look_Sorot, 0xFF1F6FD6.toInt(), R.style.ThemeOverlay_Look_Sorot_Arang)
+    @Test fun paletteSorotHangat() = look(R.style.ThemeOverlay_Look_Sorot, 0xFFC8101E.toInt(), R.style.ThemeOverlay_Look_Sorot_Hangat)
+    @Test fun paletteSorotPudina() = look(R.style.ThemeOverlay_Look_Sorot, 0xFF22B573.toInt(), R.style.ThemeOverlay_Look_Sorot_Pudina)
+    @Test fun paletteSorotMawar() = look(R.style.ThemeOverlay_Look_Sorot, 0xFF6C63FF.toInt(), R.style.ThemeOverlay_Look_Sorot_Mawar)
     @Test fun lookSorot() = look(R.style.ThemeOverlay_Look_Sorot, 0xFFC8101E.toInt())
 
     @Test fun lookLautanMenu() {
