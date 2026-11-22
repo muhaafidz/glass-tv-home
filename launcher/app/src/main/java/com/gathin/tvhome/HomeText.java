@@ -45,6 +45,14 @@ final class HomeText {
         return greeting(lang, hour);
     }
 
+    /** "Selamat petang, Hafiz": the profile's name after the greeting, or the greeting alone when there is no name. */
+    static String withName(String greeting, String name) {
+        String n = name == null ? "" : name.trim();
+        if (n.isEmpty()) return greeting;
+        if (n.length() > 14) n = n.substring(0, 13) + "\u2026";
+        return greeting + ", " + n;
+    }
+
     /**
      * The prayer that arrived within the last {@code windowMs} (Subuh, Zohor, Asar, Maghrib, Isyak; Syuruk is a
      * time, not a prayer), as its index, or -1. Home pulses that prayer's cell once.

@@ -3489,7 +3489,10 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
 
         if (clockBlock != null) {
             int[] hijri = PrayerTimes.hijriParts();
-            clockBlock.set(period, dateStr, HomeText.greeting(lang, hour, cal.get(Calendar.DAY_OF_WEEK), hijri[1], hijri[0]) + " \u2726");
+            String greeting = HomeText.greeting(lang, hour, cal.get(Calendar.DAY_OF_WEEK), hijri[1], hijri[0]);
+            // The name only when the TV has more than one profile: with one, a name adds nothing.
+            if (ProfileManager.getAllProfiles(this).size() > 1) greeting = HomeText.withName(greeting, ProfileManager.getActiveProfile(this).name);
+            clockBlock.set(period, dateStr, greeting + " \u2726");
         }
     }
 
@@ -3613,6 +3616,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     }
 
     void updateTopBarUserIcon() {
+        updateDateAndPeriod();   // the greeting carries the active profile's name
         if (btnCandyBox instanceof FrameLayout) {
             FrameLayout candy = (FrameLayout) btnCandyBox;
             ProfileManager.UserProfile active = ProfileManager.getActiveProfile(this);

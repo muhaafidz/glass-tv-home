@@ -41,6 +41,14 @@ public class HomeTextTest {
     }
 
     @Test
+    public void greetingCarriesAProfileNameWhenThereIsOne() {
+        assertEquals("Selamat petang, Hafiz", HomeText.withName("Selamat petang", " Hafiz "));
+        assertEquals("Selamat petang", HomeText.withName("Selamat petang", ""));
+        assertEquals("Selamat petang", HomeText.withName("Selamat petang", null));
+        assertEquals("Good night, Muhammad Hafi\u2026", HomeText.withName("Good night", "Muhammad Hafiz bin Saufi"));
+    }
+
+    @Test
     public void arrivedPrayerIsFoundOnceInItsWindow() {
         assertEquals(0, HomeText.arrivedPrayer(T, T[0] + 20_000, 90_000));
         assertEquals(-1, HomeText.arrivedPrayer(T, T[0] - 1_000, 90_000));
