@@ -15,6 +15,8 @@ powershell -ExecutionPolicy Bypass -File tools\theme.ps1 -TvHost 192.168.1.50 th
 | `default/` | The built-in look written out as JSON, as a starting point for your own |
 | `aurora/` | A dark aurora wallpaper (teal and violet on navy, darker at the bottom) with a matching background colour |
 | `quiet-canvas/` | A five-image rotating collection: cool, ember, forest, graphite and sand gradients tuned for white launcher text |
+| `lautan/` | Lautan (6.1): deep sea, a drifting star lattice, a slanted list of apps on the left and the prayer times and ayah on the right |
+| `sorot/` | Sorot (6.1): the focused app's colours fill the screen; prayer strip at the top, the ayah beside the app's name |
 | `tenang/` | Tenang (6.0): the moving canvas with colours that follow prayer times (Malam, Senja, Embun); no pictures, nothing downloaded |
 | `sinar/` | Sinar: five flat graphite gradients (mint, violet, ember, forest, sand) with one vivid accent zone, tuned for the Sinar UI |
 | `quiet-canvas-ember/` | The warm ember still on its own, if you prefer a single colourway |
@@ -71,6 +73,7 @@ is ignored, and a file that doesn't parse is ignored as a whole, so a theme can 
 | `show_home_settings_shortcut` | bool | The "Default home" tile, where the TV has a home picker |
 | `show_network_pill` | bool | The Wi-Fi / Ethernet pill in the top bar; `false` hides it |
 | `show_live_tv` | bool | The Live TV row in the Inputs menu; `false` leaves only the HDMI and AV inputs |
+| `look` | `"tenang"`, `"lautan"` or `"sorot"` | The whole look: Tenang (uses `palette`), Lautan or Sorot. Settings → Appearance → Tema can change it on the TV, and choosing a Tenang entry there returns to Tenang |
 | `palette` | `"auto"`, `"malam"`, `"senja"` or `"embun"` | The Tenang colours. `auto` (default) follows the prayer times: Senja from Asar to Isyak, Malam the rest of the day. `embun` is the light palette, still being finished |
 | `background_color` | `#RRGGBB` | Colour behind everything; by default the palette's own background |
 | `wallpaper` | bool | Show `wallpaper.jpg` from the theme folder (`true`), or ignore it (`false`) |

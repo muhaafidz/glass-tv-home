@@ -1498,8 +1498,17 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
 
     /** Lautan: the slanted vertical list on the left replaces the grid; Left from it opens the menu. */
     private void setUpLautanList() {
-        lautanList = new LautanList(this, () -> {
-            if (lautanMenu != null) lautanMenu.open();
+        lautanList = new LautanList(this, new LautanList.Host() {
+            @Override
+            public void onLeftFromList() {
+                if (lautanMenu != null) lautanMenu.open();
+            }
+
+            @Override
+            public void onAppFocused(int position) {
+                lastFocused = position;
+                lastFocusedKey = adapter.keyAt(position);
+            }
         });
         android.util.DisplayMetrics dm = getResources().getDisplayMetrics();
         int w = Math.round(Math.max(dm.widthPixels, dm.heightPixels) * 0.40f);

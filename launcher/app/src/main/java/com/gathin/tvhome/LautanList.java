@@ -26,6 +26,9 @@ final class LautanList extends FrameLayout {
 
     interface Host {
         void onLeftFromList();
+
+        /** An app row got focus: Home remembers it, so coming back from the app lands on it again. */
+        void onAppFocused(int position);
     }
 
     static final class Shortcut {
@@ -88,10 +91,10 @@ final class LautanList extends FrameLayout {
         for (int i = 0; i < n; i++) {
             final int pos = i;
             Drawable art = apps.bannerAt(i) != null ? apps.bannerAt(i) : apps.iconAt(i);
-            addRow(apps.nameAt(i), art, apps.bannerAt(i) != null, () -> apps.launchAt(pos), false);
+            addRow(apps.nameAt(i), art, apps.bannerAt(i) != null, () -> apps.launchAt(pos), false, pos);
         }
         for (int i = 0; i < shortcuts.length; i++) {
-            addRow(shortcuts[i].label, null, false, shortcuts[i].action, i == 0);
+            addRow(shortcuts[i].label, null, false, shortcuts[i].action, i == 0, -1);
         }
         if (focusedIndex >= 0 && focusedIndex < column.getChildCount()) column.getChildAt(focusedIndex).requestFocus();
     }
@@ -103,7 +106,7 @@ final class LautanList extends FrameLayout {
         v.requestFocus();
     }
 
-    private void addRow(String label, Drawable art, boolean isBanner, Runnable action, boolean gapAbove) {
+    private void addRow(String label, Drawable art, boolean isBanner, Runnable action, boolean gapAbove, int appPosition) {
         int i = column.getChildCount();
         LinearLayout row = new LinearLayout(getContext());
         row.setOrientation(LinearLayout.HORIZONTAL);
@@ -140,7 +143,10 @@ final class LautanList extends FrameLayout {
 
         row.setOnFocusChangeListener((v, has) -> {
             word.setTextColor(has ? Design.BG1 : Design.CYAN);
-            if (has) SoundEffects.playNav();
+            if (has) {
+                SoundEffects.playNav();
+                if (appPosition >= 0) host.onAppFocused(appPosition);
+            }
         });
         row.setOnClickListener(v -> {
             SoundEffects.playSelect();
