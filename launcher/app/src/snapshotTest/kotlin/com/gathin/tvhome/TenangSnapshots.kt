@@ -85,6 +85,29 @@ class TenangSnapshots {
             android.widget.FrameLayout.LayoutParams(android.view.ViewGroup.LayoutParams.MATCH_PARENT, android.view.ViewGroup.LayoutParams.MATCH_PARENT))
     }
 
+    /** A look on top of Malam, as Tenang.applyLook does, with the look's type and backdrop. */
+    private fun look(overlay: Int, art: Int?) {
+        paparazzi.context.theme.applyStyle(R.style.ThemeOverlay_Tenang_Malam, true)
+        paparazzi.context.theme.applyStyle(overlay, true)
+        Design.load(paparazzi.context)
+        val view = LayoutInflater.from(paparazzi.context).inflate(R.layout.activity_main, null)
+        fill(view)
+        LookType.apply(view)
+        if (art != null) {
+            val ambient = (view as android.widget.FrameLayout).getChildAt(0) as AmbientView
+            val tiny = android.graphics.Bitmap.createBitmap(32, 18, android.graphics.Bitmap.Config.ARGB_8888)
+            val c = android.graphics.Canvas(tiny)
+            c.drawColor(art)
+            c.drawRect(20f, 2f, 30f, 9f, android.graphics.Paint().apply { color = 0xFF3D0A0D.toInt() })
+            c.drawRect(0f, 12f, 32f, 18f, android.graphics.Paint().apply { color = 0xFF140203.toInt() })
+            ambient.setArt(tiny, false)
+        }
+        paparazzi.snapshot(view)
+    }
+
+    @Test fun lookLautan() = look(R.style.ThemeOverlay_Look_Lautan, null)
+    @Test fun lookSorot() = look(R.style.ThemeOverlay_Look_Sorot, 0xFFC8101E.toInt())
+
     @Test fun homeMalam() = home(R.style.ThemeOverlay_Tenang_Malam)
     @Test fun homeSenja() = home(R.style.ThemeOverlay_Tenang_Senja)
     @Test fun homeEmbun() = home(R.style.ThemeOverlay_Tenang_Embun)

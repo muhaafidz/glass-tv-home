@@ -25,6 +25,9 @@ final class Design {
     static int INK = 0xFFFFFFFF;
     static float STARS = 1f;
     static boolean IS_LIGHT = false;
+    /** Look tokens: focus shape (0 ring, 1 slash, 2 white ring), backdrop (0 Tenang, 1 Lautan, 2 Sorot), text slant. */
+    static int FOCUS_SHAPE = 0, BACKDROP = 0;
+    static float TEXT_SKEW = 0f;
     /** Sinar name for the screen background. */
     static int CANVAS = BG1;
 
@@ -35,6 +38,7 @@ final class Design {
             R.attr.tnAccent, R.attr.tnAccentSoft, R.attr.tnAccentDim, R.attr.tnAccentGlow,
             R.attr.tnOnAccent, R.attr.tnWarm, R.attr.tnAmber, R.attr.tnAmberBg, R.attr.tnGood,
             R.attr.tnCoral, R.attr.tnCyan, R.attr.tnViolet, R.attr.tnWave, R.attr.tnInk, R.attr.tnStars, R.attr.tnIsLight,
+            R.attr.tnFocusShape, R.attr.tnBackdrop, R.attr.tnTextSkew,
     };
 
     /** Reads every token from the context's theme; a missing token keeps its current value. */
@@ -56,7 +60,10 @@ final class Design {
             WAVE = a.getColor(i++, WAVE);
             INK = a.getColor(i++, INK);
             STARS = a.getFloat(i++, STARS);
-            IS_LIGHT = a.getBoolean(i, IS_LIGHT);
+            IS_LIGHT = a.getBoolean(i++, IS_LIGHT);
+            FOCUS_SHAPE = a.getInt(i++, 0);
+            BACKDROP = a.getInt(i++, 0);
+            TEXT_SKEW = a.getFloat(i, 0f);
             CANVAS = BG1;
         } finally {
             a.recycle();

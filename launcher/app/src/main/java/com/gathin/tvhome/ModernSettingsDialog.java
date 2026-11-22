@@ -843,13 +843,14 @@ public final class ModernSettingsDialog {
                 addHeader(rightContent, outfit, "Appearance");
 
                 // Tenang palette (docs/REVAMP.md P7): OK cycles Auto → Malam → Senja → Embun.
-                final String palMode = Tenang.mode(activity);
+                // Tema: OK cycles Automatik → Malam → Senja → Embun → Lautan → Sorot. Choosing Lautan or Sorot
+                // keeps the Tenang palette, so coming back to a Tenang entry restores it exactly.
+                final String temaChoice = Tenang.choice(activity);
                 rightContent.addView(buildCardRow(activity, density, outfit,
-                        "🎨 Tema Tenang: " + Tenang.label(activity, palMode),
-                        Tenang.describe(activity, palMode),
+                        "🎨 Tema: " + Tenang.label(activity, temaChoice),
+                        Tenang.describe(activity, temaChoice),
                         () -> {
-                            activity.getSharedPreferences("theme_prefs", Context.MODE_PRIVATE).edit()
-                                    .putString("palette", Tenang.nextMode(palMode)).apply();
+                            Tenang.setChoice(activity, Tenang.nextChoice(temaChoice));
                             if (renderRightPane[0] != null) renderRightPane[0].run();
                         }));
                 rightContent.addView(buildSwitchRow(activity, density, outfit,

@@ -65,6 +65,8 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.Holder> {
         final String pkg;
         final Drawable banner;
         final Drawable icon;
+        /** Sorot's 32×18 backdrop, made on first focus. */
+        Bitmap art;
         /** Text under the tile when it is focused in the grid: the label, plus the caption for a card. */
         final String name;
         /** Ambient glow colour; 0 until sampled from the banner, or the card's accent from the start. */
@@ -465,6 +467,31 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.Holder> {
 
     String labelAt(int position) {
         return position >= 0 && position < items.size() ? items.get(position).label : "";
+    }
+
+    /**
+     * Sorot's backdrop for an app: its banner (or icon) drawn into a 32×18 bitmap, cached per entry (about
+     * 2 KB each). Stretched full screen with filtering, it becomes a soft field of the app's own colours.
+     */
+    Bitmap artAt(int position) {
+        if (position < 0 || position >= items.size()) return null;
+        Entry e = items.get(position);
+        if (e.art == null) {
+            Drawable live = e.banner != null ? e.banner : e.icon;
+            Bitmap bmp = Bitmap.createBitmap(32, 18, Bitmap.Config.ARGB_8888);
+            Canvas c = new Canvas(bmp);
+            c.drawColor(ambientColorAt(position));
+            if (live != null) {
+                Drawable d = live.getConstantState() != null ? live.getConstantState().newDrawable().mutate() : live;
+                Rect saved = new Rect(d.getBounds());
+                // An icon fills the middle; a banner the whole field.
+                if (e.banner != null) d.setBounds(0, 0, 32, 18); else d.setBounds(8, 1, 24, 17);
+                d.draw(c);
+                d.setBounds(saved);
+            }
+            e.art = bmp;
+        }
+        return e.art;
     }
 
     /** A vivid colour sampled from the app's banner (or icon), cached per entry; a card's accent when it set one. */

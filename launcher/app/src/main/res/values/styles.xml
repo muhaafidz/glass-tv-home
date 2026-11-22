@@ -33,6 +33,9 @@
         <item name="tnWave">#12FFFFFF</item>
         <item name="tnInk">#FFFFFFFF</item>
         <item name="tnStars">1.0</item>
+        <item name="tnFocusShape">0</item>
+        <item name="tnBackdrop">0</item>
+        <item name="tnTextSkew">0.0</item>
         <item name="tnIsLight">false</item>
     </style>
 

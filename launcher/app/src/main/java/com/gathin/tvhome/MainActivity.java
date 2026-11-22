@@ -543,7 +543,12 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         if (heroDesc != null) heroDesc.setMaxWidth(heroMaxWidth);
 
         String activeCat = getSharedPreferences("wallpaper_prefs", MODE_PRIVATE).getString("active_category", TENANG_CATEGORY);
-        if ("Custom".equalsIgnoreCase(activeCat)) {
+        if (Design.BACKDROP != 0) {
+            // Lautan and Sorot bring their own background; photos return with Tenang.
+            placesMode = false;
+            wallpapers = Collections.emptyList();
+            showAmbient(true);
+        } else if ("Custom".equalsIgnoreCase(activeCat)) {
             placesMode = false;
             File customDir = new File(getFilesDir(), "custom_wallpapers");
             File[] files = customDir.listFiles((dir, name) -> name.endsWith(".jpg") || name.endsWith(".png") || name.endsWith(".jpeg"));
@@ -606,6 +611,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             if (heroBottom > 0) v.setY(heroBottom - v.getHeight());
         });
         View homeRoot = findViewById(R.id.root);
+        LookType.apply(homeRoot);
         clockBlock = new ClockBlock(homeRoot);
         prayerUi = new PrayerBlock(homeRoot);
         statusChips = new StatusChips(homeRoot);
@@ -1504,7 +1510,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         if (paletteSwitching || appliedPalette == null || isFinishing()) return false;
         // On the minute tick, only switch while Home itself has focus: no dialog, menu or other app.
         if (!fromResume && !hasWindowFocus()) return false;
-        String due = Tenang.current(this);
+        String due = Tenang.currentKey(this);   // a look, or the Tenang palette due now
         if (due.equals(appliedPalette)) return false;
         paletteSwitching = true;
         sFadeInAfterPaletteSwitch = !reducedMotion;
@@ -1809,6 +1815,8 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     @Override
     public void onTileFocused(int position, View card) {
         if (!resuming && hasWindowFocus()) SoundEffects.playNav();
+        // Sorot: the focused app's colours fill the screen.
+        if (ambientView != null && Design.BACKDROP == 2) ambientView.setArt(adapter.artAt(position), !reducedMotion);
         lastFocused = position;
         lastFocusedKey = adapter.keyAt(position);
         // Tile rect in root coordinates, using layout positions (ignores the scale animation).

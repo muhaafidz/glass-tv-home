@@ -171,3 +171,25 @@ layers). It is a third entry in Settings → Tema next to Lautan and the Tenang 
 Glass TV; PS5 is the default in `SoundEffects`) are named after consoles. If they are the consoles' own sounds,
 they belong to Sony, Nintendo and Microsoft; before Sorot ships they should be replaced with original sounds and
 the profiles renamed (for example Lembut, Jernih, Ringkas).
+
+## 8. L1–L2: looks in the launcher (2026-11-22)
+
+Direction from the owner: Lautan and Sorot are *inspired by* those homes, not copies; the inherited sound
+profiles stay.
+
+- [x] **Switching, with a way back.** `theme_prefs` `look` (`tenang` | `lautan` | `sorot`; theme key `"look"`),
+  separate from the Tenang `palette`. Settings → Appearance → **🎨 Tema** cycles Automatik → Malam → Senja →
+  Embun → Lautan → Sorot. Choosing Lautan or Sorot keeps the palette, so any Tenang entry restores exactly the
+  old look. Home recreates with its fade when the choice changes (`Tenang.currentKey`).
+- [x] **Look tokens**: `tnFocusShape`, `tnBackdrop`, `tnTextSkew`, plus full colour sets
+  (`ThemeOverlay.Look.Lautan`, `ThemeOverlay.Look.Sorot`) applied over Malam.
+- [x] **Lautan**: water gradient (light at the top, deep at the bottom), the Corak B star lattice (one ALPHA_8
+  tile with a BitmapShader, drifting a tile every 90 s), two light shafts swaying over 26 s; the slash focus (a
+  slanted white frame with a red one offset, outlines only, no glow); the clock, period, date and greeting in
+  slanted Outfit Bold (`LookType`). Steps at 15 fps, stops with Home not in front; Lite keeps it still.
+- [x] **Sorot**: the focused app's banner drawn into a cached 32×18 bitmap (`AppAdapter.artAt`, ~2 KB per app)
+  and stretched full screen with filtering, two layers crossfading over 0.6 s, under top, bottom and side shades;
+  no ticking at all; a white focus ring. Photos return when you go back to Tenang.
+- [x] Snapshots `lookLautan` and `lookSorot`; `TenangTest` covers the Tema cycle and unknown looks. 68 tests.
+- Not yet: the layout changes (Lautan's vertical menu; Sorot's app row at the top, hero and cards). They need the
+  rest of L0 (warning chip, top buttons, app row as components) so a look can bring its own layout XML.
