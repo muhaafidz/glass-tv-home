@@ -1905,7 +1905,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         if (!resuming && hasWindowFocus()) SoundEffects.playNav();
         // Sorot: the focused app's colours fill the screen, and its name becomes the hero under the row.
         if (arrangement.appSpotlight()) {
-            if (ambientView != null) ambientView.setArt(adapter.artAt(position), !reducedMotion);
+            if (ambientView != null) ambientView.setSpot(adapter.spotColoursAt(position), !reducedMotion);
             showSorotHero(position, card);
         }
         lastFocused = position;

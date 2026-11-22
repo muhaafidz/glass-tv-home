@@ -40,7 +40,7 @@ final class AmbientView extends FrameLayout {
     /** Lautan: the drifting star lattice and two light shafts. Sorot: two app-colour layers. */
     private LatticeView lattice;
     private View shaftA, shaftB;
-    private android.widget.ImageView artFront, artBack;
+    private SpotLayer artFront, artBack;
     private final int mode;
     private static final long LATTICE_MS = 90_000, SHAFT_MS = 26_000;
     private final float density;
@@ -104,11 +104,11 @@ final class AmbientView extends FrameLayout {
             artFront = art(ctx);
             View shade = new View(ctx);
             shade.setBackground(new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,
-                    new int[]{Design.alpha(Design.BG1, 0x8C), Design.alpha(Design.BG1, 0), Design.alpha(Design.BG1, 0), Design.alpha(Design.BG1, 0xD9), Design.BG1}));
+                    new int[]{Design.alpha(Design.BG1, 0x59), Design.alpha(Design.BG1, 0), Design.alpha(Design.BG1, 0), Design.alpha(Design.BG1, 0xB3), Design.alpha(Design.BG1, 0xF2)}));
             addView(shade, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
             View side = new View(ctx);
             side.setBackground(new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT,
-                    new int[]{Design.alpha(Design.BG1, 0xBF), Design.alpha(Design.BG1, 0x26), Design.alpha(Design.BG1, 0)}));
+                    new int[]{Design.alpha(Design.BG1, 0x8C), Design.alpha(Design.BG1, 0x14), Design.alpha(Design.BG1, 0)}));
             addView(side, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         }
     }
@@ -122,26 +122,34 @@ final class AmbientView extends FrameLayout {
         return v;
     }
 
-    private android.widget.ImageView art(Context ctx) {
-        android.widget.ImageView v = new android.widget.ImageView(ctx);
-        v.setScaleType(android.widget.ImageView.ScaleType.FIT_XY);
+    private View blob(int color) {
+        View v = new View(getContext());
+        GradientDrawable g = new GradientDrawable();
+        g.setShape(GradientDrawable.OVAL);
+        g.setGradientType(GradientDrawable.RADIAL_GRADIENT);
+        g.setColors(new int[]{color, color & 0x00FFFFFF});
+        v.setBackground(g);
+        return v;
+    }
+
+    private SpotLayer art(Context ctx) {
+        SpotLayer v = new SpotLayer(ctx);
         v.setAlpha(0f);
         addView(v, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         return v;
     }
 
     /**
-     * Sorot: show an app's colours full screen. The bitmap is tiny (32×18); stretched with filtering it
-     * reads as a soft colour field. Crossfades from the previous one (opacity only).
+     * Sorot: show an app's colours full screen, {main, second} from AppAdapter.spotColoursAt. The new layer is
+     * drawn once and crossfades over 0.6 s (opacity only); nothing animates afterwards.
      */
-    void setArt(android.graphics.Bitmap tiny, boolean animate) {
-        if (mode != 2 || tiny == null) return;
-        android.widget.ImageView next = artBack;
+    void setSpot(int[] colours, boolean animate) {
+        if (mode != 2 || colours == null || colours.length < 2) return;
+        if (artFront != null && artFront.shows(colours)) return;
+        SpotLayer next = artBack;
         artBack = artFront;
         artFront = next;
-        android.graphics.drawable.BitmapDrawable d = new android.graphics.drawable.BitmapDrawable(getResources(), tiny);
-        d.setFilterBitmap(true);
-        next.setImageDrawable(d);   // both layers sit under the shades; a two-way fade needs no reordering
+        next.setColours(colours[0], colours[1]);
         next.animate().cancel();
         artBack.animate().cancel();
         if (animate) {
@@ -153,14 +161,67 @@ final class AmbientView extends FrameLayout {
         }
     }
 
-    private View blob(int color) {
-        View v = new View(getContext());
-        GradientDrawable g = new GradientDrawable();
-        g.setShape(GradientDrawable.OVAL);
-        g.setGradientType(GradientDrawable.RADIAL_GRADIENT);
-        g.setColors(new int[]{color, color & 0x00FFFFFF});
-        v.setBackground(g);
-        return v;
+    /**
+     * One Sorot colour field: a deep tint of the app's main colour at the top fading into the palette's dark
+     * base, a large soft glow of the main colour from the top right, and a smaller glow of the second colour
+     * from the left. Shaders are built when the colours or the size change; drawing is three rectangles.
+     */
+    private static final class SpotLayer extends View {
+        private final Paint base = new Paint(Paint.DITHER_FLAG), glowA = new Paint(Paint.DITHER_FLAG),
+                glowB = new Paint(Paint.DITHER_FLAG);
+        private int main, second;
+        private boolean set;
+
+        SpotLayer(Context ctx) {
+            super(ctx);
+        }
+
+        boolean shows(int[] c) {
+            return set && main == c[0] && second == c[1];
+        }
+
+        void setColours(int main, int second) {
+            this.main = main;
+            this.second = second;
+            set = true;
+            build();
+            invalidate();
+        }
+
+        @Override
+        protected void onSizeChanged(int w, int h, int ow, int oh) {
+            build();
+        }
+
+        private void build() {
+            int w = getWidth(), h = getHeight();
+            if (w == 0 || h == 0 || !set) return;
+            int top = blend(Design.BG1, main, 0.7f);
+            base.setShader(new android.graphics.LinearGradient(0, 0, 0, h,
+                    new int[]{top, blend(Design.BG1, main, 0.3f), Design.BG1}, new float[]{0f, 0.5f, 1f},
+                    android.graphics.Shader.TileMode.CLAMP));
+            glowA.setShader(new android.graphics.RadialGradient(w * 0.78f, h * 0.18f, w * 0.62f,
+                    new int[]{Design.alpha(main, 0xE6), Design.alpha(main, 0x55), Design.alpha(main, 0)}, new float[]{0f, 0.5f, 1f},
+                    android.graphics.Shader.TileMode.CLAMP));
+            glowB.setShader(new android.graphics.RadialGradient(w * 0.12f, h * 0.62f, w * 0.42f,
+                    new int[]{Design.alpha(second, 0x99), Design.alpha(second, 0x2E), Design.alpha(second, 0)}, new float[]{0f, 0.55f, 1f},
+                    android.graphics.Shader.TileMode.CLAMP));
+        }
+
+        @Override
+        protected void onDraw(Canvas c) {
+            if (!set) return;
+            c.drawRect(0, 0, getWidth(), getHeight(), base);
+            c.drawRect(0, 0, getWidth(), getHeight(), glowA);
+            c.drawRect(0, 0, getWidth(), getHeight(), glowB);
+        }
+
+        private static int blend(int from, int to, float t) {
+            int r = Math.round(((from >> 16) & 0xFF) + (((to >> 16) & 0xFF) - ((from >> 16) & 0xFF)) * t);
+            int g = Math.round(((from >> 8) & 0xFF) + (((to >> 8) & 0xFF) - ((from >> 8) & 0xFF)) * t);
+            int b = Math.round((from & 0xFF) + ((to & 0xFF) - (from & 0xFF)) * t);
+            return 0xFF000000 | (r << 16) | (g << 8) | b;
+        }
     }
 
     @Override

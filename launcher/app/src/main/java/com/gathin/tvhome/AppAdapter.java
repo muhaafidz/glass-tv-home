@@ -65,8 +65,8 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.Holder> {
         final String pkg;
         final Drawable banner;
         final Drawable icon;
-        /** Sorot's 32×18 backdrop, made on first focus. */
-        Bitmap art;
+        /** Sorot's backdrop colours {main, second}, made on first focus. */
+        int[] spot;
         /** Text under the tile when it is focused in the grid: the label, plus the caption for a card. */
         final String name;
         /** Ambient glow colour; 0 until sampled from the banner, or the card's accent from the start. */
@@ -487,28 +487,57 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.Holder> {
     }
 
     /**
-     * Sorot's backdrop for an app: its banner (or icon) drawn into a 32×18 bitmap, cached per entry (about
-     * 2 KB each). Stretched full screen with filtering, it becomes a soft field of the app's own colours.
+     * Sorot's backdrop colours for an app: {main, second}. The main colour is the vivid one sampled from the
+     * banner (ambientColorAt); the second is the most colourful pixel at least 35° of hue away from it, or the
+     * main colour turned 35° and dimmed when the banner has only one colour. Cached per entry.
      */
-    Bitmap artAt(int position) {
-        if (position < 0 || position >= items.size()) return null;
+    int[] spotColoursAt(int position) {
+        if (position < 0 || position >= items.size()) return new int[]{0xFF444444, 0xFF333333};
         Entry e = items.get(position);
-        if (e.art == null) {
-            Drawable live = e.banner != null ? e.banner : e.icon;
-            Bitmap bmp = Bitmap.createBitmap(32, 18, Bitmap.Config.ARGB_8888);
-            Canvas c = new Canvas(bmp);
-            c.drawColor(ambientColorAt(position));
-            if (live != null) {
-                Drawable d = live.getConstantState() != null ? live.getConstantState().newDrawable().mutate() : live;
-                Rect saved = new Rect(d.getBounds());
-                // An icon fills the middle; a banner the whole field.
-                if (e.banner != null) d.setBounds(0, 0, 32, 18); else d.setBounds(8, 1, 24, 17);
-                d.draw(c);
-                d.setBounds(saved);
-            }
-            e.art = bmp;
+        if (e.spot == null) {
+            int main = ambientColorAt(position);
+            e.spot = new int[]{main, secondColor(e.banner != null ? e.banner : e.icon, main)};
         }
-        return e.art;
+        return e.spot;
+    }
+
+    static int secondColor(Drawable live, int main) {
+        float[] m = new float[3], hsv = new float[3];
+        Color.colorToHSV(main, m);
+        int best = 0;
+        float bestScore = 0.2f;
+        if (live != null) {
+            Drawable d = live.getConstantState() != null ? live.getConstantState().newDrawable().mutate() : live;
+            Rect saved = new Rect(d.getBounds());
+            int n = 12;
+            Bitmap bmp = Bitmap.createBitmap(n, n, Bitmap.Config.ARGB_8888);
+            d.setBounds(0, 0, n, n);
+            d.draw(new Canvas(bmp));
+            d.setBounds(saved);
+            for (int y = 0; y < n; y++) {
+                for (int x = 0; x < n; x++) {
+                    int px = bmp.getPixel(x, y);
+                    Color.colorToHSV(px, hsv);
+                    float dh = Math.abs(hsv[0] - m[0]);
+                    if (Math.min(dh, 360f - dh) < 35f) continue;
+                    float score = hsv[1] * Math.min(1f, hsv[2] * 1.4f);
+                    if (score > bestScore) {
+                        bestScore = score;
+                        best = px;
+                    }
+                }
+            }
+            bmp.recycle();
+        }
+        if (best != 0) {
+            Color.colorToHSV(best, hsv);
+            hsv[2] = Math.max(0.45f, hsv[2]);
+            return Color.HSVToColor(hsv);
+        }
+        m[0] = (m[0] + 35f) % 360f;
+        m[1] = m[1] * 0.8f;
+        m[2] = m[2] * 0.75f;
+        return Color.HSVToColor(m);
     }
 
     /** A vivid colour sampled from the app's banner (or icon), cached per entry; a card's accent when it set one. */
