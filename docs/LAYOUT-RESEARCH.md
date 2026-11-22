@@ -149,3 +149,25 @@ rotation and translation only, on the shared 15 fps tick. Lite shows them still.
 
 **Chosen (2026-11-22): Corak B**, the drifting 8-point-star lattice alone. The medallion stays in the mockup as
 Corak A but is not planned for the launcher: one tiled `ALPHA_8` image, translated at 15 fps.
+
+## 7. Next look: Sorot (console-style home), mockup only
+
+[preview/sorot.html](../preview/sorot.html). The mechanics of a console home in an original design (no console
+maker's logos, fonts, icons or sounds): one row of apps at the top; the focused app grows, shows its name, and
+takes over the screen with its own colours and a big hero ("Buka" and "⋯"); the launcher's widgets (next
+prayer, weather and IPU, MET warning, daily ayah) become cards along the bottom. Left/Right move along a row,
+Down goes row → hero buttons → cards.
+
+**Light on a 1 GB TV.** The full-screen "art" is the focused app's own banner shrunk to 32×18 px and stretched
+across the screen; the GPU's bilinear smoothing turns it into a soft colour field, so there is no blur and no
+large decode (about 2 KB per layer). Changing app crossfades two such layers (opacity only, 0.6 s) and slides
+the hero 24 px. Lite switches instantly.
+
+**On the shared base (L0).** Reuses `PrayerBlock`, `StatusChips`, `AyahBlock` and `ClockBlock` in card-shaped
+layouts, the app row (the existing `AppAdapter`, one row), and one new piece, the `HeroBackdrop` (two 32×18
+layers). It is a third entry in Settings → Tema next to Lautan and the Tenang palettes.
+
+**Flag: the inherited sound profiles.** `res/raw/ps5_*.wav`, `switch_*.wav` and `xbox_*.wav` (from upstream
+Glass TV; PS5 is the default in `SoundEffects`) are named after consoles. If they are the consoles' own sounds,
+they belong to Sony, Nintendo and Microsoft; before Sorot ships they should be replaced with original sounds and
+the profiles renamed (for example Lembut, Jernih, Ringkas).
