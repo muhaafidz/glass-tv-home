@@ -57,6 +57,15 @@ button:focus{outline:none}
 .shard{position:absolute;width:26px;height:46px;background:var(--foam);opacity:.18;transform:skewX(var(--skew)) rotate(18deg);pointer-events:none;animation:drift 14s ease-in-out infinite alternate}
 .shard.pink{background:var(--slash);opacity:.22}
 @keyframes drift{to{transform:skewX(var(--skew)) rotate(30deg) translateY(-40px);opacity:.06}}
+.chara{position:absolute;left:640px;top:-60px;width:640px;height:960px;pointer-events:none;--chara:rgba(150,225,255,.26);--cut:rgba(220,250,255,.85);
+  animation:bob 6s ease-in-out infinite alternate;transform-origin:50% 30%}
+.chara svg{width:100%;height:100%;overflow:visible}
+.chara .fill{fill:var(--chara)}
+.chara .cut{fill:none;stroke:var(--cut);stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
+.chara .glow{fill:none;stroke:rgba(180,240,255,.55);stroke-width:6}
+.chara[hidden]{display:none}
+@keyframes bob{from{transform:translateY(0) rotate(-1.5deg)}to{transform:translateY(16px) rotate(1.5deg)}}
+.stage.lite .chara{animation:none}
 .vignette{position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(2,13,51,.55),transparent 45%)}
 
 /* ---------- entrance ---------- */
@@ -165,6 +174,51 @@ button:focus{outline:none}
   <div class="shard pink" style="left:1350px;top:560px;animation-delay:-4s"></div>
   <div class="shard" style="left:760px;top:120px;animation-delay:-7s"></div>
   <div class="shard pink" style="left:540px;top:380px;animation-delay:-2s;width:16px;height:30px"></div>
+  <!-- Original silhouette characters (choose one). Flat palette-tinted shapes with light cut-lines;
+       on the TV this is one ALPHA_8 image tinted by the theme (docs/LAYOUT-RESEARCH.md §1). -->
+  <div class="chara" id="chara" data-c="a">
+    <svg viewBox="0 0 600 900" aria-hidden="true">
+      <!-- A: Pelajar — a student in a songkok, head tilted back, eyes closed, drifting -->
+      <g id="chA" transform="rotate(-14 300 450)">
+        <path class="glow" d="M60,900 C80,700 170,610 300,600 C430,610 520,700 540,900"/>
+        <path class="fill" d="M60,900 C80,700 170,610 300,600 C430,610 520,700 540,900 Z"/>
+        <path class="fill" d="M250,500 L350,500 L362,625 L238,625 Z"/>
+        <ellipse class="fill" cx="300" cy="365" rx="118" ry="142"/>
+        <ellipse class="fill" cx="184" cy="380" rx="18" ry="30"/><ellipse class="fill" cx="416" cy="380" rx="18" ry="30"/>
+        <path class="fill" d="M178,272 L188,178 Q300,146 412,178 L422,272 Q300,250 178,272 Z"/>
+        <path class="fill" d="M182,268 Q166,322 186,366 L204,296 Z"/><path class="fill" d="M418,268 Q434,322 414,366 L396,296 Z"/>
+        <path class="cut" d="M186,254 Q300,232 414,254"/>
+        <path class="cut" d="M238,382 Q257,393 276,382"/><path class="cut" d="M324,382 Q343,393 362,382"/>
+        <path class="cut" d="M282,452 Q300,460 318,452"/>
+        <path class="cut" d="M238,625 L300,712 L362,625"/><path class="cut" d="M300,712 L300,900"/>
+        <path class="cut" d="M150,700 C190,690 220,700 240,730"/><path class="cut" d="M450,700 C410,690 380,700 360,730"/>
+      </g>
+      <!-- B: Tudung — a girl in a flowing tudung, eyes closed, the cloth drifting in the water -->
+      <g id="chB" transform="rotate(10 300 450)">
+        <path class="fill" d="M90,900 C110,800 190,760 300,770 C410,760 490,800 510,900 Z"/>
+        <path class="glow" d="M300,186 C166,186 138,330 158,452 C174,560 118,642 66,762 C140,742 200,762 300,782 C400,762 460,742 534,762 C482,642 426,560 442,452 C462,330 434,186 300,186 Z"/>
+        <path class="fill" d="M300,186 C166,186 138,330 158,452 C174,560 118,642 66,762 C140,742 200,762 300,782 C400,762 460,742 534,762 C482,642 426,560 442,452 C462,330 434,186 300,186 Z"/>
+        <path class="fill" d="M470,640 C540,660 580,720 640,700 C600,770 520,760 480,712 Z"/>
+        <path class="cut" d="M300,282 C238,282 214,330 214,392 C214,462 252,504 300,504 C348,504 386,462 386,392 C386,330 362,282 300,282 Z"/>
+        <path class="cut" d="M246,392 Q264,402 282,392"/><path class="cut" d="M318,392 Q336,402 354,392"/>
+        <path class="cut" d="M284,458 Q300,466 316,458"/>
+        <path class="cut" d="M170,560 C220,600 260,640 300,700 C340,640 380,600 430,560"/>
+        <path class="cut" d="M520,700 C560,712 590,712 620,704"/>
+      </g>
+      <!-- C: Pekaka — a kingfisher diving, the family-friendly mascot option -->
+      <g id="chC" transform="translate(0 80)">
+        <path class="glow" d="M480,250 L640,140 L506,322"/>
+        <ellipse class="fill" cx="300" cy="430" rx="160" ry="92" transform="rotate(-38 300 430)"/>
+        <circle class="fill" cx="430" cy="300" r="78"/>
+        <path class="fill" d="M474,250 L640,140 L506,322 Z"/>
+        <path class="fill" d="M268,416 C184,296 120,240 30,226 C104,316 146,402 226,478 Z"/>
+        <path class="fill" d="M196,518 L104,652 L168,628 L146,716 L240,560 Z"/>
+        <circle class="cut" cx="448" cy="290" r="11"/>
+        <path class="cut" d="M90,262 C150,300 196,350 236,420"/><path class="cut" d="M60,246 C130,300 170,360 214,440"/>
+        <path class="cut" d="M380,350 C340,420 300,470 240,520"/>
+      </g>
+    </svg>
+  </div>
   <div class="vignette"></div>
 
   <div class="clock in"><div class="time" id="time">12:12</div></div>
@@ -220,6 +274,10 @@ button:focus{outline:none}
 <div class="tools" aria-label="Preview controls">
   <button id="openMenu">Menu (M)</button>
   <button id="openTema">Tema (T)</button>
+  <button data-c="a" aria-pressed="true">Watak A</button>
+  <button data-c="b" aria-pressed="false">Watak B</button>
+  <button data-c="c" aria-pressed="false">Watak C</button>
+  <button data-c="none" aria-pressed="false">Tiada</button>
   <button id="lite" aria-pressed="false">Lite</button>
   <a href="tenang.html"><button>Tenang ↗</button></a>
 </div>
@@ -307,6 +365,15 @@ button:focus{outline:none}
     document.getElementById('date').textContent=days[d.getDay()]+' '+d.getDate()+' '+mon[d.getMonth()];
     document.getElementById('greet').textContent=h<5?'SELAMAT MALAM':h<12?'SELAMAT PAGI':h<14?'SELAMAT TENGAH HARI':h<19?'SELAMAT PETANG':'SELAMAT MALAM';}
   if(!/static/.test(location.search)){tick();setInterval(tick,10000);}
+  // Character switch (preview only): show one of the three originals, or none.
+  var chara=document.getElementById('chara');
+  function showChara(c){
+    chara.hidden=(c==='none');
+    ['a','b','c'].forEach(function(k){document.getElementById('ch'+k.toUpperCase()).style.display=(k===c)?'':'none';});
+    document.querySelectorAll('.tools [data-c]').forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.c===c));});
+  }
+  document.querySelectorAll('.tools [data-c]').forEach(function(b){b.onclick=function(){showChara(b.dataset.c);};});
+  showChara((location.search.match(/chara=(\w+)/)||[])[1]||'a');
   focusApp(0);
   if(/menu=tema/.test(location.search))openMenu('tema');else if(/menu/.test(location.search))openMenu('main');
 })();
