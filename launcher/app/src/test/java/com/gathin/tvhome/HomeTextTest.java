@@ -27,6 +27,30 @@ public class HomeTextTest {
     }
 
     @Test
+    public void specialDaysComeBeforeTheTimeOfDayGreeting() {
+        // Calendar.DAY_OF_WEEK: Friday = 6, Monday = 2.
+        assertEquals("Jumaat Mubarak", HomeText.greeting("ms", 9, 6, 3, 14));
+        assertEquals("Selamat pagi", HomeText.greeting("ms", 9, 2, 3, 14));
+        assertEquals("Selamat malam", HomeText.greeting("ms", 21, 6, 3, 14));   // Friday night is back to normal
+        assertEquals("Selamat berpuasa", HomeText.greeting("ms", 9, 2, 9, 5));
+        assertEquals("Ramadan Kareem", HomeText.greeting("en", 9, 2, 9, 5));
+        assertEquals("Selamat Hari Raya", HomeText.greeting("ms", 9, 6, 10, 1));   // Raya beats Friday
+        assertEquals("Selamat Hari Raya Haji", HomeText.greeting("ms", 9, 2, 12, 10));
+        assertEquals("Selamat pagi", HomeText.greeting("ms", 9, 2, 0, 0));   // unknown Hijri date
+        assertEquals("Jumat Berkah", HomeText.greeting("id", 12, 6, 1, 1));
+    }
+
+    @Test
+    public void arrivedPrayerIsFoundOnceInItsWindow() {
+        assertEquals(0, HomeText.arrivedPrayer(T, T[0] + 20_000, 90_000));
+        assertEquals(-1, HomeText.arrivedPrayer(T, T[0] - 1_000, 90_000));
+        assertEquals(-1, HomeText.arrivedPrayer(T, T[0] + 90_000, 90_000));
+        assertEquals(-1, HomeText.arrivedPrayer(T, T[1] + 10_000, 90_000));   // Syuruk is not a prayer
+        assertEquals(5, HomeText.arrivedPrayer(T, T[5] + 60_000, 90_000));
+        assertEquals(-1, HomeText.arrivedPrayer(null, 0, 90_000));
+    }
+
+    @Test
     public void dateInEachLanguage() {
         assertEquals("16 Nov 2026", HomeText.date("ms", 16, 10, 2026));
         assertEquals("1 Ogo 2026", HomeText.date("ms", 1, 7, 2026));

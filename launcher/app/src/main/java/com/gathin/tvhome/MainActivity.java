@@ -347,6 +347,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             checkInactivity();
             handler.postDelayed(this, MINUTE_MS);
             paletteCheck(false);
+            prayerMoment();
         }
     };
 
@@ -1391,6 +1392,30 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
                     .setInterpolator(new android.view.animation.PathInterpolator(0.2f, 0.8f, 0.2f, 1f)).start();
         } else {
             hero.setAlpha(1f);
+        }
+    }
+
+    /** Epoch ms of the prayer already celebrated, so each arrival pulses once. */
+    private long lastMomentAt;
+
+    /**
+     * When a prayer time arrives while Home is in front: its cell lifts and glows once, and in Lautan the star
+     * lattice glows too. Once per prayer; skipped with animations off.
+     */
+    private void prayerMoment() {
+        if (!isAnimationsEnabled() || screensaverActive || !hasWindowFocus() || prayerUi == null) return;
+        long[] t = PrayerTimes.todayTimes(this);
+        long now = System.currentTimeMillis();
+        int i = HomeText.arrivedPrayer(t, now, 90_000);
+        if (i < 0 || t[i] == lastMomentAt) return;
+        lastMomentAt = t[i];
+        prayerUi.pulse(i);
+        if (ambientView != null) ambientView.moment();
+        TextView strip = findViewById(R.id.prayerStrip);
+        if (strip != null && strip.getVisibility() == View.VISIBLE) {   // Sorot's strip lifts a little instead
+            strip.animate().cancel();
+            strip.animate().scaleX(1.03f).scaleY(1.03f).setDuration(700).withEndAction(
+                    () -> strip.animate().scaleX(1f).scaleY(1f).setDuration(1500).start()).start();
         }
     }
 
@@ -3462,7 +3487,10 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         String lang = AppLanguage.getLanguage(this);
         String dateStr = HomeText.date(lang, day, month, year);
 
-        if (clockBlock != null) clockBlock.set(period, dateStr, HomeText.greeting(lang, hour) + " \u2726");
+        if (clockBlock != null) {
+            int[] hijri = PrayerTimes.hijriParts();
+            clockBlock.set(period, dateStr, HomeText.greeting(lang, hour, cal.get(Calendar.DAY_OF_WEEK), hijri[1], hijri[0]) + " \u2726");
+        }
     }
 
     /** Shows the Wi-Fi network name on the button when we can read it, otherwise the connection type. */

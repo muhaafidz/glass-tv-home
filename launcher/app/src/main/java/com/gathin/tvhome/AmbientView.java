@@ -139,6 +139,11 @@ final class AmbientView extends FrameLayout {
         return v;
     }
 
+    /** A moment (a prayer arriving): in Lautan the star lattice glows once; the other looks have nothing to glow. */
+    void moment() {
+        if (lattice != null) lattice.glow();
+    }
+
     /**
      * Sorot: show an app's colours full screen, {main, second} from AppAdapter.spotColoursAt. The new layer is
      * drawn once and crossfades over 0.6 s (opacity only); nothing animates afterwards.
@@ -367,6 +372,7 @@ final class AmbientView extends FrameLayout {
     private final class LatticeView extends View {
         private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
         private final int tile;
+        private float base;
 
         LatticeView(Context ctx) {
             super(ctx);
@@ -394,11 +400,19 @@ final class AmbientView extends FrameLayout {
             c.drawCircle(cx, cx, r * .45f, line);
             paint.setShader(new android.graphics.BitmapShader(b, android.graphics.Shader.TileMode.REPEAT, android.graphics.Shader.TileMode.REPEAT));
             paint.setColor(Design.WAVE | 0xFF000000);
-            setAlpha(((Design.WAVE >>> 24) & 0xFF) / 255f);
+            base = ((Design.WAVE >>> 24) & 0xFF) / 255f;
+            setAlpha(base);
         }
 
         int tile() {
             return tile;
+        }
+
+        /** One slow glow: the lattice brightens to three times its alpha over 0.9 s and settles over 1.6 s. */
+        void glow() {
+            animate().cancel();
+            animate().alpha(Math.min(1f, base * 3f)).setDuration(900)
+                    .withEndAction(() -> animate().alpha(base).setDuration(1600).start()).start();
         }
 
         @Override

@@ -32,6 +32,32 @@ final class HomeText {
         return "Selamat malam";
     }
 
+    /**
+     * The greeting, with special days first: Raya (Syawal 1-3), Aidiladha (Zulhijjah 10-12), Ramadan, then
+     * Friday; otherwise the time-of-day greeting. dayOfWeek is Calendar.DAY_OF_WEEK (Friday = 6); hijriMonth 0 means unknown.
+     */
+    static String greeting(String lang, int hour, int dayOfWeek, int hijriMonth, int hijriDay) {
+        boolean en = AppLanguage.LANG_EN.equals(lang), id = AppLanguage.LANG_ID.equals(lang);
+        if (hijriMonth == 10 && hijriDay >= 1 && hijriDay <= 3) return en ? "Eid Mubarak" : id ? "Selamat Idul Fitri" : "Selamat Hari Raya";
+        if (hijriMonth == 12 && hijriDay >= 10 && hijriDay <= 12) return en ? "Eid al-Adha Mubarak" : id ? "Selamat Idul Adha" : "Selamat Hari Raya Haji";
+        if (hijriMonth == 9) return en ? "Ramadan Kareem" : "Selamat berpuasa";
+        if (dayOfWeek == 6 && hour >= 5 && hour < 19) return en ? "Jumu'ah Mubarak" : id ? "Jumat Berkah" : "Jumaat Mubarak";
+        return greeting(lang, hour);
+    }
+
+    /**
+     * The prayer that arrived within the last {@code windowMs} (Subuh, Zohor, Asar, Maghrib, Isyak; Syuruk is a
+     * time, not a prayer), as its index, or -1. Home pulses that prayer's cell once.
+     */
+    static int arrivedPrayer(long[] times, long now, long windowMs) {
+        if (times == null || times.length < 6) return -1;
+        for (int i = 0; i < 6; i++) {
+            if (i == SYURUK) continue;
+            if (now >= times[i] && now - times[i] < windowMs) return i;
+        }
+        return -1;
+    }
+
     /** "16 Nov 2026" with the month in the language's short form. */
     static String date(String lang, int day, int month, int year) {
         String[] m;
