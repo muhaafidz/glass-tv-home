@@ -164,6 +164,33 @@ button:focus{outline:none}
 .wipe{position:absolute;inset:0 -300px;z-index:30;background:var(--slash);transform:translateX(-120%) skewX(var(--skew));pointer-events:none}
 .wipe.go{transition:transform .38s var(--ease);transform:translateX(0) skewX(var(--skew))}
 
+
+/* ---------- Lautan v2: list on the left, Islamic and weather column on the right ---------- */
+.applist{position:absolute;left:60px;top:40px;width:640px;height:830px}
+.applist .ttl{font-weight:700;font-size:20px;letter-spacing:6px;color:var(--muted);transform:skewX(var(--skew));margin-left:28px}
+.applist .viewport{position:absolute;left:0;right:-60px;top:46px;bottom:0;overflow:hidden;
+  -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 6%,#000 88%,transparent 100%);mask-image:linear-gradient(180deg,transparent 0,#000 6%,#000 88%,transparent 100%)}
+.track{position:absolute;left:0;top:0;padding:18px 0 0 24px;transition:transform .35s var(--ease)}
+.li{position:relative;display:flex;align-items:center;gap:22px;height:84px;font-weight:700;font-size:58px;letter-spacing:-1.5px;color:var(--foam);white-space:nowrap;
+  transform:translateX(var(--x,0)) rotate(var(--r,-3deg)) skewX(var(--skew));transition:color .15s,transform .3s var(--ease)}
+.li .chip{flex:none;width:72px;height:42px;border-radius:6px;display:grid;place-items:center;font-size:16px;letter-spacing:0;background:var(--c);color:var(--cf,#fff);transform:skewX(12deg)}
+.li::before{content:"";position:absolute;left:-24px;right:-36px;top:12px;bottom:8px;z-index:-1;background:#fff;box-shadow:14px 0 0 var(--slash);transform:scaleX(0);transform-origin:left;transition:transform .18s var(--ease)}
+.li.is-focus{color:#0b0f1e}
+.li.is-focus::before{transform:scaleX(1)}
+.li.sep{margin-top:18px}
+.stage .clock{left:auto;right:70px;top:30px}
+.stage .time{font-size:150px;text-align:right}
+.stage .datebox{left:830px;top:52px}
+.stage .greet{left:850px;top:140px;font-size:22px}
+.stage .status{right:70px;top:208px;flex-direction:row;flex-wrap:wrap;justify-content:flex-end;width:720px;gap:12px}
+.stage .stat{height:50px;font-size:20px}
+.stage .solat{left:auto;right:70px;top:340px;width:720px}
+.stage .next .n,.stage .next .t{font-size:50px}
+.stage .next{height:84px}
+.stage .ayah{right:70px;top:600px;width:720px;padding:18px 30px 18px 36px}
+.stage .ayah .ar{font-size:26px;margin:4px 0 10px;line-height:1.5}
+.stage .ayah .tr{font-size:17px}
+
 /* ---------- Lite tier ---------- */
 .stage.lite .ripple,.stage.lite .shaft,.stage.lite .shard,.stage.lite .dot{animation:none!important}
 .stage.lite .in,.stage.lite .rise{animation:none}
@@ -198,16 +225,21 @@ button:focus{outline:none}
   </div>
   <div class="vignette"></div>
 
+  <!-- Left: apps and menu entries in one slanted vertical list that scrolls. -->
+  <div class="applist" id="applist">
+    <div class="ttl in">APLIKASI</div>
+    <div class="viewport"><div class="track" id="track"></div></div>
+  </div>
+
+  <!-- Right: time, then everything Islamic and the weather, top to bottom. -->
   <div class="clock in"><div class="time" id="time">12:12</div></div>
   <div class="datebox in d1"><b id="date">SABTU 22 NOV</b><small id="hijri">1 Jamadilakhir 1448H</small></div>
   <div class="greet in d1" id="greet">SELAMAT TENGAH HARI</div>
-
   <div class="status">
     <div class="stat in d1"><b>31°</b> Cerah berawan</div>
-    <div class="stat in d2"><span class="dot" style="color:var(--good)"></span>IPU <b>48</b> Baik <span class="bar"><i></i></span></div>
-    <div class="stat warn in d3"><span class="dot"></span><span>Amaran Ribut Petir · Selangor, W.P. Kuala Lumpur</span></div>
+    <div class="stat in d2"><span class="dot" style="color:var(--good)"></span>IPU <b>48</b> Baik</div>
+    <div class="stat warn in d3"><span class="dot"></span><span>Amaran Ribut Petir · Selangor</span></div>
   </div>
-
   <section class="solat">
     <div class="head in d2">WAKTU SOLAT · SHAH ALAM</div>
     <div class="next rise d3"><span class="n">ASAR</span><span class="t">16:22</span><span class="in2">dalam 3j 40m</span></div>
@@ -219,23 +251,12 @@ button:focus{outline:none}
       <div><small>ISYAK</small><b>20:13</b></div>
     </div>
   </section>
-
   <section class="ayah in d4">
     <div class="k">DOA HARIAN · AL-BAQARAH 2:201</div>
     <p class="ar" dir="rtl" lang="ar">رَبَّنَآ ءَاتِنَا فِى ٱلدُّنْيَا حَسَنَةً وَفِى ٱلْءَاخِرَةِ حَسَنَةً وَقِنَا عَذَابَ ٱلنَّارِ</p>
     <p class="tr">"Wahai Tuhan kami, berilah kami kebaikan di dunia dan kebaikan di akhirat, dan peliharalah kami dari azab neraka."</p>
   </section>
-
-  <!-- Stand-ins for app banners; on the TV these are the apps' own banner images. -->
-  <nav class="dock">
-    <button class="app rise d3" data-row="dock" data-name="YouTube" style="--bnr:#f4f4f4;--bnrText:#e00"><span class="banner">▶ YouTube</span></button>
-    <button class="app rise d3" data-row="dock" data-name="Netflix" style="--bnr:#fff;--bnrText:#e50914"><span class="banner">NETFLIX</span></button>
-    <button class="app rise d4" data-row="dock" data-name="HBO Max" style="--bnr:linear-gradient(135deg,#1b0b3a,#3d1a7a)"><span class="banner">HBO max</span></button>
-    <button class="app rise d4" data-row="dock" data-name="Media Player" style="--bnr:#6c63ff"><span class="banner">MEDIA</span></button>
-    <button class="app rise d5" data-row="dock" data-name="Cast" style="--bnr:#22b573"><span class="banner">Cast</span></button>
-  </nav>
-  <div class="label" id="label">YOUTUBE</div>
-  <div class="hints" id="homeHints"><span><kbd>OK</kbd>Buka</span><span><kbd>☰</kbd>Menu</span></div>
+  <div class="hints" id="homeHints"><span><kbd>▲▼</kbd>Pilih</span><span><kbd>OK</kbd>Buka</span><span><kbd>☰</kbd>Menu</span></div>
 
   <!-- Menu: Home's settings and shortcuts as stacked slanted words. -->
   <div class="menu" id="menu">
@@ -264,10 +285,20 @@ button:focus{outline:none}
   function fit(){stage.style.transform='scale('+Math.min(innerWidth/1600,innerHeight/900)+')';}
   addEventListener('resize',fit);fit();
 
-  // ---- Home: the dock row (the rest of Home is the same as Tenang's focus model) ----
-  var apps=[].slice.call(document.querySelectorAll('.app')),A=0,label=document.getElementById('label');
-  function focusApp(i){apps.forEach(function(a){a.classList.remove('is-focus');});A=Math.max(0,Math.min(i,apps.length-1));apps[A].classList.add('is-focus');label.textContent=apps[A].dataset.name.toUpperCase();}
-  apps.forEach(function(a,i){a.addEventListener('click',function(){focusApp(i);});});
+  // ---- Home: one slanted vertical list (apps, then shortcuts); it scrolls to keep the focus in view ----
+  var LIST=[
+    ['YouTube','#f4f4f4','#e00','▶'],['Netflix','#000','#e50914','N'],['HBO Max','#2b1460','#fff','max'],
+    ['Media Player','#6c63ff','#fff','▶'],['Live TV','#1f8f5b','#fff','TV'],['Spotify','#111','#1db954','♫'],['Cast','#22b573','#fff','⌁'],
+    ['INPUT','rgba(255,255,255,.12)','#fff','⇄',1],['CUACA','rgba(255,255,255,.12)','#fff','☁'],['TEMA','rgba(255,255,255,.12)','#fff','◐','tema'],['TETAPAN','rgba(255,255,255,.12)','#fff','⚙','main']];
+  var track=document.getElementById('track'),A=0;
+  LIST.forEach(function(it,i){var b=document.createElement('button');b.className='li'+(it[4]===1?' sep':'');
+    b.style.setProperty('--r',[-3,-2,-4,-1,-3,-2,-4,-1,-3,-2,-4][i]+'deg');b.style.setProperty('--x',[0,22,8,34,12,28,4,18,30,10,24][i]+'px');
+    b.innerHTML='<span class="chip" style="--c:'+it[1]+';--cf:'+it[2]+'">'+it[3]+'</span>'+(i<7?it[0]:it[0]);
+    b.addEventListener('click',function(){focusApp(i);});track.appendChild(b);});
+  var items=[].slice.call(track.children);
+  function focusApp(i){A=Math.max(0,Math.min(i,items.length-1));items.forEach(function(e){e.classList.remove('is-focus');});items[A].classList.add('is-focus');
+    var y=Math.max(0,items[A].offsetTop-84*2);track.style.transform='translateY('+(-y)+'px)';}
+  function openItem(){var it=LIST[A];if(it[4]==='tema'){openMenu('tema');}else if(it[4]==='main'){openMenu('main');}}
 
   // ---- Menus: the same model as the launcher's Settings and Inputs ----
   var MENUS={
@@ -326,7 +357,8 @@ button:focus{outline:none}
       else if(k==='Enter'||k===' ')choose();else if(k==='Escape'||k==='Backspace'||k==='ArrowLeft')back();
       else return;
     }else{
-      if(k==='ArrowLeft')focusApp(A-1);else if(k==='ArrowRight')focusApp(A+1);
+      if(k==='ArrowUp')focusApp(A-1);else if(k==='ArrowDown')focusApp(A+1);
+      else if(k==='Enter'||k===' ')openItem();
       else if(k==='m'||k==='M'||k==='ContextMenu')openMenu('main');
       else if(k==='t'||k==='T')openMenu('tema');
       else return;

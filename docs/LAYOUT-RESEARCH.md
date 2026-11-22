@@ -208,3 +208,19 @@ profiles stay.
   fourth look; they are no longer blocking these two.
 - Needs a real TV: D-pad paths in Sorot (Up from the app row to the chips and top buttons, Down into the
   grid), the Lautan menu's focus order, and the gfxinfo budget for both backdrops.
+
+## 10. Revised placement (2026-11-22, mockups only)
+
+Owner's direction: the Islamic content (prayer times, ayah) is not placed at the bottom of the screen; it
+belongs at the top or on the right.
+
+- **Lautan** ([preview/lautan.html](../preview/lautan.html)): the left side is one slanted vertical list that
+  scrolls (the apps, then INPUT, CUACA, TEMA, TETAPAN), the focused entry on the slash; the right side, top
+  to bottom: the clock and date, weather/IPU/warning chips, prayer times (next one on the slash bar), the ayah.
+  ▲▼ moves, OK opens, ☰ still opens the full menu.
+- **Sorot** ([preview/sorot.html](../preview/sorot.html)): a prayer strip right under the top bar (next prayer
+  and countdown, the others, Hijri date and zone), the app row, the hero on the left with the ayah card beside it
+  on the right, and only weather, air quality and MET warning cards along the bottom.
+- In the launcher this replaces §9's arrangements: Lautan needs a one-column app list (a list item layout for
+  the existing adapter) and the rail moved to a right column; Sorot moves the prayer card into a one-line strip
+  under the top bar and the ayah card to the right of the hero.

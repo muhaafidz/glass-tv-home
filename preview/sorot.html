@@ -19,6 +19,7 @@
 @font-face{font-family:Outfit;font-weight:300;src:url("../launcher/app/src/main/res/font/outfit_light.ttf") format("truetype")}
 @font-face{font-family:Outfit;font-weight:400;src:url("../launcher/app/src/main/res/font/outfit_regular.ttf") format("truetype")}
 @font-face{font-family:Outfit;font-weight:500;src:url("../launcher/app/src/main/res/font/outfit_medium.ttf") format("truetype")}
+@font-face{font-family:"Amiri Quran";src:url("../launcher/app/src/main/res/font/amiri_quran.ttf") format("truetype")}
 @font-face{font-family:Outfit;font-weight:700;src:url("../launcher/app/src/main/res/font/outfit_bold.ttf") format("truetype")}
 
 .stage{--ink:#fff;--muted:rgba(255,255,255,.62);--glass:rgba(255,255,255,.1);--line:rgba(255,255,255,.18);--ease:cubic-bezier(.2,.8,.2,1)}
@@ -48,7 +49,7 @@ button:focus{outline:none}
 .top .time{font-size:26px;font-weight:500;letter-spacing:.5px}
 
 /* ---------- the app row ---------- */
-.row{position:absolute;left:80px;top:120px;display:flex;align-items:flex-start;gap:18px}
+.row{position:absolute;left:80px;top:196px;display:flex;align-items:flex-start;gap:18px}
 .app{position:relative;width:116px;height:116px;border-radius:22px;flex:none;transition:width .35s var(--ease),height .35s var(--ease);overflow:visible}
 .app .face{position:absolute;inset:0;border-radius:inherit;display:grid;place-items:center;font-weight:700;font-size:20px;background:var(--bnr);color:var(--bnrText,#fff);overflow:hidden;
   box-shadow:0 10px 30px rgba(0,0,0,.35);transition:box-shadow .3s}
@@ -60,9 +61,9 @@ button:focus{outline:none}
 .app + .app{transition:margin .35s var(--ease)}
 
 /* ---------- hero: what the focused app is ---------- */
-.hero{position:absolute;left:80px;top:400px;width:760px;transition:opacity .3s,transform .4s var(--ease)}
+.hero{position:absolute;left:80px;top:440px;width:760px;transition:opacity .3s,transform .4s var(--ease)}
 .hero.swap{opacity:0;transform:translateY(24px)}
-.hero .logo{font-size:88px;font-weight:700;letter-spacing:-2px;line-height:1}
+.hero .logo{font-size:80px;font-weight:700;letter-spacing:-2px;line-height:1}
 .hero p{margin-top:18px;font-size:24px;font-weight:300;color:var(--muted);max-width:640px;line-height:1.35}
 .actions{display:flex;gap:16px;margin-top:30px}
 .btn{height:64px;padding:0 44px;border-radius:32px;font-size:24px;font-weight:500;background:var(--glass);border:1px solid var(--line);transition:transform .25s var(--ease),background .2s,color .2s}
@@ -70,8 +71,25 @@ button:focus{outline:none}
 .btn.round{width:64px;padding:0;display:grid;place-items:center;font-size:28px}
 .btn.is-focus{transform:scale(1.06);box-shadow:0 0 0 4px rgba(255,255,255,.9)}
 
+/* ---------- prayer strip: right under the top bar ---------- */
+.strip{position:absolute;left:80px;right:80px;top:112px;height:58px;display:flex;align-items:center;gap:26px;padding:0 26px;border-radius:29px;
+  background:rgba(255,255,255,.1);border:1px solid var(--line);font-size:20px;white-space:nowrap}
+.strip .nx{display:flex;align-items:center;gap:12px;font-weight:500}
+.strip .nx b{font-size:26px;font-weight:700}
+.strip .nx i{font-style:normal;color:#05070d;background:#fff;border-radius:14px;padding:3px 12px;font-size:16px;font-weight:700}
+.strip .t{color:var(--muted)}.strip .t b{color:#fff;font-weight:500;margin-left:6px}
+.strip .t.past{opacity:.5}
+.strip .sp{flex:1}
+.strip .hj{color:var(--muted)}
+/* ---------- ayah: a card on the right, beside the hero ---------- */
+.ayahcard{position:absolute;right:80px;top:440px;width:560px;padding:22px 28px;border-radius:22px;background:rgba(5,7,13,.45);border:1px solid var(--line)}
+.ayahcard small{display:block;font-size:15px;letter-spacing:2px;font-weight:500;color:var(--muted)}
+.ayahcard .ar{font-family:"Amiri Quran",serif;font-size:28px;line-height:1.55;text-align:right;color:#f1d3a1;margin:8px 0 6px}
+.ayahcard p{font-size:18px;font-weight:300;line-height:1.4;color:rgba(255,255,255,.85)}
+
 /* ---------- cards: the launcher's own widgets ---------- */
 .cards{position:absolute;left:80px;right:80px;bottom:44px;display:flex;gap:20px}
+
 .card{flex:1;height:150px;border-radius:22px;padding:20px 24px;background:rgba(255,255,255,.08);border:1px solid var(--line);transition:transform .25s var(--ease),background .2s}
 .card small{display:block;font-size:15px;letter-spacing:2px;font-weight:500;color:var(--muted)}
 .card b{display:block;font-size:40px;font-weight:500;margin-top:10px}
@@ -85,6 +103,7 @@ button:focus{outline:none}
 .stage.lite .art{transition:none}.stage.lite .in{animation:none}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition-duration:.01s!important}}
 
+.cards .card{height:118px}.cards .card b{font-size:34px;margin-top:6px}
 .tools{position:fixed;left:50%;transform:translateX(-50%);bottom:8px;display:flex;gap:8px;font:14px/1 system-ui,sans-serif;z-index:99;opacity:.85}
 .tools button{padding:8px 12px;border-radius:8px;background:#222;color:#ddd;border:1px solid #444}
 .tools button[aria-pressed="true"]{background:#ddd;color:#111}
@@ -106,6 +125,12 @@ button:focus{outline:none}
     <div class="time" id="time">8:45 PM</div>
   </div>
 
+  <div class="strip in d1">
+    <span class="nx"><i>SETERUSNYA</i>MAGHRIB <b>19:01</b> dalam 2j 16m</span>
+    <span class="t past">Subuh<b>05:46</b></span><span class="t past">Zohor<b>13:02</b></span><span class="t past">Asar<b>16:22</b></span><span class="t">Isyak<b>20:13</b></span>
+    <span class="sp"></span><span class="hj">1 Jamadilakhir 1448H · Shah Alam</span>
+  </div>
+
   <nav class="row in d1" id="row"></nav>
 
   <section class="hero" id="hero">
@@ -117,11 +142,16 @@ button:focus{outline:none}
     </div>
   </section>
 
+  <section class="ayahcard in d2">
+    <small>DOA HARIAN · AL-BAQARAH 2:201</small>
+    <p class="ar" dir="rtl" lang="ar">رَبَّنَآ ءَاتِنَا فِى ٱلدُّنْيَا حَسَنَةً وَفِى ٱلْءَاخِرَةِ حَسَنَةً وَقِنَا عَذَابَ ٱلنَّارِ</p>
+    <p>"Wahai Tuhan kami, berilah kami kebaikan di dunia dan kebaikan di akhirat, dan peliharalah kami dari azab neraka."</p>
+  </section>
+
   <div class="cards in d3" id="cards">
-    <div class="card" data-k="card"><small>WAKTU SOLAT · MAGHRIB</small><b>19:01</b><span>dalam 2j 16m · Shah Alam</span></div>
-    <div class="card" data-k="card"><small>CUACA · IPU</small><b>29° · 48</b><span>Berawan · Udara baik</span></div>
+    <div class="card" data-k="card"><small>CUACA</small><b>29°</b><span>Berawan · Shah Alam</span></div>
+    <div class="card" data-k="card"><small>KUALITI UDARA</small><b>IPU 48</b><span>Baik · stesen Shah Alam</span></div>
     <div class="card warn" data-k="card"><small>AMARAN MET</small><b>Ribut petir</b><span>Selangor, W.P. Kuala Lumpur · 9 PM</span></div>
-    <div class="card" data-k="card"><small>DOA HARIAN</small><b style="font-size:26px;margin-top:16px">Al-Baqarah 2:201</b><span>Wahai Tuhan kami, berilah kami kebaikan…</span></div>
   </div>
 </div>
 
