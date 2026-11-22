@@ -193,17 +193,17 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     private PrayerBlock prayerUi;
     private StatusChips statusChips;
     private AyahBlock ayahUi;
+    private WarningChip warningChip;
     /** Lautan's slanted Home menu; null in other looks. */
     private LautanMenu lautanMenu;
     /** Lautan's vertical Home list (the grid is hidden in Lautan); null in other looks. */
     private LautanList lautanList;
+    /** Where the current look puts things (Tenang, Lautan, Sorot). */
+    private Arrangement arrangement = Arrangement.Tenang.INSTANCE;
     private TextView shamsiDate;
     private TextView prayerTimesView;
     private TextView weatherAirQualityView;
     private View weatherWarningPill;
-    private ImageView weatherWarningIcon;
-    private TextView weatherWarningText;
-    private ObjectAnimator warningIconAnimator;
     private View nowPlayingCard;
     private ImageView cardAlbumArt;
     private View cardTrackInfo;
@@ -427,13 +427,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         if (adapter != null) {
             adapter.setReducedMotion(!enabled);
         }
-        if (weatherWarningPill != null && weatherWarningPill.getVisibility() == View.VISIBLE) {
-            if (enabled) {
-                startWarningAnimation();
-            } else {
-                stopWarningAnimation();
-            }
-        }
+        if (warningChip != null && warningChip.isShowing()) updateWeatherWarning();   // breathing follows the setting
         updateWeatherOverlay(HomeWeather.last(this));
         updateTopBarUserIcon();
     }
@@ -498,6 +492,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         appliedPalette = Tenang.apply(this);
+        arrangement = Arrangement.current();
         sInstance = new java.lang.ref.WeakReference<>(this);
         SoundEffects.init(this);
         setContentView(R.layout.activity_main);
@@ -547,7 +542,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         if (heroDesc != null) heroDesc.setMaxWidth(heroMaxWidth);
 
         String activeCat = getSharedPreferences("wallpaper_prefs", MODE_PRIVATE).getString("active_category", TENANG_CATEGORY);
-        if (Design.BACKDROP != 0) {
+        if (arrangement.ownBackdrop()) {
             // Lautan and Sorot bring their own background; photos return with Tenang.
             placesMode = false;
             wallpapers = Collections.emptyList();
@@ -616,7 +611,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         });
         View homeRoot = findViewById(R.id.root);
         LookType.apply(homeRoot);
-        if (Design.BACKDROP == 1) {
+        if (arrangement.sideList()) {
             setUpLautanMenu();
             setUpLautanList();
         }
@@ -1802,7 +1797,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        stopWarningAnimation();
+        if (warningChip != null) warningChip.pause();
         if (prayerUi != null) prayerUi.pause();
         if (sInstance != null && sInstance.get() == this) {
             sInstance = null;
@@ -1909,7 +1904,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     public void onTileFocused(int position, View card) {
         if (!resuming && hasWindowFocus()) SoundEffects.playNav();
         // Sorot: the focused app's colours fill the screen, and its name becomes the hero under the row.
-        if (Design.BACKDROP == 2) {
+        if (arrangement.appSpotlight()) {
             if (ambientView != null) ambientView.setArt(adapter.artAt(position), !reducedMotion);
             showSorotHero(position, card);
         }
@@ -2279,7 +2274,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         int itemH = AppAdapter.itemHeightPx(AppAdapter.tileHeightPx(AppAdapter.tileWidthPx(inner, COLUMNS, density)), density);
         int dockRow = itemH + (int) ((6 + 12) * density);   // item height plus DockDecoration offsets
         int want = Math.max(0, h - dockRow - itemH * rowsBelowDockSetting - (int) (16 * density));
-        if (Design.BACKDROP == 2) want = (int) (6 * density);   // Sorot: the app row sits at the top
+        want = arrangement.dockPadding(want, density);   // Sorot: the app row sits at the top
         if (grid.getPaddingTop() == want) return true;
         grid.setPadding(grid.getPaddingLeft(), want, grid.getPaddingRight(), grid.getPaddingBottom());
         return false;
@@ -2307,20 +2302,9 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
      * clock grew.
      */
     private float infoRailTop(int railHeight) {
-        // Lautan: the right column, under the weather chips.
-        if (Design.BACKDROP == 1) {
-            View chips = findViewById(R.id.weatherRow);
-            if (chips != null && chips.getHeight() > 0) {
-                Rect c = new Rect(0, 0, chips.getWidth(), chips.getHeight());
-                root.offsetDescendantRectToMyCoords(chips, c);
-                return c.bottom + 18 * density;
-            }
-        }
-        // Sorot: beside the hero, on the right (the prayer times are a strip at the top).
-        if (Design.BACKDROP == 2) {
-            View hero = findViewById(R.id.sorotHero);
-            if (hero != null && hero.getVisibility() == View.VISIBLE && hero.getY() > 0) return hero.getY();
-        }
+        // A look may place the rail itself (Lautan: right column under the chips; Sorot: beside the hero).
+        float placed = arrangement.railTop(root, railHeight, density);
+        if (!Float.isNaN(placed)) return placed;
         float dockTop = infoRailBottom + INFO_RAIL_GAP_DP * density;
         float minGap = 18 * density;
         View above = nowPlayingCard != null && nowPlayingCard.getVisibility() == View.VISIBLE
@@ -2859,9 +2843,8 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     }
 
     private void setupWeatherWarningPill() {
-        weatherWarningPill = findViewById(R.id.weatherWarningPill);
-        weatherWarningIcon = findViewById(R.id.weatherWarningIcon);
-        weatherWarningText = findViewById(R.id.weatherWarningText);
+        warningChip = new WarningChip(findViewById(R.id.root));
+        weatherWarningPill = warningChip.view();
         View weatherWarningContent = findViewById(R.id.weatherWarningContent);
         View btnWarningDismiss = findViewById(R.id.btnWarningDismiss);
 
@@ -2971,84 +2954,28 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
                 .putLong("weather_warning_dismissed_ts", ts)
                 .putBoolean("weather_warning_test_mode", false)
                 .apply();
-        if (weatherWarningPill != null) {
-            weatherWarningPill.setVisibility(View.GONE);
-        }
-        stopWarningAnimation();
+        if (warningChip != null) warningChip.hide();
         Toast.makeText(this, "Amaran cuaca ditutup", Toast.LENGTH_SHORT).show();
     }
 
     void updateWeatherWarning() {
-        if (weatherWarningPill == null || weatherWarningText == null) return;
-        boolean enabled = isWeatherWarningEnabled();
-        boolean testMode = isWeatherWarningTestMode();
+        if (warningChip == null || !warningChip.exists()) return;
         WeatherAirQuality.WeatherAlert alert = WeatherAirQuality.getLastAlert(this);
-
-        if (!enabled) {
-            weatherWarningPill.setVisibility(View.GONE);
-            stopWarningAnimation();
+        if (!isWeatherWarningEnabled()) {
+            warningChip.hide();
             return;
         }
-
-        if (testMode && alert == null) {
-            alert = WeatherAirQuality.getTestAlert(this);
-        }
-
+        boolean testMode = isWeatherWarningTestMode();
+        if (testMode && alert == null) alert = WeatherAirQuality.getTestAlert(this);
         long dismissedTs = getSharedPreferences("theme_prefs", MODE_PRIVATE).getLong("weather_warning_dismissed_ts", 0);
-        if (alert != null && alert.timestamp > 0 && alert.timestamp <= dismissedTs && !testMode) {
-            weatherWarningPill.setVisibility(View.GONE);
-            stopWarningAnimation();
-            return;
-        }
-
-        if (alert != null && alert.active && !alert.title.isEmpty()) {
-            weatherWarningText.setText(alert.title);
-            weatherWarningText.setSelected(true);
-            weatherWarningPill.setVisibility(View.VISIBLE);
-            if (isAnimationsEnabled()) {
-                startWarningAnimation();
-            } else {
-                stopWarningAnimation();
-            }
+        boolean dismissed = alert != null && alert.timestamp > 0 && alert.timestamp <= dismissedTs && !testMode;
+        if (alert != null && alert.active && !alert.title.isEmpty() && !dismissed) {
+            warningChip.show(alert.title, isAnimationsEnabled());
         } else {
-            weatherWarningPill.setVisibility(View.GONE);
-            stopWarningAnimation();
+            warningChip.hide();
         }
     }
 
-    private void startWarningAnimation() {
-        if (weatherWarningIcon == null) return;
-        stopWarningAnimation();
-        if (!isAnimationsEnabled()) {
-            weatherWarningIcon.setScaleX(1.0f);
-            weatherWarningIcon.setScaleY(1.0f);
-            weatherWarningIcon.setAlpha(1.0f);
-            return;
-        }
-        // Tenang: the warning dot breathes slowly (3.2 s a cycle) rather than pulsing.
-        PropertyValuesHolder pvhX = PropertyValuesHolder.ofFloat(View.SCALE_X, 1.0f, 0.8f);
-        PropertyValuesHolder pvhY = PropertyValuesHolder.ofFloat(View.SCALE_Y, 1.0f, 0.8f);
-        PropertyValuesHolder pvhAlpha = PropertyValuesHolder.ofFloat(View.ALPHA, 1.0f, 0.35f);
-
-        warningIconAnimator = ObjectAnimator.ofPropertyValuesHolder(weatherWarningIcon, pvhX, pvhY, pvhAlpha);
-        warningIconAnimator.setDuration(1600);
-        warningIconAnimator.setRepeatMode(ValueAnimator.REVERSE);
-        warningIconAnimator.setRepeatCount(ValueAnimator.INFINITE);
-        warningIconAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
-        warningIconAnimator.start();
-    }
-
-    private void stopWarningAnimation() {
-        if (warningIconAnimator != null) {
-            warningIconAnimator.cancel();
-            warningIconAnimator = null;
-        }
-        if (weatherWarningIcon != null) {
-            weatherWarningIcon.setScaleX(1.0f);
-            weatherWarningIcon.setScaleY(1.0f);
-            weatherWarningIcon.setAlpha(1.0f);
-        }
-    }
 
     void showWeatherWarningDialog() {
         WeatherAirQuality.WeatherAlert alert = WeatherAirQuality.getLastAlert(this);
@@ -3270,7 +3197,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         if (items != null && items.length >= 6) {
             prayerUi.setPrayers(items, isAnimationsEnabled());
             updatePrayerCountdown();
-            if (Design.BACKDROP == 2) updatePrayerStrip(items, zoneTitle);
+            if (arrangement.prayerStrip()) updatePrayerStrip(items, zoneTitle);
         }
     }
 
