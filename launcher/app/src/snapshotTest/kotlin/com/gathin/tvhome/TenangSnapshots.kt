@@ -139,6 +139,25 @@ class TenangSnapshots {
         paparazzi.snapshot(view)
     }
 
+    /** Settings → Warna: the dots for each look's palettes, one row each (current ringed). */
+    @Test fun swatches() {
+        paparazzi.context.theme.applyStyle(R.style.ThemeOverlay_Tenang_Malam, true)
+        Design.load(paparazzi.context)
+        val d = paparazzi.context.resources.displayMetrics.density
+        val col = android.widget.LinearLayout(paparazzi.context)
+        col.orientation = android.widget.LinearLayout.VERTICAL
+        col.setBackgroundColor(Design.SURFACE)
+        col.setPadding((24 * d).toInt(), (16 * d).toInt(), (24 * d).toInt(), (16 * d).toInt())
+        for ((look, current) in listOf("tenang" to "auto", "lautan" to "karang", "sorot" to "mawar")) {
+            val label = android.widget.TextView(paparazzi.context)
+            label.text = "Warna · $look"
+            label.setTextColor(Design.TEXT)
+            col.addView(label)
+            col.addView(Swatches.row(paparazzi.context, look, current, d))
+        }
+        paparazzi.snapshot(col)
+    }
+
     @Test fun screensaverTenang() = screensaver(0)
     @Test fun screensaverLautan() = screensaver(R.style.ThemeOverlay_Look_Lautan)
     @Test fun screensaverSorot() = screensaver(R.style.ThemeOverlay_Look_Sorot, 0xFF22B573.toInt())
