@@ -193,3 +193,18 @@ profiles stay.
 - [x] Snapshots `lookLautan` and `lookSorot`; `TenangTest` covers the Tema cycle and unknown looks. 68 tests.
 - Not yet: the layout changes (Lautan's vertical menu; Sorot's app row at the top, hero and cards). They need the
   rest of L0 (warning chip, top buttons, app row as components) so a look can bring its own layout XML.
+
+## 9. L3: each look's own arrangement (2026-11-22)
+
+- [x] **Lautan menu** (`LautanMenu`): the slanted stacked words over a dark wash, the focused one on a white
+  slash with a red edge. ◀ from the first app or the Menu key opens it, BACK closes. Entries call Home's own
+  actions: APLIKASI, INPUT, CUACA, SOLAT, TEMA (next look), PROFIL, TETAPAN, TUTUP. Snapshot `lookLautanMenu`.
+- [x] **Sorot arrangement**: a small clock (34 sp, no greeting), the app row parked at the top
+  (`parkDock`), a hero under it with the focused app's name (44 sp) and "OK untuk buka", sliding 24 dp as focus
+  moves along the first row and hidden below it, and the ayah and prayer cards along the bottom
+  (`infoRailTop`), the ayah trimmed to two lines. Snapshot `lookSorot`.
+- Done without new layout files: the looks reuse `activity_main.xml` and its IDs, so Home's focus code stays
+  one. Remaining L0 slices (warning chip, top buttons, app row as components) are still worth doing before a
+  fourth look; they are no longer blocking these two.
+- Needs a real TV: D-pad paths in Sorot (Up from the app row to the chips and top buttons, Down into the
+  grid), the Lautan menu's focus order, and the gfxinfo budget for both backdrops.

@@ -1464,6 +1464,33 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         super.onStop();
     }
 
+    /** Sorot's hero: the app's name, sliding in 24 dp under the app row; hidden below the first row. */
+    private void showSorotHero(int position, View card) {
+        View hero = findViewById(R.id.sorotHero);
+        TextView title = findViewById(R.id.sorotTitle);
+        if (hero == null || title == null) return;
+        if (position >= COLUMNS) {
+            hero.animate().alpha(0f).setDuration(120).start();
+            return;
+        }
+        Rect r = new Rect(0, 0, card.getWidth(), card.getHeight());
+        root.offsetDescendantRectToMyCoords(card, r);
+        float y = r.bottom + 20 * density;
+        boolean changed = !adapter.labelAt(position).contentEquals(title.getText());
+        title.setText(adapter.labelAt(position));
+        hero.setY(y);
+        hero.animate().cancel();
+        if (changed && !reducedMotion) {
+            hero.setAlpha(0f);
+            hero.setTranslationX(0f);
+            hero.setY(y + 24 * density);
+            hero.animate().alpha(1f).y(y).setDuration(320)
+                    .setInterpolator(new android.view.animation.PathInterpolator(0.2f, 0.8f, 0.2f, 1f)).start();
+        } else {
+            hero.setAlpha(1f);
+        }
+    }
+
     /** Lautan's menu: the entries call what Home already does. ◀ from the first app or Menu opens it. */
     private void setUpLautanMenu() {
         LautanMenu.Entry[] entries = {
@@ -1837,8 +1864,11 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     @Override
     public void onTileFocused(int position, View card) {
         if (!resuming && hasWindowFocus()) SoundEffects.playNav();
-        // Sorot: the focused app's colours fill the screen.
-        if (ambientView != null && Design.BACKDROP == 2) ambientView.setArt(adapter.artAt(position), !reducedMotion);
+        // Sorot: the focused app's colours fill the screen, and its name becomes the hero under the row.
+        if (Design.BACKDROP == 2) {
+            if (ambientView != null) ambientView.setArt(adapter.artAt(position), !reducedMotion);
+            showSorotHero(position, card);
+        }
         lastFocused = position;
         lastFocusedKey = adapter.keyAt(position);
         // Tile rect in root coordinates, using layout positions (ignores the scale animation).
@@ -2205,6 +2235,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         int itemH = AppAdapter.itemHeightPx(AppAdapter.tileHeightPx(AppAdapter.tileWidthPx(inner, COLUMNS, density)), density);
         int dockRow = itemH + (int) ((6 + 12) * density);   // item height plus DockDecoration offsets
         int want = Math.max(0, h - dockRow - itemH * rowsBelowDockSetting - (int) (16 * density));
+        if (Design.BACKDROP == 2) want = (int) (6 * density);   // Sorot: the app row sits at the top
         if (grid.getPaddingTop() == want) return true;
         grid.setPadding(grid.getPaddingLeft(), want, grid.getPaddingRight(), grid.getPaddingBottom());
         return false;
@@ -2232,6 +2263,8 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
      * clock grew.
      */
     private float infoRailTop(int railHeight) {
+        // Sorot: the cards sit along the bottom of the screen.
+        if (Design.BACKDROP == 2 && root != null && root.getHeight() > 0) return root.getHeight() - railHeight - 22 * density;
         float dockTop = infoRailBottom + INFO_RAIL_GAP_DP * density;
         float minGap = 18 * density;
         View above = nowPlayingCard != null && nowPlayingCard.getVisibility() == View.VISIBLE

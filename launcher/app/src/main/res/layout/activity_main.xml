@@ -88,6 +88,36 @@
             android:visibility="gone" />
     </LinearLayout>
 
+    <!-- Sorot hero: the focused app's name, big, under the app row. Hidden in other looks. -->
+    <LinearLayout
+        android:id="@+id/sorotHero"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="56dp"
+        android:orientation="vertical"
+        android:visibility="gone">
+        <TextView
+            android:id="@+id/sorotTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:includeFontPadding="false"
+            android:singleLine="true"
+            android:textColor="?attr/tnText"
+            android:textSize="44sp"
+            android:letterSpacing="-0.02"
+            android:fontFamily="@font/outfit_bold" />
+        <TextView
+            android:id="@+id/sorotHint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:includeFontPadding="false"
+            android:text="OK untuk buka  ·  tahan OK untuk pilihan"
+            android:textColor="?attr/tnMuted"
+            android:textSize="15sp"
+            android:fontFamily="@font/outfit_light" />
+    </LinearLayout>
+
     <!-- Information rail: daily ayah on the left, prayer times on the right. Aligned with the dock. -->
     <com.gathin.tvhome.EqualHeightRow
         android:id="@+id/islamicShelf"

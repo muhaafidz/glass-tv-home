@@ -101,6 +101,16 @@ class TenangSnapshots {
             c.drawRect(20f, 2f, 30f, 9f, android.graphics.Paint().apply { color = 0xFF3D0A0D.toInt() })
             c.drawRect(0f, 12f, 32f, 18f, android.graphics.Paint().apply { color = 0xFF140203.toInt() })
             ambient.setArt(tiny, false)
+            // Sorot's arrangement, as MainActivity places it: app row under the header, hero, cards at the bottom.
+            val d = view.resources.displayMetrics.density
+            val dock = view.getChildAt(view.childCount - 1)
+            (dock.layoutParams as android.widget.FrameLayout.LayoutParams).topMargin = (150 * d).toInt()
+            view.findViewById<TextView>(R.id.sorotTitle).text = "Netflix"
+            LookType.apply(view)   // after fill(): Sorot trims the ayah to two lines
+            val hero = view.findViewById<View>(R.id.sorotHero)
+            hero.y = (150 + 68 + 20) * d
+            val shelf = view.findViewById<View>(R.id.islamicShelf)
+            shelf.viewTreeObserver.addOnPreDrawListener { shelf.y = view.height - shelf.height - 22 * d; true }
         }
         paparazzi.snapshot(view)
     }
