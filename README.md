@@ -107,7 +107,7 @@ Senja → Embun → Lautan → Sorot). Choosing any Tenang entry brings Tenang b
   avatars are not rebuilt when unchanged, and focus animations switch off automatically on low-spec TVs.
 - **One information rail.** Weather, the daily ayah or Khutbah Minbar, and all six prayer times share one flat
   rail above the dock. The next prayer is mint; the rest stay quiet.
-- **Sinar wallpapers.** `themes/sinar` ships five flat graphite gradients (mint, violet, ember, forest, sand)
+- **Sinar wallpapers** (5.x only, removed in 6.2): five flat graphite gradients (mint, violet, ember, forest, sand)
   with one vivid accent zone, tuned for white launcher text and rotated every 30 minutes.
 - **Every surface follows the language.** Settings, profile pickers, dialogs, Inputs, the weather screen and
   recent apps are flat dark sheets with mint focus and app-coloured accents.
@@ -120,7 +120,7 @@ Senja → Embun → Lautan → Sorot). Choosing any Tenang entry brings Tenang b
 </p>
 <p align="center">
   <em>The Sinar interface: flat graphite surfaces, one electric-mint accent, app-coloured focus. Apply the
-  wallpaper set with <code>TV_HOST=&lt;tv-ip&gt; tools/theme.sh themes/sinar</code>.</em>
+  wallpaper set in 5.x; since 6.2 the background belongs to the look.</em>
 </p>
 
 ## What's New in Version 4.1 (Inherited from Glass TV)
@@ -230,12 +230,11 @@ Senja → Embun → Lautan → Sorot). Choosing any Tenang entry brings Tenang b
   Islamic Hijri calendar, next prayer countdown capsule, and gentle minute-by-minute drift to prevent burn-in.
 - **Rows feather out under the top bar** instead of being cut off when you scroll, and the Wi-Fi / Ethernet
   button can be hidden (`show_network_pill`).
-- **Rotating wallpapers of your own** instead, with `"places": false`: put pictures in a theme's `wallpapers/`
-  folder and choose how often they change, down to every 5 seconds. Each picture is decoded in the background
-  and cross-faded. The bundled `quiet-canvas` theme is a ready-made five-image example.
+- **Your own photos** (Latar → Foto saya), uploaded from your phone by QR, under the palette's soft tint; choose
+  how often they change. Each picture is decoded in the background and cross-faded.
 
 Still light: on a Xiaomi Mi TV with 1.8 GB of RAM the launcher uses about 80–100 MB and stays there over hours
-of use, one wallpaper is in memory at a time, the week's places take about 2 MB of storage, and nothing runs
+of use, at most one photo is in memory at a time, nothing is downloaded for the background, and nothing runs
 while you are inside an app.
 
 ## Setting it up (By Device Priority)
@@ -324,39 +323,19 @@ home screen or the Home button. For the full Glass TV, plug in a Google TV or An
 Google TV, Xiaomi Mi Box, NVIDIA Shield): the TV becomes the screen and Glass TV is Home. On LG, a version you
 open as an app is in preview in [webos/](webos/README.md).
 
-## Places, or pictures of your own
+## Backgrounds: Latar
 
-Places are on from the start. To change how often the picture changes, or to use your own pictures and keep
-the launcher offline, make a theme folder with a `config.json` like this and push it with `tools/theme.sh`:
+The background belongs to the look, so each keeps one mood: Tenang soothing, Lautan stylish and calm, Sorot a
+spotlight on the app. Settings → Appearance → **🖼️ Latar**:
 
-```json
-{
-  "places": false,
-  "wallpaper_seconds": 15,
-  "show_network_pill": false
-}
-```
-
-All keys are listed in [themes/README.md](themes/README.md). With `"places": false`, the launcher never goes
-online.
-
-### Quiet Canvas themes
-
-This fork ships two ready-made themes:
-
-| Theme | What it is |
+| Latar | What you see |
 |---|---|
-| `themes/quiet-canvas/` | Five 1920×1080 colourways — cool, ember, forest, graphite and sand — rotating every 30 minutes |
-| `themes/quiet-canvas-ember/` | The warm ember still on its own, if you prefer a single colourway |
+| **Bergerak** (default) | The look's own slow background: Tenang's glows, Lautan's water and star lattice, Sorot's app colours |
+| **Pegun** | The same, without motion: the lightest choice, on by itself on low-spec TVs |
+| **Foto saya** | Your photos from your phone (QR upload), under the palette's tint so text stays readable; not in Sorot |
 
-Apply the collection without rebuilding:
-
-```bash
-TV_HOST=<tv-ip> tools/theme.sh themes/quiet-canvas
-```
-
-To preview the layout and switch wallpapers without a TV or emulator, open
-[`preview/quiet-canvas.html`](preview/quiet-canvas.html) in a browser.
+Nothing is downloaded for the background. A pushed theme folder can still bring pictures (`wallpaper.jpg` or a
+`wallpapers/` folder); they are shown as Foto saya. All keys are in [themes/README.md](themes/README.md).
 
 ## Credits and licence
 
@@ -366,8 +345,4 @@ To preview the layout and switch wallpapers without a TV or emulator, open
   maintained by [@muhaafidz](https://github.com/muhaafidz).
 - The Outfit typeface is under the SIL Open Font License (`launcher/FONT-LICENSE-OFL.txt`).
 - The Inputs icon is from Google's Material Icons (Apache 2.0).
-- The Quiet Canvas wallpapers are generated gradients that live in `themes/quiet-canvas/`; the editable SVGs
-  are included.
-- Pictures of places and their captions are Bing's daily images (Microsoft). The launcher fetches them on your
-  own TV when `places` is on.
 - Gotham, used in the legacy promo pictures only, is a Hoefler&Co. typeface and is not part of this repository.

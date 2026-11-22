@@ -870,32 +870,31 @@ public final class ModernSettingsDialog {
                         isChecked -> activity.getSharedPreferences("theme_prefs", Context.MODE_PRIVATE).edit()
                                 .putBoolean("never_light", isChecked).apply()));
 
+                // Latar: the look's own background, moving or still, or the person's photos (not in Sorot).
+                final String curBackdrop = Backdrop.get(activity);
                 rightContent.addView(buildCardRow(activity, density, outfit,
-                        "🖼️ Latar Belakang & Wallpaper", "Tenang (kanvas bergerak), Malaysia 4K, Alam Semula Jadi, Angkasa, dll.",
-                        activity::showWallpaperDialog));
-
-                rightContent.addView(buildCardRow(activity, density, outfit,
-                        "⏱️ Selang Masa Shuffle Wallpaper", "Kekerapan pertukaran gambar automatik (5 min, 10 min, dll.)",
-                        activity::showWallpaperIntervalDialog));
+                        "🖼️ Latar: " + Backdrop.label(activity, curBackdrop),
+                        Backdrop.describe(activity, curBackdrop),
+                        () -> {
+                            String nextBackdrop = Backdrop.next(curBackdrop);
+                            activity.applyBackdropNow(nextBackdrop);
+                            if (Backdrop.PHOTOS.equals(nextBackdrop) && Backdrop.photos(activity).isEmpty()) {
+                                activity.showWallpaperDialog();   // no photos yet: open the upload page
+                            }
+                            if (renderRightPane[0] != null) renderRightPane[0].run();
+                        }));
+                if (Backdrop.PHOTOS.equals(curBackdrop)) {
+                    rightContent.addView(buildCardRow(activity, density, outfit,
+                            "📷 Foto saya", "Muat naik dari telefon (QR), pilih satu, atau tayangan slaid",
+                            activity::showWallpaperDialog));
+                    rightContent.addView(buildCardRow(activity, density, outfit,
+                            "⏱️ Selang foto", "Berapa kerap foto bertukar (5 min, 10 min, …)",
+                            activity::showWallpaperIntervalDialog));
+                }
 
                 rightContent.addView(buildCardRow(activity, density, outfit,
                         "🌐 Pilihan Bahasa (Language Selection)", "Bahasa Melayu 🇲🇾, English 🇬🇧, Bahasa Indonesia 🇮🇩",
                         activity::showLanguageDialog));
-
-                String darkSubtitle;
-                int curDark = activity.getSharedPreferences("appearance_prefs", Context.MODE_PRIVATE).getInt("dark_mode_style", MainActivity.DARK_MODE_OFF);
-                if (curDark == MainActivity.DARK_MODE_ALWAYS) {
-                    darkSubtitle = "Sentiasa Gelap (Obsidian Dimming 50%)";
-                } else if (curDark == MainActivity.DARK_MODE_AUTO) {
-                    darkSubtitle = "Automatik (7:00 PM – 7:00 AM)";
-                } else if (curDark == MainActivity.DARK_MODE_OLED_BLACK) {
-                    darkSubtitle = "Hitam Pekat OLED (Pure Black • 0% Wallpaper)";
-                } else {
-                    darkSubtitle = "Mati (Kecerahan Asal Wallpaper)";
-                }
-                rightContent.addView(buildCardRow(activity, density, outfit,
-                        "🌙 Mod Gelap & Perlindungan OLED", darkSubtitle,
-                        activity::showDarkModeDialog));
 
                 rightContent.addView(buildSwitchRow(activity, density, outfit,
                         "⚡ Animasi Antaramuka (UI Animations)",
@@ -924,16 +923,6 @@ public final class ModernSettingsDialog {
                 rightContent.addView(buildCardRow(activity, density, outfit,
                         "📍 Pilih Lokasi TV & Zon Solat", "Sokongan zon Malaysia (JAKIM), Singapura (MUIS), & Indonesia (Kemenag)",
                         () -> activity.startActivity(new Intent(activity, LocationActivity.class))));
-
-                boolean isWeatherFx = activity.getSharedPreferences("wallpaper_prefs", Context.MODE_PRIVATE).getBoolean("dynamic_weather_overlay", true);
-                rightContent.addView(buildSwitchRow(activity, density, outfit,
-                        "🌧️ Cuaca Dinamik (Weather Overlay Effects)", "Kesan visual zarah hujan, awan kabut dan salji pada wallpaper",
-                        isWeatherFx, isChecked -> {
-                            activity.getSharedPreferences("wallpaper_prefs", Context.MODE_PRIVATE).edit().putBoolean("dynamic_weather_overlay", isChecked).apply();
-                            activity.testWeatherOverride = null;
-                            activity.updateWeatherOverlay(HomeWeather.last(activity));
-                            Toast.makeText(activity, isChecked ? "🌧️ Cuaca Dinamik Dihidupkan" : "⛅ Cuaca Dinamik Dimatikan", Toast.LENGTH_SHORT).show();
-                        }));
 
                 rightContent.addView(buildSwitchRow(activity, density, outfit,
                         "⚠️ Amaran Cuaca Buruk (Severe Weather Alert)",

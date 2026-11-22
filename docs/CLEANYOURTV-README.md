@@ -175,7 +175,7 @@ tools/venv/bin/python -I tools/tv.py 'pm list packages'      # one shell command
 tools/disable.sh examples/xiaomi-mi-tv-4a/debloat.txt        # apply a debloat list
 tools/restore.sh examples/xiaomi-mi-tv-4a/debloat.txt        # undo it, stock launcher back
 TV_HOST=192.168.1.50 launcher/build-and-install.sh           # build the launcher and make it Home
-tools/theme.sh themes/aurora                                 # push a theme; --reset removes it
+tools/theme.sh themes/lautan                                 # push a theme; --reset removes it
 ```
 
 | Tool | What it does |

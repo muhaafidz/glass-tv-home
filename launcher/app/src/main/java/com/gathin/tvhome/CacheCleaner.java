@@ -126,19 +126,7 @@ final class CacheCleaner {
                 bytesFreed += deleteDirContents(app.getCacheDir());
                 bytesFreed += deleteDirContents(app.getExternalCacheDir());
 
-                // 2. Clear any lingering .tmp downloads
-                File onlineDir = OnlineWallpapers.dir(app);
-                if (onlineDir != null && onlineDir.exists()) {
-                    File[] tmps = onlineDir.listFiles((d, name) -> name.endsWith(".tmp"));
-                    if (tmps != null) {
-                        for (File f : tmps) {
-                            bytesFreed += f.length();
-                            f.delete();
-                        }
-                    }
-                }
-
-                // 3. Run system trim-caches via local ADB
+                // 2. Run system trim-caches via local ADB
                 try {
                     systemTrimmed = shell(app, false, COMMAND);
                     if (!systemTrimmed) systemTrimmed = shell(app, true, COMMAND);
