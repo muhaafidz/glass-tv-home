@@ -99,7 +99,7 @@ class TenangSnapshots {
             // Lautan: the list on the left (stand-in rows), the grid and dock hidden, the rail under the chips.
             LookType.apply(view)
             dock.visibility = View.GONE
-            val list = LautanList(view.context) {}
+            val list = LautanList(view.context, object : LautanList.Host { override fun onLeftFromList() {}; override fun onAppFocused(position: Int) {} })
             val rows = listOf("YouTube", "Netflix", "HBO Max", "Media Player", "Live TV", "Spotify")
                 .map { LautanList.Shortcut(it, Runnable {}) } + listOf("INPUT", "CUACA", "SOLAT", "TEMA", "TETAPAN").map { LautanList.Shortcut(it, Runnable {}) }
             list.rebuild(null, rows.toTypedArray())

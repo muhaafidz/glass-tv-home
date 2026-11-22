@@ -62,6 +62,26 @@ slowly moving canvas, one soft accent ring, and no glass blur. The home folds a 
 line, a daily ayah or Khutbah Minbar shelf, all six prayer times, and the app dock into one information rail.
 The old place caption is off by default, so your wallpaper stays unobstructed.
 
+## What's New in 6.1 — Lautan and Sorot
+
+Two more looks next to Tenang, switchable on the TV in Settings → Appearance → **🎨 Tema** (Automatik → Malam →
+Senja → Embun → Lautan → Sorot). Choosing any Tenang entry brings Tenang back exactly as it was.
+
+- **Lautan** (deep sea): a slanted list of your apps and shortcuts on the left that scrolls, the clock, weather,
+  prayer times and daily ayah on the right, a slowly drifting 8-point-star lattice, and a red-and-white slash on
+  whatever is focused. ◀ or the Menu button opens a full slanted menu.
+- **Sorot** (spotlight): the focused app's own colours fill the screen, the app row sits at the top with the
+  app's name large beneath it, the prayer times run in a strip under the clock and the ayah sits on the right.
+- Both are light on 1 GB TVs: no pictures to download, no blur; Lautan's pattern is one tiny tile moved 15 times
+  a second and stopped whenever an app is open, and Sorot's colours come from the app's banner shrunk to 32×18.
+- Preview them in a browser: [preview/lautan.html](preview/lautan.html), [preview/sorot.html](preview/sorot.html);
+  how they were designed: [docs/LAYOUT-RESEARCH.md](docs/LAYOUT-RESEARCH.md).
+
+<p align="center">
+  <img src="docs/screenshots/lautan-home.png" width="49%" alt="Lautan: slanted app list on the left, clock, weather, prayer times and ayah on the right, over deep blue with a star lattice">
+  <img src="docs/screenshots/sorot-home.png" width="49%" alt="Sorot: the focused app's red colours fill the screen, prayer strip under the clock, app row, app name and ayah card">
+</p>
+
 ## What's New in 6.0 — Tenang
 
 - **Colours that follow the day.** Three palettes — Malam (deep teal night), Senja (warm dusk) and Embun

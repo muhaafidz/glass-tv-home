@@ -27,6 +27,7 @@ Download the official release APKs based on your setup:
   [**`glass-tv-installer.apk`** (6.9 MB)](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-installer.apk) — **Primary Recommendation!** Install directly to your TV and permanently lock the remote HOME button over Wi-Fi without needing a PC or cables.
 * 📺 **For Android TV & Google TV (Main Launcher v6.0)**:  
   [**`glass-tv-home.apk`** (1.8 MB)](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-home.apk) — Latest release `v6.0.0` — **Tenang**: calm colours that follow prayer times (Malam, Senja, Embun), a softly moving background and a quieter home; see [docs/REVAMP.md](docs/REVAMP.md).
+  Next, `v6.1.0`: two more looks, **Lautan** (slanted app list on the left, prayer times and ayah on the right) and **Sorot** (the focused app's colours fill the screen); switch in Settings → Appearance → Tema.
 
 > [!CAUTION]
 > ### ⚠️ DO NOT RAW-SIDELOAD THE APK WITHOUT PROPER LAUNCHER SETUP!
