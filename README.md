@@ -62,7 +62,12 @@ slowly moving canvas, one soft accent ring, and no glass blur. The home folds a 
 line, a daily ayah or Khutbah Minbar shelf, all six prayer times, and the app dock into one information rail.
 The old place caption is off by default, so your wallpaper stays unobstructed.
 
-## What's New in 6.3 — small moments
+## What's New in 7.0
+
+Three looks, five or more palettes each, backgrounds that belong to the look, and a handful of small
+moments. Each look has one mood: Tenang soothing, Lautan stylish and calm, Sorot a spotlight on the app.
+
+### Small moments
 
 Delight from moments, not constant motion: each one runs once, on an event, with movement and fade only, and
 nothing runs while another app is in front.
@@ -75,10 +80,10 @@ nothing runs while another app is in front.
 - **A look per profile**: each profile keeps its own look and palette, and the greeting uses the profile's name.
 - **Palette dots**: Settings → Appearance → Warna shows every palette as colour dots, so you choose by sight.
 
-## What's New in 6.1 — Lautan and Sorot
+### Lautan and Sorot
 
-Two more looks next to Tenang, switchable on the TV in Settings → Appearance → **🎨 Tema** (Automatik → Malam →
-Senja → Embun → Lautan → Sorot). Choosing any Tenang entry brings Tenang back exactly as it was.
+Two more looks next to Tenang. Settings → Appearance → **🎨 Rupa** picks the look and **🌈 Warna** its palette
+(five or more each, shown as colour dots); each look and profile remembers its own choice.
 
 - **Lautan** (deep sea): a slanted list of your apps and shortcuts on the left that scrolls, the clock, weather,
   prayer times and daily ayah on the right, a slowly drifting 8-point-star lattice, and a red-and-white slash on
@@ -87,6 +92,7 @@ Senja → Embun → Lautan → Sorot). Choosing any Tenang entry brings Tenang b
   app's name large beneath it, the prayer times run in a strip under the clock and the ayah sits on the right.
 - Both are light on 1 GB TVs: no pictures to download, no blur; Lautan's pattern is one tiny tile moved 15 times
   a second and stopped whenever an app is open, and Sorot's colours come from the app's banner shrunk to 32×18.
+- Palettes follow each look's mood ([docs/PALETTES.md](docs/PALETTES.md)); a test keeps them on-mood and readable.
 - Preview them in a browser: [preview/lautan.html](preview/lautan.html), [preview/sorot.html](preview/sorot.html);
   how they were designed: [docs/LAYOUT-RESEARCH.md](docs/LAYOUT-RESEARCH.md).
 
@@ -94,6 +100,14 @@ Senja → Embun → Lautan → Sorot). Choosing any Tenang entry brings Tenang b
   <img src="docs/screenshots/lautan-home.png" width="49%" alt="Lautan: slanted app list on the left, clock, weather, prayer times and ayah on the right, over deep blue with a star lattice">
   <img src="docs/screenshots/sorot-home.png" width="49%" alt="Sorot: the focused app's red colours fill the screen, prayer strip under the clock, app row, app name and ayah card">
 </p>
+
+### Backgrounds: Latar
+
+The background belongs to the look. Settings → Appearance → **🖼️ Latar**: **Bergerak** (the look's own slow
+background), **Pegun** (the same, still: the lightest) or **Foto saya** (your photos under the palette's tint;
+not in Sorot). The online collections, weekly places pictures, dark-mode filter, place captions and the weather
+overlay are gone, and nothing is downloaded for the background.
+
 
 ## What's New in 6.0 — Tenang
 
@@ -120,7 +134,7 @@ Senja → Embun → Lautan → Sorot). Choosing any Tenang entry brings Tenang b
   avatars are not rebuilt when unchanged, and focus animations switch off automatically on low-spec TVs.
 - **One information rail.** Weather, the daily ayah or Khutbah Minbar, and all six prayer times share one flat
   rail above the dock. The next prayer is mint; the rest stay quiet.
-- **Sinar wallpapers** (5.x only, removed in 6.2): five flat graphite gradients (mint, violet, ember, forest, sand)
+- **Sinar wallpapers** (5.x only, removed in 7.0): five flat graphite gradients (mint, violet, ember, forest, sand)
   with one vivid accent zone, tuned for white launcher text and rotated every 30 minutes.
 - **Every surface follows the language.** Settings, profile pickers, dialogs, Inputs, the weather screen and
   recent apps are flat dark sheets with mint focus and app-coloured accents.
@@ -133,7 +147,7 @@ Senja → Embun → Lautan → Sorot). Choosing any Tenang entry brings Tenang b
 </p>
 <p align="center">
   <em>The Sinar interface: flat graphite surfaces, one electric-mint accent, app-coloured focus. Apply the
-  wallpaper set in 5.x; since 6.2 the background belongs to the look.</em>
+  wallpaper set in 5.x; since 7.0 the background belongs to the look.</em>
 </p>
 
 ## What's New in Version 4.1 (Inherited from Glass TV)

@@ -60,7 +60,7 @@ final class Config {
     final List<File> wallpapers;
     /** Time between wallpaper changes (wallpaper_seconds, else wallpaper_minutes); 0 changes only when Home starts. */
     final long wallpaperIntervalMs;
-    /** Always false since 6.2: places pictures were removed (Latar is the look's background or the person's photos). */
+    /** Always false since 7.0: places pictures were removed (Latar is the look's background or the person's photos). */
     final boolean places;
     /** Dynamic online wallpaper fetching (Unsplash 4K or custom web server feed). */
     final boolean wallpaperOnline;
