@@ -144,6 +144,59 @@ public class TenangTest {
         }
     }
 
+    /** Each look's mood as numbers (docs/PALETTES.md, "Mood first"). */
+    @Test
+    public void palettesFitTheirLookMood() throws Exception {
+        for (Map.Entry<String, Map<String, Integer>> e : readPalettes().entrySet()) {
+            String name = e.getKey();
+            Map<String, Integer> p = e.getValue();
+            double[] bg1 = hsv(p.get("tnBg1")), bg2 = hsv(p.get("tnBg2")), accent = hsv(p.get("tnAccent"));
+            double contrast = contrast(p.get("tnText"), p.get("tnBg1"));
+            if (name.startsWith("Look.Lautan")) {
+                // Stylish and calm: deep cool water, one vivid accent, nothing neon.
+                assertTrue(name + " deep water brightness", bg1[2] <= 0.25);
+                assertTrue(name + " deep water saturation", bg1[1] >= 0.60);
+                assertTrue(name + " water hue " + bg1[0], bg1[0] >= 150 && bg1[0] <= 290);
+                assertTrue(name + " shallow water brightness", hsv(p.get("tnBlobA") | 0xFF000000)[2] <= 0.85);
+                assertTrue(name + " accent saturation " + accent[1], accent[1] >= 0.55 && accent[1] <= 0.85);
+                double apart = Math.abs(accent[0] - bg1[0]);
+                assertTrue(name + " accent hue apart from the water", Math.min(apart, 360 - apart) >= 60);
+            } else if (name.startsWith("Look.Sorot")) {
+                // A spotlight on the app: a near-black, almost neutral stage and a tinted-white ring.
+                assertTrue(name + " stage brightness", bg1[2] <= 0.12);
+                assertTrue(name + " stage saturation " + bg1[1], bg1[1] <= 0.45);
+                assertTrue(name + " upper stage brightness", bg2[2] <= 0.22);
+                assertTrue(name + " ring saturation " + accent[1], accent[1] <= 0.20);
+                assertTrue(name + " ring brightness", accent[2] >= 0.92);
+            } else {
+                // Tenang, soothing. Light palette: soft morning. Dark palettes: low stimulation.
+                boolean light = bg1[2] >= 0.5;
+                if (light) {
+                    assertTrue(name + " light brightness", bg1[2] >= 0.85);
+                    assertTrue(name + " light saturation", bg1[1] <= 0.15);
+                } else {
+                    assertTrue(name + " brightness", bg1[2] <= 0.35);
+                    assertTrue(name + " saturation " + bg1[1], bg1[1] <= 0.70);
+                    assertTrue(name + " pastel accent " + accent[1], accent[1] <= 0.50);
+                    assertTrue(name + " text not glaring " + contrast, contrast <= 14.0);
+                }
+                assertTrue(name + " text readable", contrast >= 4.5);
+            }
+        }
+    }
+
+    /** {hue 0..360, saturation 0..1, brightness 0..1} of an opaque colour. */
+    private static double[] hsv(int c) {
+        double r = ((c >> 16) & 0xFF) / 255.0, g = ((c >> 8) & 0xFF) / 255.0, b = (c & 0xFF) / 255.0;
+        double max = Math.max(r, Math.max(g, b)), min = Math.min(r, Math.min(g, b)), d = max - min, h;
+        if (d == 0) h = 0;
+        else if (max == r) h = 60 * (((g - b) / d) % 6);
+        else if (max == g) h = 60 * ((b - r) / d + 2);
+        else h = 60 * ((r - g) / d + 4);
+        if (h < 0) h += 360;
+        return new double[]{h, max == 0 ? 0 : d / max, max};
+    }
+
     private static void assertContrast(String what, int fg, int bg, double min) {
         double ratio = contrast(fg, bg);
         assertTrue(what + String.format(" contrast %.2f < %.1f", ratio, min), ratio >= min);

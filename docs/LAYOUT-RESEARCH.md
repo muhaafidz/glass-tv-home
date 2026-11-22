@@ -282,3 +282,13 @@ Owner's direction: anything that does not look good or has no point goes; each l
   `preview/quiet-canvas.html`. `OnlineWallpapers`, `PlaceWallpapers` and their tests are deleted; the old
   downloads are deleted once on the TV (`Backdrop.dropOldDownloads`). `MainActivity` is about 745 lines shorter.
 - Nothing is downloaded for backgrounds any more; AGENTS.md's network rule says so.
+
+## 15. Palettes follow the look's mood (2026-11-22)
+
+Owner's direction: define each look's mood intention first, then choose palettes that suit it. Written up in
+docs/PALETTES.md ("Mood first"): Tenang soothing, Lautan stylish and calm, Sorot a spotlight on the app; each
+with principles and numeric limits enforced by `TenangTest.palettesFitTheirLookMood`.
+Audit result: Lautan's five palettes already fit (the test only widened the water hue to 150–290° for the
+emerald lagoon). Sorot's rings were too colourful (up to 52 % saturation): the stage is now near-black and almost
+neutral (brightness ≤ 12 %, saturation ≤ 45 %) and the ring a tinted white (saturation ≤ 20 %), so the app's colours
+are the star. Tenang's body text was glaring (15:1): softened to ≤ 14:1 on all dark palettes.

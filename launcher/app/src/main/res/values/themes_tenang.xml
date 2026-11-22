@@ -14,7 +14,7 @@
         <item name="tnCard">#0DFFFFFF</item>
         <item name="tnChip">#12FFFFFF</item>
         <item name="tnLine">#17FFFFFF</item>
-        <item name="tnText">#E9F0F1</item>
+        <item name="tnText">#DEE5E7</item>
         <item name="tnMuted">#8FA6AB</item>
         <item name="tnAccent">#9FD8C9</item>
         <item name="tnAccentSoft">#1F9FD8C9</item>
@@ -45,7 +45,7 @@
         <item name="tnCard">#0EFFFFFF</item>
         <item name="tnChip">#14FFFFFF</item>
         <item name="tnLine">#1AFFFFFF</item>
-        <item name="tnText">#F7EEF0</item>
+        <item name="tnText">#F1E8EA</item>
         <item name="tnMuted">#BBA8B5</item>
         <item name="tnAccent">#F6B9A2</item>
         <item name="tnAccentSoft">#1FF6B9A2</item>
@@ -132,24 +132,24 @@
     </style>
     <!-- Look: Sorot. Replaces the Tenang palette while chosen; the palette choice is kept for going back. -->
     <style name="ThemeOverlay.Look.Sorot" parent="">
-        <item name="tnBg1">#05070D</item>
-        <item name="tnBg2">#0B0F1A</item>
+        <item name="tnBg1">#0A0B0E</item>
+        <item name="tnBg2">#14161B</item>
         <item name="tnBlobA">#00000000</item>
         <item name="tnBlobB">#00000000</item>
-        <item name="tnSurface">#151923</item>
-        <item name="tnSurfaceRaised">#1C212C</item>
-        <item name="tnSurfaceFocus">#252B38</item>
-        <item name="tnHairline">#2A303C</item>
+        <item name="tnSurface">#16171A</item>
+        <item name="tnSurfaceRaised">#1E1F21</item>
+        <item name="tnSurfaceFocus">#252629</item>
+        <item name="tnHairline">#202124</item>
         <item name="tnCard">#14FFFFFF</item>
         <item name="tnChip">#1AFFFFFF</item>
         <item name="tnLine">#2EFFFFFF</item>
         <item name="tnText">#FFFFFF</item>
         <item name="tnMuted">#A3A8B3</item>
-        <item name="tnAccent">#FFFFFF</item>
-        <item name="tnAccentSoft">#1FFFFFFF</item>
-        <item name="tnAccentDim">#D9DDE5</item>
-        <item name="tnAccentGlow">#59FFFFFF</item>
-        <item name="tnOnAccent">#05070D</item>
+        <item name="tnAccent">#F4F5F7</item>
+        <item name="tnAccentSoft">#1FF4F5F7</item>
+        <item name="tnAccentDim">#D7D8D9</item>
+        <item name="tnAccentGlow">#59F4F5F7</item>
+        <item name="tnOnAccent">#0A0B0E</item>
         <item name="tnWarm">#F1D3A1</item>
         <item name="tnAmber">#FFD35A</item>
         <item name="tnAmberBg">#24FFD35A</item>
@@ -178,7 +178,7 @@
         <item name="tnCard">#0DFFFFFF</item>
         <item name="tnChip">#12FFFFFF</item>
         <item name="tnLine">#17FFFFFF</item>
-        <item name="tnText">#EEF0FA</item>
+        <item name="tnText">#E1E3EE</item>
         <item name="tnMuted">#A3A8CC</item>
         <item name="tnAccent">#C3B5FF</item>
         <item name="tnAccentSoft">#1FC3B5FF</item>
@@ -209,7 +209,7 @@
         <item name="tnCard">#0DFFFFFF</item>
         <item name="tnChip">#12FFFFFF</item>
         <item name="tnLine">#17FFFFFF</item>
-        <item name="tnText">#EAF3EC</item>
+        <item name="tnText">#DFE8E1</item>
         <item name="tnMuted">#95AD9C</item>
         <item name="tnAccent">#A8DDB5</item>
         <item name="tnAccentSoft">#1FA8DDB5</item>
@@ -240,7 +240,7 @@
         <item name="tnCard">#0DFFFFFF</item>
         <item name="tnChip">#12FFFFFF</item>
         <item name="tnLine">#17FFFFFF</item>
-        <item name="tnText">#F6EFE7</item>
+        <item name="tnText">#EBE4DC</item>
         <item name="tnMuted">#BFAE9C</item>
         <item name="tnAccent">#F0C38E</item>
         <item name="tnAccentSoft">#1FF0C38E</item>
@@ -386,24 +386,24 @@
     </style>
     <!-- Sorot palettes: the screen still takes the focused app's colours; these set the base and the focus ring. -->
     <style name="ThemeOverlay.Look.Sorot.Arang" parent="">
-        <item name="tnBg1">#0B1220</item>
-        <item name="tnBg2">#142033</item>
+        <item name="tnBg1">#0B0E14</item>
+        <item name="tnBg2">#161B26</item>
         <item name="tnBlobA">#00000000</item>
         <item name="tnBlobB">#00000000</item>
-        <item name="tnSurface">#171E2B</item>
-        <item name="tnSurfaceRaised">#1F2532</item>
-        <item name="tnSurfaceFocus">#262C39</item>
-        <item name="tnHairline">#212734</item>
+        <item name="tnSurface">#171A20</item>
+        <item name="tnSurfaceRaised">#1F2127</item>
+        <item name="tnSurfaceFocus">#26292E</item>
+        <item name="tnHairline">#212429</item>
         <item name="tnCard">#14FFFFFF</item>
         <item name="tnChip">#1AFFFFFF</item>
         <item name="tnLine">#2EFFFFFF</item>
         <item name="tnText">#FFFFFF</item>
         <item name="tnMuted">#A5B1C4</item>
-        <item name="tnAccent">#8FD3FF</item>
-        <item name="tnAccentSoft">#1F8FD3FF</item>
-        <item name="tnAccentDim">#7EBAE0</item>
-        <item name="tnAccentGlow">#598FD3FF</item>
-        <item name="tnOnAccent">#0B1220</item>
+        <item name="tnAccent">#DCE6F2</item>
+        <item name="tnAccentSoft">#1FDCE6F2</item>
+        <item name="tnAccentDim">#C2CAD5</item>
+        <item name="tnAccentGlow">#59DCE6F2</item>
+        <item name="tnOnAccent">#0B0E14</item>
         <item name="tnWarm">#F1D3A1</item>
         <item name="tnAmber">#F2C27B</item>
         <item name="tnAmberBg">#1FF2C27B</item>
@@ -417,24 +417,24 @@
         <item name="tnIsLight">false</item>
     </style>
     <style name="ThemeOverlay.Look.Sorot.Hangat" parent="">
-        <item name="tnBg1">#120C08</item>
-        <item name="tnBg2">#22170F</item>
+        <item name="tnBg1">#120F0A</item>
+        <item name="tnBg2">#211B13</item>
         <item name="tnBlobA">#00000000</item>
         <item name="tnBlobB">#00000000</item>
-        <item name="tnSurface">#1E1814</item>
-        <item name="tnSurfaceRaised">#251F1C</item>
-        <item name="tnSurfaceFocus">#2C2723</item>
-        <item name="tnHairline">#27221E</item>
+        <item name="tnSurface">#1E1B16</item>
+        <item name="tnSurfaceRaised">#25221E</item>
+        <item name="tnSurfaceFocus">#2C2925</item>
+        <item name="tnHairline">#272520</item>
         <item name="tnCard">#14FFFFFF</item>
         <item name="tnChip">#1AFFFFFF</item>
         <item name="tnLine">#2EFFFFFF</item>
         <item name="tnText">#FFFFFF</item>
         <item name="tnMuted">#B9AB9C</item>
-        <item name="tnAccent">#FFC27A</item>
-        <item name="tnAccentSoft">#1FFFC27A</item>
-        <item name="tnAccentDim">#E0AB6B</item>
-        <item name="tnAccentGlow">#59FFC27A</item>
-        <item name="tnOnAccent">#120C08</item>
+        <item name="tnAccent">#FBE9D0</item>
+        <item name="tnAccentSoft">#1FFBE9D0</item>
+        <item name="tnAccentDim">#DDCDB7</item>
+        <item name="tnAccentGlow">#59FBE9D0</item>
+        <item name="tnOnAccent">#120F0A</item>
         <item name="tnWarm">#F1D3A1</item>
         <item name="tnAmber">#F2C27B</item>
         <item name="tnAmberBg">#1FF2C27B</item>
@@ -448,24 +448,24 @@
         <item name="tnIsLight">false</item>
     </style>
     <style name="ThemeOverlay.Look.Sorot.Pudina" parent="">
-        <item name="tnBg1">#07110E</item>
-        <item name="tnBg2">#0E1F1A</item>
+        <item name="tnBg1">#0A110E</item>
+        <item name="tnBg2">#131E19</item>
         <item name="tnBlobA">#00000000</item>
         <item name="tnBlobB">#00000000</item>
-        <item name="tnSurface">#131D1A</item>
-        <item name="tnSurfaceRaised">#1B2421</item>
-        <item name="tnSurfaceFocus">#222B29</item>
-        <item name="tnHairline">#1D2624</item>
+        <item name="tnSurface">#161D1A</item>
+        <item name="tnSurfaceRaised">#1E2421</item>
+        <item name="tnSurfaceFocus">#252B29</item>
+        <item name="tnHairline">#202624</item>
         <item name="tnCard">#14FFFFFF</item>
         <item name="tnChip">#1AFFFFFF</item>
         <item name="tnLine">#2EFFFFFF</item>
         <item name="tnText">#FFFFFF</item>
         <item name="tnMuted">#A2B8B0</item>
-        <item name="tnAccent">#8FF0C8</item>
-        <item name="tnAccentSoft">#1F8FF0C8</item>
-        <item name="tnAccentDim">#7ED3B0</item>
-        <item name="tnAccentGlow">#598FF0C8</item>
-        <item name="tnOnAccent">#07110E</item>
+        <item name="tnAccent">#DDF5EA</item>
+        <item name="tnAccentSoft">#1FDDF5EA</item>
+        <item name="tnAccentDim">#C2D8CE</item>
+        <item name="tnAccentGlow">#59DDF5EA</item>
+        <item name="tnOnAccent">#0A110E</item>
         <item name="tnWarm">#F1D3A1</item>
         <item name="tnAmber">#F2C27B</item>
         <item name="tnAmberBg">#1FF2C27B</item>
@@ -479,24 +479,24 @@
         <item name="tnIsLight">false</item>
     </style>
     <style name="ThemeOverlay.Look.Sorot.Mawar" parent="">
-        <item name="tnBg1">#12080C</item>
-        <item name="tnBg2">#221017</item>
+        <item name="tnBg1">#120B0E</item>
+        <item name="tnBg2">#20141A</item>
         <item name="tnBlobA">#00000000</item>
         <item name="tnBlobB">#00000000</item>
-        <item name="tnSurface">#1E1418</item>
-        <item name="tnSurfaceRaised">#251C1F</item>
-        <item name="tnSurfaceFocus">#2C2327</item>
-        <item name="tnHairline">#271E22</item>
+        <item name="tnSurface">#1E171A</item>
+        <item name="tnSurfaceRaised">#251F21</item>
+        <item name="tnSurfaceFocus">#2C2629</item>
+        <item name="tnHairline">#272124</item>
         <item name="tnCard">#14FFFFFF</item>
         <item name="tnChip">#1AFFFFFF</item>
         <item name="tnLine">#2EFFFFFF</item>
         <item name="tnText">#FFFFFF</item>
         <item name="tnMuted">#BCA6AE</item>
-        <item name="tnAccent">#FF9CC0</item>
-        <item name="tnAccentSoft">#1FFF9CC0</item>
-        <item name="tnAccentDim">#E089A9</item>
-        <item name="tnAccentGlow">#59FF9CC0</item>
-        <item name="tnOnAccent">#12080C</item>
+        <item name="tnAccent">#FBE0EA</item>
+        <item name="tnAccentSoft">#1FFBE0EA</item>
+        <item name="tnAccentDim">#DDC5CE</item>
+        <item name="tnAccentGlow">#59FBE0EA</item>
+        <item name="tnOnAccent">#120B0E</item>
         <item name="tnWarm">#F1D3A1</item>
         <item name="tnAmber">#F2C27B</item>
         <item name="tnAmberBg">#1FF2C27B</item>
