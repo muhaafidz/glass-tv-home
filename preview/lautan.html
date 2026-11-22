@@ -185,7 +185,7 @@ button:focus{outline:none}
   <!-- Islamic geometry (replaces the silhouette): an 8-point star lattice that drifts and a large
        rosette that turns, very slowly. Drawn once as lines; on the TV each is one small ALPHA_8 image
        (lattice tile ~120 px, rosette ~700 px ≈ 0.5 MB) moved by the 15 fps tick. Lite keeps it still. -->
-  <div class="geo" id="geo" data-g="a">
+  <div class="geo" id="geo" data-g="b">
     <svg class="lattice" aria-hidden="true">
       <defs><pattern id="tile" width="120" height="120" patternUnits="userSpaceOnUse"><g id="tileG"></g></pattern></defs>
       <rect width="100%" height="100%" fill="url(#tile)" style="stroke:none"/>
@@ -251,8 +251,8 @@ button:focus{outline:none}
 <div class="tools" aria-label="Preview controls">
   <button id="openMenu">Menu (M)</button>
   <button id="openTema">Tema (T)</button>
-  <button data-g="a" aria-pressed="true">Corak A</button>
-  <button data-g="b" aria-pressed="false">Corak B</button>
+  <button data-g="a" aria-pressed="false">Corak A</button>
+  <button data-g="b" aria-pressed="true">Corak B</button>
   <button data-g="none" aria-pressed="false">Tiada</button>
   <button id="lite" aria-pressed="false">Lite</button>
   <a href="tenang.html"><button>Tenang ↗</button></a>
@@ -367,7 +367,7 @@ button:focus{outline:none}
   function showGeo(g){geo.hidden=(g==='none');ros.style.display=(g==='a')?'':'none';
     document.querySelectorAll('.tools [data-g]').forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.g===g));});}
   document.querySelectorAll('.tools [data-g]').forEach(function(b){b.onclick=function(){showGeo(b.dataset.g);};});
-  showGeo((location.search.match(/geo=(\w+)/)||[])[1]||'a');
+  showGeo((location.search.match(/geo=(\w+)/)||[])[1]||'b');   // chosen: B, lattice only
   focusApp(0);
   if(/menu=tema/.test(location.search))openMenu('tema');else if(/menu/.test(location.search))openMenu('main');
 })();

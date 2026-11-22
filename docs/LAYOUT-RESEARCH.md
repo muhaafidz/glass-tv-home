@@ -138,3 +138,6 @@ star at the centre) turning very slowly, its two rings in opposite directions (1
 only. On the TV: the lattice is one ~120 px `ALPHA_8` tile repeated by a `BitmapShader` (a few KB of memory),
 the medallion one ~700 px `ALPHA_8` image per ring (~0.5 MB each), both tinted by the palette and moved by
 rotation and translation only, on the shared 15 fps tick. Lite shows them still.
+
+**Chosen (2026-11-22): Corak B**, the drifting 8-point-star lattice alone. The medallion stays in the mockup as
+Corak A but is not planned for the launcher: one tiled `ALPHA_8` image, translated at 15 fps.
