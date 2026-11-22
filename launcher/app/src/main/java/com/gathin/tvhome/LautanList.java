@@ -91,10 +91,11 @@ final class LautanList extends FrameLayout {
         for (int i = 0; i < n; i++) {
             final int pos = i;
             Drawable art = apps.bannerAt(i) != null ? apps.bannerAt(i) : apps.iconAt(i);
-            addRow(apps.nameAt(i), art, apps.bannerAt(i) != null, () -> apps.launchAt(pos), false, pos);
+            addRow(apps.nameAt(i), art, apps.bannerAt(i) != null, v -> apps.launchAt(pos, v), false, pos);
         }
         for (int i = 0; i < shortcuts.length; i++) {
-            addRow(shortcuts[i].label, null, false, shortcuts[i].action, i == 0, -1);
+            final Runnable run = shortcuts[i].action;
+            addRow(shortcuts[i].label, null, false, v -> run.run(), i == 0, -1);
         }
         if (focusedIndex >= 0 && focusedIndex < column.getChildCount()) column.getChildAt(focusedIndex).requestFocus();
     }
@@ -106,7 +107,7 @@ final class LautanList extends FrameLayout {
         v.requestFocus();
     }
 
-    private void addRow(String label, Drawable art, boolean isBanner, Runnable action, boolean gapAbove, int appPosition) {
+    private void addRow(String label, Drawable art, boolean isBanner, java.util.function.Consumer<View> action, boolean gapAbove, int appPosition) {
         int i = column.getChildCount();
         LinearLayout row = new LinearLayout(getContext());
         row.setOrientation(LinearLayout.HORIZONTAL);
@@ -150,7 +151,7 @@ final class LautanList extends FrameLayout {
         });
         row.setOnClickListener(v -> {
             SoundEffects.playSelect();
-            action.run();
+            action.accept(v);
         });
         row.setOnKeyListener((v, keyCode, event) -> {
             if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {

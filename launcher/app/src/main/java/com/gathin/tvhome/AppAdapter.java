@@ -342,7 +342,7 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.Holder> {
             h.label.setText(e.label);
             h.label.setVisibility(View.VISIBLE);
         }
-        h.card.setOnClickListener(v -> launch(e));
+        h.card.setOnClickListener(v -> launch(e, v));
         h.card.setOnLongClickListener(v -> {
             int pos = h.getBindingAdapterPosition();
             if (listener != null && pos != RecyclerView.NO_POSITION && listener.onTileHeld(pos, v)) return true;
@@ -406,7 +406,7 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.Holder> {
     }
 
     /** Opens the tile's activity by explicit component, with no extras: a card can name nothing else. */
-    private void launch(Entry e) {
+    private void launch(Entry e, View from) {
         SoundEffects.playSelect();
         if (e.kind == Entry.HOME_SETTINGS) {
             ctx.startActivity(new Intent(ctx, HomeSettingsActivity.class)
@@ -417,7 +417,7 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.Holder> {
             ChildModeManager.promptPin(ctx, "Aplikasi Dikunci", "Masukkan PIN 4-digit untuk membuka " + e.label, new ChildModeManager.PinCallback() {
                 @Override
                 public void onSuccess() {
-                    performLaunch(e);
+                    performLaunch(e, from);
                 }
 
                 @Override
@@ -425,17 +425,17 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.Holder> {
             });
             return;
         }
-        performLaunch(e);
+        performLaunch(e, from);
     }
 
-    private void performLaunch(Entry e) {
+    private void performLaunch(Entry e, View from) {
         Intent i = new Intent(Intent.ACTION_MAIN)
                 .addCategory(Intent.CATEGORY_LEANBACK_LAUNCHER)
                 .setComponent(e.component)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
         try {
             RecentAppsManager.recordAppLaunch(ctx, e.pkg);
-            ctx.startActivity(i);
+            ctx.startActivity(i, launchOptions(from));
         } catch (Exception ex) {
             Toast.makeText(ctx, ctx.getString(R.string.cant_open, e.label), Toast.LENGTH_SHORT).show();
         }
@@ -478,8 +478,23 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.Holder> {
         return position >= 0 && position < items.size() ? items.get(position).icon : null;
     }
 
-    void launchAt(int position) {
-        if (position >= 0 && position < items.size()) launch(items.get(position));
+    void launchAt(int position, View from) {
+        if (position >= 0 && position < items.size()) launch(items.get(position), from);
+    }
+
+    /**
+     * The opening transition: the app grows out of the pressed tile (Android's scale-up, nothing of ours runs),
+     * or a plain fade when there is no tile or motion is reduced.
+     */
+    private android.os.Bundle launchOptions(View from) {
+        try {
+            if (from != null && from.isAttachedToWindow() && !reducedMotion) {
+                return android.app.ActivityOptions.makeScaleUpAnimation(from, 0, 0, from.getWidth(), from.getHeight()).toBundle();
+            }
+            return android.app.ActivityOptions.makeCustomAnimation(ctx, android.R.anim.fade_in, android.R.anim.fade_out).toBundle();
+        } catch (RuntimeException ignored) {
+            return null;
+        }
     }
 
     String labelAt(int position) {
