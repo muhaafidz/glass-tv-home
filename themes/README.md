@@ -52,6 +52,8 @@ For a quick desktop styling mock (no emulator), open [`preview/quiet-canvas.html
 in a browser and switch between wallpapers or tweak its CSS variables. It is illustrative; the Android release
 build remains the source of truth.
 
+Colours: each look's palette lives in one block of `themes_tenang.xml`; see [docs/PALETTES.md](../docs/PALETTES.md) for the tokens and how to change them.
+
 ## Keys
 
 Every key is optional; a missing key keeps the value from `config.xml`, an unknown or wrongly typed key

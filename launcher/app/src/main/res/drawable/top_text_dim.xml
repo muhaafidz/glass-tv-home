@@ -2,6 +2,6 @@
 <!-- Secondary text in the Inputs list (connection status): a little brighter when focused, on the
      half-black fill. -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_focused="true" android:color="#B3FFFFFF" />
-    <item android:color="#73FFFFFF" />
+    <item android:state_focused="true" android:color="?attr/tnText" />
+    <item android:color="?attr/tnMuted" />
 </selector>

@@ -38,7 +38,7 @@ final class SlashDrawable extends Drawable {
         float edge = 8 * density, top = 3 * density;
         paint.setColor(Design.ACCENT);
         c.drawRect(b.left + shift + edge, b.top + top, b.right + shift + edge, b.bottom, paint);
-        paint.setColor(0xFFFFFFFF);
+        paint.setColor(Design.TEXT);   // the bar is the look's text colour (white in Lautan)
         c.drawRect(b.left + shift, b.top + top, b.right + shift, b.bottom, paint);
         c.restore();
     }
