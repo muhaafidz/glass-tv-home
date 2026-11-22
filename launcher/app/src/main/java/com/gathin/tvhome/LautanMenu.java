@@ -175,34 +175,12 @@ final class LautanMenu extends FrameLayout {
 
     private Drawable slashStates() {
         StateListDrawable s = new StateListDrawable();
-        s.addState(new int[]{android.R.attr.state_focused}, new Slash());
+        s.addState(new int[]{android.R.attr.state_focused}, new SlashDrawable(density));
         s.addState(new int[]{}, new android.graphics.drawable.ColorDrawable(0));
         return s;
     }
 
     private int dp(float v) {
         return Math.round(v * density);
-    }
-
-    /** The focused entry's slash: a slanted white bar with the accent's red edge to its right. */
-    private final class Slash extends Drawable {
-        private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-
-        @Override
-        public void draw(@NonNull Canvas c) {
-            Rect b = getBounds();
-            c.save();
-            c.skew(-0.21f, 0f);
-            float shift = b.height() * 0.21f / 2f;
-            paint.setColor(Design.ACCENT);
-            c.drawRect(b.left + shift + dp(8), b.top + dp(3), b.right + shift + dp(8), b.bottom, paint);
-            paint.setColor(0xFFFFFFFF);
-            c.drawRect(b.left + shift, b.top + dp(3), b.right + shift, b.bottom, paint);
-            c.restore();
-        }
-
-        @Override public void setAlpha(int alpha) { paint.setAlpha(alpha); }
-        @Override public void setColorFilter(ColorFilter cf) { paint.setColorFilter(cf); }
-        @Override public int getOpacity() { return PixelFormat.TRANSLUCENT; }
     }
 }

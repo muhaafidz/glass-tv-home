@@ -22,6 +22,7 @@ public class EqualHeightRow extends LinearLayout {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        if (getOrientation() != HORIZONTAL) return;   // stacked (Lautan's right column): natural heights
         int tallest = 0;
         for (int i = 0; i < getChildCount(); i++) {
             View c = getChildAt(i);

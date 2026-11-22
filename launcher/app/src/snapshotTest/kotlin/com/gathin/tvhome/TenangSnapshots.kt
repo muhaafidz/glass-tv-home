@@ -85,37 +85,53 @@ class TenangSnapshots {
             android.widget.FrameLayout.LayoutParams(android.view.ViewGroup.LayoutParams.MATCH_PARENT, android.view.ViewGroup.LayoutParams.MATCH_PARENT))
     }
 
-    /** A look on top of Malam, as Tenang.applyLook does, with the look's type and backdrop. */
+    /** A look on top of Malam, as Tenang.applyLook does, placed as MainActivity places it. */
     private fun look(overlay: Int, art: Int?) {
         paparazzi.context.theme.applyStyle(R.style.ThemeOverlay_Tenang_Malam, true)
         paparazzi.context.theme.applyStyle(overlay, true)
         Design.load(paparazzi.context)
-        val view = LayoutInflater.from(paparazzi.context).inflate(R.layout.activity_main, null)
+        val view = LayoutInflater.from(paparazzi.context).inflate(R.layout.activity_main, null) as android.widget.FrameLayout
         fill(view)
-        LookType.apply(view)
-        if (art != null) {
-            val ambient = (view as android.widget.FrameLayout).getChildAt(0) as AmbientView
+        val d = view.resources.displayMetrics.density
+        val dock = view.getChildAt(view.childCount - 1)
+        val shelf = view.findViewById<View>(R.id.islamicShelf)
+        if (art == null) {
+            // Lautan: the list on the left (stand-in rows), the grid and dock hidden, the rail under the chips.
+            LookType.apply(view)
+            dock.visibility = View.GONE
+            val list = LautanList(view.context) {}
+            val rows = listOf("YouTube", "Netflix", "HBO Max", "Media Player", "Live TV", "Spotify")
+                .map { LautanList.Shortcut(it, Runnable {}) } + listOf("INPUT", "CUACA", "SOLAT", "TEMA", "TETAPAN").map { LautanList.Shortcut(it, Runnable {}) }
+            list.rebuild(null, rows.toTypedArray())
+            view.addView(list, android.widget.FrameLayout.LayoutParams((maxOf(view.resources.displayMetrics.widthPixels, view.resources.displayMetrics.heightPixels) * 0.40f).toInt(), -1).apply {
+                leftMargin = (40 * d).toInt(); topMargin = (30 * d).toInt() })
+            val chips = view.findViewById<View>(R.id.weatherRow)
+            shelf.viewTreeObserver.addOnPreDrawListener {
+                val c = android.graphics.Rect(0, 0, chips.width, chips.height)
+                view.offsetDescendantRectToMyCoords(chips, c); shelf.y = c.bottom + 18 * d; true }
+        } else {
+            val ambient = view.getChildAt(0) as AmbientView
             val tiny = android.graphics.Bitmap.createBitmap(32, 18, android.graphics.Bitmap.Config.ARGB_8888)
             val c = android.graphics.Canvas(tiny)
             c.drawColor(art)
             c.drawRect(20f, 2f, 30f, 9f, android.graphics.Paint().apply { color = 0xFF3D0A0D.toInt() })
             c.drawRect(0f, 12f, 32f, 18f, android.graphics.Paint().apply { color = 0xFF140203.toInt() })
             ambient.setArt(tiny, false)
-            // Sorot's arrangement, as MainActivity places it: app row under the header, hero, cards at the bottom.
-            val d = view.resources.displayMetrics.density
-            val dock = view.getChildAt(view.childCount - 1)
-            (dock.layoutParams as android.widget.FrameLayout.LayoutParams).topMargin = (150 * d).toInt()
+            LookType.apply(view)
+            // Sorot: strip under the chips, the app row, the hero, and the ayah beside the hero on the right.
+            view.findViewById<TextView>(R.id.prayerStrip).text =
+                "SETERUSNYA  Maghrib 19:01  ·  dalam 2j 16m      Subuh 05:46    Zohor 13:02    Asar 16:22    Isyak 20:13      1 Jamadilakhir 1448H · Shah Alam"
+            (dock.layoutParams as android.widget.FrameLayout.LayoutParams).topMargin = (180 * d).toInt()
             view.findViewById<TextView>(R.id.sorotTitle).text = "Netflix"
-            LookType.apply(view)   // after fill(): Sorot trims the ayah to two lines
             val hero = view.findViewById<View>(R.id.sorotHero)
-            hero.y = (150 + 68 + 20) * d
-            val shelf = view.findViewById<View>(R.id.islamicShelf)
-            shelf.viewTreeObserver.addOnPreDrawListener { shelf.y = view.height - shelf.height - 22 * d; true }
+            hero.y = (180 + 68 + 20) * d
+            shelf.viewTreeObserver.addOnPreDrawListener { shelf.y = hero.y; true }
         }
         paparazzi.snapshot(view)
     }
 
     @Test fun lookLautan() = look(R.style.ThemeOverlay_Look_Lautan, null)
+    @Test fun lookSorot() = look(R.style.ThemeOverlay_Look_Sorot, 0xFFC8101E.toInt())
 
     @Test fun lookLautanMenu() {
         paparazzi.context.theme.applyStyle(R.style.ThemeOverlay_Tenang_Malam, true)
@@ -130,7 +146,6 @@ class TenangSnapshots {
         menu.open()
         paparazzi.snapshot(view)
     }
-    @Test fun lookSorot() = look(R.style.ThemeOverlay_Look_Sorot, 0xFFC8101E.toInt())
 
     @Test fun homeMalam() = home(R.style.ThemeOverlay_Tenang_Malam)
     @Test fun homeSenja() = home(R.style.ThemeOverlay_Tenang_Senja)

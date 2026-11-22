@@ -195,6 +195,8 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     private AyahBlock ayahUi;
     /** Lautan's slanted Home menu; null in other looks. */
     private LautanMenu lautanMenu;
+    /** Lautan's vertical Home list (the grid is hidden in Lautan); null in other looks. */
+    private LautanList lautanList;
     private TextView shamsiDate;
     private TextView prayerTimesView;
     private TextView weatherAirQualityView;
@@ -614,7 +616,10 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         });
         View homeRoot = findViewById(R.id.root);
         LookType.apply(homeRoot);
-        if (Design.BACKDROP == 1) setUpLautanMenu();
+        if (Design.BACKDROP == 1) {
+            setUpLautanMenu();
+            setUpLautanList();
+        }
         clockBlock = new ClockBlock(homeRoot);
         prayerUi = new PrayerBlock(homeRoot);
         statusChips = new StatusChips(homeRoot);
@@ -1491,6 +1496,35 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         }
     }
 
+    /** Lautan: the slanted vertical list on the left replaces the grid; Left from it opens the menu. */
+    private void setUpLautanList() {
+        lautanList = new LautanList(this, () -> {
+            if (lautanMenu != null) lautanMenu.open();
+        });
+        android.util.DisplayMetrics dm = getResources().getDisplayMetrics();
+        int w = Math.round(Math.max(dm.widthPixels, dm.heightPixels) * 0.40f);
+        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(w, ViewGroup.LayoutParams.MATCH_PARENT);
+        lp.leftMargin = Math.round(40 * density);
+        lp.topMargin = Math.round(30 * density);
+        root.addView(lautanList, lp);
+        View gw = findViewById(R.id.gridWrap);
+        if (gw != null) gw.setVisibility(View.INVISIBLE);   // laid out (the dock maths still runs) but never focused
+        lautanList.rebuild(adapter, lautanShortcuts());
+    }
+
+    private LautanList.Shortcut[] lautanShortcuts() {
+        return new LautanList.Shortcut[]{
+                new LautanList.Shortcut("INPUT", this::showInputs),
+                new LautanList.Shortcut("CUACA", () -> startActivity(new Intent(this, WeatherActivity.class))),
+                new LautanList.Shortcut("SOLAT", this::showPrayerPopup),
+                new LautanList.Shortcut("TEMA", () -> {
+                    Tenang.setChoice(this, Tenang.nextChoice(Tenang.choice(this)));
+                    paletteCheck(true);
+                }),
+                new LautanList.Shortcut("TETAPAN", this::showSettingsPopup),
+        };
+    }
+
     /** Lautan's menu: the entries call what Home already does. ◀ from the first app or Menu opens it. */
     private void setUpLautanMenu() {
         LautanMenu.Entry[] entries = {
@@ -1646,6 +1680,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             ambient.setAlpha(0f);
             syncGlassGlow();
         }
+        if (lautanList != null) lautanList.rebuild(adapter, lautanShortcuts());
         android.util.Log.i("TvHome.Perf", "tiles " + (rebuilt ? "rebuilt" : "unchanged") + " in "
                 + (android.os.SystemClock.uptimeMillis() - started) + " ms");
         // The tiles rise into place on the first launch only. Replayed on every return from an app,
@@ -2263,8 +2298,20 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
      * clock grew.
      */
     private float infoRailTop(int railHeight) {
-        // Sorot: the cards sit along the bottom of the screen.
-        if (Design.BACKDROP == 2 && root != null && root.getHeight() > 0) return root.getHeight() - railHeight - 22 * density;
+        // Lautan: the right column, under the weather chips.
+        if (Design.BACKDROP == 1) {
+            View chips = findViewById(R.id.weatherRow);
+            if (chips != null && chips.getHeight() > 0) {
+                Rect c = new Rect(0, 0, chips.getWidth(), chips.getHeight());
+                root.offsetDescendantRectToMyCoords(chips, c);
+                return c.bottom + 18 * density;
+            }
+        }
+        // Sorot: beside the hero, on the right (the prayer times are a strip at the top).
+        if (Design.BACKDROP == 2) {
+            View hero = findViewById(R.id.sorotHero);
+            if (hero != null && hero.getVisibility() == View.VISIBLE && hero.getY() > 0) return hero.getY();
+        }
         float dockTop = infoRailBottom + INFO_RAIL_GAP_DP * density;
         float minGap = 18 * density;
         View above = nowPlayingCard != null && nowPlayingCard.getVisibility() == View.VISIBLE
@@ -2724,6 +2771,10 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     };
 
     private void focusTile(int position) {
+        if (lautanList != null) {   // Lautan: the list stands in for the grid
+            lautanList.focus(position);
+            return;
+        }
         if (adapter.getItemCount() == 0) {
             (btnWifi.getVisibility() == View.VISIBLE ? btnWifi : findViewById(R.id.btnSettings)).requestFocus();
             return;
@@ -3210,7 +3261,42 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         if (items != null && items.length >= 6) {
             prayerUi.setPrayers(items, isAnimationsEnabled());
             updatePrayerCountdown();
+            if (Design.BACKDROP == 2) updatePrayerStrip(items, zoneTitle);
         }
+    }
+
+    /** Sorot's strip: "SETERUSNYA  Maghrib 19:01 · dalam 2j 16m    Subuh 05:46  Zohor 13:02 …    1 Jamadilakhir 1448H · Shah Alam". */
+    private void updatePrayerStrip(PrayerTimes.PrayerItem[] items, String zone) {
+        TextView strip = findViewById(R.id.prayerStrip);
+        if (strip == null || items == null || items.length < 6) return;
+        android.text.SpannableStringBuilder b = new android.text.SpannableStringBuilder();
+        int next = 0;
+        for (int i = 0; i < 6; i++) if (items[i].isNext) next = i;
+        String lang = AppLanguage.getLanguage(this);
+        long[] t = PrayerTimes.todayTimes(this);
+        String in = "";
+        if (t != null && t.length >= 6) {
+            long now = System.currentTimeMillis();
+            long[] w = HomeText.window(t, now);
+            in = "  ·  " + HomeText.nextIn(lang, "", (w[3] - now + 59_999) / 60_000).trim();
+        }
+        int s0 = b.length();
+        b.append(AppLanguage.LANG_EN.equals(lang) ? "NEXT  " : "SETERUSNYA  ");
+        b.setSpan(new android.text.style.ForegroundColorSpan(Design.TEXT_MUTED), s0, b.length(), 0);
+        s0 = b.length();
+        b.append(items[next].name).append(" ").append(items[next].timeStr);
+        b.setSpan(new android.text.style.StyleSpan(Typeface.BOLD), s0, b.length(), 0);
+        b.append(in).append("      ");
+        for (int i = 0; i < 6; i++) {
+            if (i == next || i == 1) continue;   // the next one is above; Syuruk is a time, not a prayer
+            s0 = b.length();
+            b.append(items[i].name).append(" ").append(items[i].timeStr).append("    ");
+            b.setSpan(new android.text.style.ForegroundColorSpan(items[i].isPast ? Design.ink(0x80) : Design.TEXT_MUTED), s0, b.length(), 0);
+        }
+        s0 = b.length();
+        b.append("  ").append(PrayerTimes.getHijriDate(this)).append(" · ").append(zone);
+        b.setSpan(new android.text.style.ForegroundColorSpan(Design.TEXT_MUTED), s0, b.length(), 0);
+        strip.setText(b);
     }
 
     /** "Isyak ━━━━━ Subuh dalam 5j 36m": the previous prayer, a progress bar and time left to the next. */

@@ -224,3 +224,18 @@ belongs at the top or on the right.
 - In the launcher this replaces §9's arrangements: Lautan needs a one-column app list (a list item layout for
   the existing adapter) and the rail moved to a right column; Sorot moves the prayer card into a one-line strip
   under the top bar and the ayah card to the right of the hero.
+
+## 11. Built: the revised arrangements (6.1.0, 2026-11-22)
+
+- [x] **Lautan**: `LautanList`, the apps (from the same `AppAdapter`, so order, hidden apps and cards are one
+  source) then INPUT, CUACA, SOLAT, TEMA, TETAPAN, as a slanted vertical list on the left (40 % of the width)
+  that scrolls; the focused row on the slash (`SlashDrawable`, shared with the menu). The grid stays laid out
+  but invisible, and `focusTile` goes to the list. ◀ from the list or Menu opens the full menu. The clock, date
+  and chips move to the right, the top buttons give way, and the prayer and ayah cards stack in a right column
+  (46 %, prayer times first, ayah two lines).
+- [x] **Sorot**: the prayer times as a one-line strip under the chips ("SETERUSNYA Maghrib 19:01 · dalam 2j 16m",
+  the others, Hijri date and zone), the app row, the hero, and the ayah card beside the hero on the right;
+  nothing Islamic at the bottom.
+- [x] Version 6.1.0 (code 62). 68 tests; snapshots `lookLautan`, `lookSorot`, `lookLautanMenu`.
+- Publishing: `release/` and `version.json` are untouched. The OTA build must be signed with the key behind
+  5.0.0 and 6.0.0 (`f2ebc93c…`), which is not in this repository; build and sign 6.1.0 where 6.0.0 was made.

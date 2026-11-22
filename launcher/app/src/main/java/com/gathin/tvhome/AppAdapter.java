@@ -465,6 +465,23 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.Holder> {
         return -1;
     }
 
+    /** For Lautan's list (LautanList): the app's name, banner, icon, and opening it. */
+    String nameAt(int position) {
+        return position >= 0 && position < items.size() ? items.get(position).name : "";
+    }
+
+    Drawable bannerAt(int position) {
+        return position >= 0 && position < items.size() ? items.get(position).banner : null;
+    }
+
+    Drawable iconAt(int position) {
+        return position >= 0 && position < items.size() ? items.get(position).icon : null;
+    }
+
+    void launchAt(int position) {
+        if (position >= 0 && position < items.size()) launch(items.get(position));
+    }
+
     String labelAt(int position) {
         return position >= 0 && position < items.size() ? items.get(position).label : "";
     }

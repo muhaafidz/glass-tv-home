@@ -679,6 +679,25 @@
             </LinearLayout>
 
             <!-- Now Playing Widget Card: Matching bravia-glass-tv design -->
+            <!-- Sorot: the prayer times as one strip under the chips (top of the screen). Hidden in other looks. -->
+            <TextView
+                android:id="@+id/prayerStrip"
+                android:layout_width="match_parent"
+                android:layout_height="32dp"
+                android:layout_below="@id/weatherRow"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/tn_chip"
+                android:gravity="center_vertical"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:includeFontPadding="false"
+                android:textColor="?attr/tnText"
+                android:textSize="13sp"
+                android:fontFamily="@font/outfit"
+                android:visibility="gone" />
             <LinearLayout
                 android:id="@+id/nowPlayingCard"
                 android:layout_width="wrap_content"
