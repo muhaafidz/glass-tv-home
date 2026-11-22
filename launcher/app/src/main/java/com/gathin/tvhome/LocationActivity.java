@@ -44,7 +44,7 @@ public class LocationActivity extends Activity {
         LinearLayout page = new LinearLayout(this);
         page.setOrientation(LinearLayout.VERTICAL);
         page.setPadding(dp(64), dp(40), dp(64), dp(28));
-        page.setBackground(new GradientDrawable(GradientDrawable.Orientation.TL_BR, new int[]{0xFF1E2A3A, 0xFF0A0E14}));
+        page.setBackground(new GradientDrawable(GradientDrawable.Orientation.TL_BR, new int[]{Design.BG2, Design.BG1}));
         String lang = AppLanguage.getLanguage(this);
         String title = AppLanguage.strLocation(this);
         String subtitle;
@@ -141,7 +141,7 @@ public class LocationActivity extends Activity {
             top.addView(town, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
             boolean isNow = z.code.equals(current);
             String nowPrefix = AppLanguage.strNowBadge(this);
-            TextView code = text(isNow ? nowPrefix + "  ·  " + z.code : z.code, 13, isNow ? 0xFF30D158 : Design.ink(0x99), 600);
+            TextView code = text(isNow ? nowPrefix + "  ·  " + z.code : z.code, 13, isNow ? Design.GOOD : Design.ink(0x99), 600);
             top.addView(code);
             row.addView(top);
             TextView districts = text(z.districts, 13, Design.ink(0x99), 400);
@@ -194,7 +194,7 @@ public class LocationActivity extends Activity {
         GradientDrawable on = new GradientDrawable();
         on.setColor(Design.ink(0x33));
         on.setCornerRadius(dp(14));
-        on.setStroke(dp(2), 0xFF64D2FF);
+        on.setStroke(dp(2), Design.ACCENT);
         GradientDrawable off = new GradientDrawable();
         off.setColor(Design.ink(0x14));
         off.setCornerRadius(dp(14));

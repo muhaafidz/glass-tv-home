@@ -5791,7 +5791,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         GradientDrawable cardBg = new GradientDrawable();
         cardBg.setColor(Design.ink(0x24));
         cardBg.setCornerRadius(14 * density);
-        cardBg.setStroke((int) (1.8f * density), 0x8064D2FF);
+        cardBg.setStroke((int) (1.8f * density), Design.alpha(Design.ACCENT, 0x80));
         statusCard.setBackground(cardBg);
 
         Location.Zone zone = Location.chosen(this);

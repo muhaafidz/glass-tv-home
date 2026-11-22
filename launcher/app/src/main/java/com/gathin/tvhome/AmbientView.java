@@ -104,11 +104,11 @@ final class AmbientView extends FrameLayout {
             artFront = art(ctx);
             View shade = new View(ctx);
             shade.setBackground(new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,
-                    new int[]{0x8C05070D, 0x0005070D, 0x0005070D, 0xD905070D, 0xFF05070D}));
+                    new int[]{Design.alpha(Design.BG1, 0x8C), Design.alpha(Design.BG1, 0), Design.alpha(Design.BG1, 0), Design.alpha(Design.BG1, 0xD9), Design.BG1}));
             addView(shade, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
             View side = new View(ctx);
             side.setBackground(new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT,
-                    new int[]{0xBF05070D, 0x2605070D, 0x0005070D}));
+                    new int[]{Design.alpha(Design.BG1, 0xBF), Design.alpha(Design.BG1, 0x26), Design.alpha(Design.BG1, 0)}));
             addView(side, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         }
     }
