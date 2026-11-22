@@ -194,10 +194,12 @@ public final class ProfileManager {
         List<UserProfile> list = getAllProfiles(context);
         for (UserProfile p : list) {
             if (profileId.equals(p.id)) {
+                Tenang.saveForProfile(context);   // the outgoing profile keeps its look...
                 getPrefs(context).edit()
                         .putString(KEY_ACTIVE_PROFILE_ID, p.id)
                         .putString(KEY_LEGACY_NAME, p.name)
                         .apply();
+                Tenang.loadForProfile(context, p.id);   // ...and the incoming one gets its own
                 return;
             }
         }

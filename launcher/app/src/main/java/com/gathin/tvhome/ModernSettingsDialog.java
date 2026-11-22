@@ -854,7 +854,7 @@ public final class ModernSettingsDialog {
                             Tenang.setLook(activity, Tenang.next(Tenang.LOOKS, curLook));
                             if (renderRightPane[0] != null) renderRightPane[0].run();
                         }));
-                rightContent.addView(buildCardRow(activity, density, outfit,
+                LinearLayout warnaCard = buildCardRow(activity, density, outfit,
                         "🌈 Warna: " + Tenang.label(activity, curPalette)
                                 + "  (" + (java.util.Arrays.asList(Tenang.palettesOf(curLook)).indexOf(curPalette) + 1)
                                 + "/" + Tenang.palettesOf(curLook).length + ")",
@@ -862,7 +862,9 @@ public final class ModernSettingsDialog {
                         () -> {
                             Tenang.setPalette(activity, curLook, Tenang.next(Tenang.palettesOf(curLook), curPalette));
                             if (renderRightPane[0] != null) renderRightPane[0].run();
-                        }));
+                        });
+                warnaCard.addView(Swatches.row(activity, curLook, curPalette, density));   // choose by sight
+                rightContent.addView(warnaCard);
                 rightContent.addView(buildSwitchRow(activity, density, outfit,
                         "🌙 Jangan guna tema cerah",
                         "Automatik hanya guna Malam & Senja (tiada Embun pada waktu siang)",

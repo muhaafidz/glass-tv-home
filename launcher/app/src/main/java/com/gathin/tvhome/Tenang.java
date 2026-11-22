@@ -258,11 +258,47 @@ final class Tenang {
 
     static void setLook(Context ctx, String look) {
         ctx.getSharedPreferences("theme_prefs", Context.MODE_PRIVATE).edit().putString("look", normaliseLook(look)).apply();
+        saveForProfile(ctx);
+    }
+
+    // ---- A look per profile: each profile remembers its own look and palettes ----
+
+    private static final String[] PROFILE_KEYS = {"look", "palette", "lautan_palette", "sorot_palette"};
+
+    /** Saves the current look and palettes as the active profile's own. */
+    static void saveForProfile(Context ctx) {
+        try {
+            android.content.SharedPreferences p = ctx.getSharedPreferences("theme_prefs", Context.MODE_PRIVATE);
+            org.json.JSONObject o = new org.json.JSONObject();
+            for (String k : PROFILE_KEYS) if (p.getString(k, null) != null) o.put(k, p.getString(k, null));
+            p.edit().putString("profile_look_" + ProfileManager.getActiveProfile(ctx).id, o.toString()).apply();
+        } catch (Exception ignored) {
+            // The look is a nicety: a profile without one keeps what is set.
+        }
+    }
+
+    /**
+     * Switching profile: the outgoing profile's look is saved first (done by the caller via saveForProfile),
+     * then the incoming profile's is restored; a profile that never chose one starts on Tenang, Automatik.
+     */
+    static void loadForProfile(Context ctx, String profileId) {
+        try {
+            android.content.SharedPreferences p = ctx.getSharedPreferences("theme_prefs", Context.MODE_PRIVATE);
+            String saved = p.getString("profile_look_" + profileId, null);
+            org.json.JSONObject o = saved != null ? new org.json.JSONObject(saved) : new org.json.JSONObject();
+            android.content.SharedPreferences.Editor e = p.edit();
+            for (String k : PROFILE_KEYS) {
+                if (o.has(k)) e.putString(k, o.getString(k)); else e.remove(k);
+            }
+            e.apply();
+        } catch (Exception ignored) {
+        }
     }
 
     static void setPalette(Context ctx, String look, String palette) {
         String key = LOOK_TENANG.equals(look) ? "palette" : look + "_palette";
         ctx.getSharedPreferences("theme_prefs", Context.MODE_PRIVATE).edit().putString(key, normalisePalette(look, palette)).apply();
+        saveForProfile(ctx);
     }
 
     /**
@@ -276,13 +312,29 @@ final class Tenang {
     }
 
     /** Malam's tokens as the base, then the look's overlay on top (its colours, focus shape, backdrop). */
+    /** Applies a key's overlays to a theme: "look:palette" (Malam's tokens, the look, its palette) or a Tenang palette. */
+    static void overlays(android.content.res.Resources.Theme theme, String key) {
+        int colon = key.indexOf(':');
+        if (colon > 0) {
+            String look = key.substring(0, colon);
+            theme.applyStyle(R.style.ThemeOverlay_Tenang_Malam, true);
+            theme.applyStyle(LOOK_LAUTAN.equals(look) ? R.style.ThemeOverlay_Look_Lautan : R.style.ThemeOverlay_Look_Sorot, true);
+            int colours = lookPaletteOverlay(key.substring(colon + 1));
+            if (colours != 0) theme.applyStyle(colours, true);
+        } else {
+            theme.applyStyle(overlayFor(key), true);
+        }
+    }
+
+    /** The screensaver's key: the current look's (Lautan, Sorot), or Malam for Tenang (bright is not calm at rest). */
+    static String screensaverKey(Context ctx) {
+        String key = currentKey(ctx);
+        return key.indexOf(':') > 0 ? key : MALAM;
+    }
+
     /** key = "look:palette": Malam's tokens as the base, the look's overlay, then its palette's colours. */
     private static String applyLook(Activity activity, String key) {
-        String look = key.substring(0, key.indexOf(':'));
-        activity.getTheme().applyStyle(R.style.ThemeOverlay_Tenang_Malam, true);
-        activity.getTheme().applyStyle(LOOK_LAUTAN.equals(look) ? R.style.ThemeOverlay_Look_Lautan : R.style.ThemeOverlay_Look_Sorot, true);
-        int colours = lookPaletteOverlay(key.substring(key.indexOf(':') + 1));
-        if (colours != 0) activity.getTheme().applyStyle(colours, true);
+        overlays(activity.getTheme(), key);
         Design.load(activity);
         applied = key;
         if (activity.getWindow() != null) activity.getWindow().setBackgroundDrawable(new ColorDrawable(Design.BG1));

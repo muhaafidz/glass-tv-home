@@ -915,6 +915,16 @@ final class PrayerTimes {
         }
     }
 
+    /** {day, month} of today's Hijri date (1..30, 1..12), or {0, 0} when unavailable. */
+    static int[] hijriParts() {
+        try {
+            java.time.chrono.HijrahDate h = java.time.chrono.HijrahDate.now();
+            return new int[]{h.get(java.time.temporal.ChronoField.DAY_OF_MONTH), h.get(java.time.temporal.ChronoField.MONTH_OF_YEAR)};
+        } catch (Exception e) {
+            return new int[]{0, 0};
+        }
+    }
+
     static String getHijriDate() {
         return getHijriDate(null);
     }

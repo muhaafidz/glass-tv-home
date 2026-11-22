@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -342,7 +343,7 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.Holder> {
             h.label.setText(e.label);
             h.label.setVisibility(View.VISIBLE);
         }
-        h.card.setOnClickListener(v -> launch(e));
+        h.card.setOnClickListener(v -> launch(e, v));
         h.card.setOnLongClickListener(v -> {
             int pos = h.getBindingAdapterPosition();
             if (listener != null && pos != RecyclerView.NO_POSITION && listener.onTileHeld(pos, v)) return true;
@@ -406,7 +407,7 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.Holder> {
     }
 
     /** Opens the tile's activity by explicit component, with no extras: a card can name nothing else. */
-    private void launch(Entry e) {
+    private void launch(Entry e, View from) {
         SoundEffects.playSelect();
         if (e.kind == Entry.HOME_SETTINGS) {
             ctx.startActivity(new Intent(ctx, HomeSettingsActivity.class)
@@ -417,7 +418,7 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.Holder> {
             ChildModeManager.promptPin(ctx, "Aplikasi Dikunci", "Masukkan PIN 4-digit untuk membuka " + e.label, new ChildModeManager.PinCallback() {
                 @Override
                 public void onSuccess() {
-                    performLaunch(e);
+                    performLaunch(e, from);
                 }
 
                 @Override
@@ -425,17 +426,17 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.Holder> {
             });
             return;
         }
-        performLaunch(e);
+        performLaunch(e, from);
     }
 
-    private void performLaunch(Entry e) {
+    private void performLaunch(Entry e, View from) {
         Intent i = new Intent(Intent.ACTION_MAIN)
                 .addCategory(Intent.CATEGORY_LEANBACK_LAUNCHER)
                 .setComponent(e.component)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
         try {
             RecentAppsManager.recordAppLaunch(ctx, e.pkg);
-            ctx.startActivity(i);
+            ctx.startActivity(i, launchOptions(from));
         } catch (Exception ex) {
             Toast.makeText(ctx, ctx.getString(R.string.cant_open, e.label), Toast.LENGTH_SHORT).show();
         }
@@ -478,8 +479,23 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.Holder> {
         return position >= 0 && position < items.size() ? items.get(position).icon : null;
     }
 
-    void launchAt(int position) {
-        if (position >= 0 && position < items.size()) launch(items.get(position));
+    void launchAt(int position, View from) {
+        if (position >= 0 && position < items.size()) launch(items.get(position), from);
+    }
+
+    /**
+     * The opening transition: the app grows out of the pressed tile (Android's scale-up, nothing of ours runs),
+     * or a plain fade when there is no tile or motion is reduced.
+     */
+    private android.os.Bundle launchOptions(View from) {
+        try {
+            if (from != null && from.isAttachedToWindow() && !reducedMotion) {
+                return android.app.ActivityOptions.makeScaleUpAnimation(from, 0, 0, from.getWidth(), from.getHeight()).toBundle();
+            }
+            return android.app.ActivityOptions.makeCustomAnimation(ctx, android.R.anim.fade_in, android.R.anim.fade_out).toBundle();
+        } catch (RuntimeException ignored) {
+            return null;
+        }
     }
 
     String labelAt(int position) {
@@ -596,12 +612,30 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.Holder> {
     }
 
     static final class Holder extends RecyclerView.ViewHolder {
+        /** The sheen crosses the tile once (0.45 s, movement only); on losing focus it stops and hides. */
+        void sweep(boolean focused, float density) {
+            sheen.animate().cancel();
+            if (!focused) {
+                sheen.setVisibility(View.INVISIBLE);
+                return;
+            }
+            float w = card.getWidth();
+            if (w <= 0) return;
+            sheen.setTranslationX(-56 * density);
+            sheen.setVisibility(View.VISIBLE);
+            sheen.animate().translationX(w).setDuration(450)
+                    .setInterpolator(new android.view.animation.PathInterpolator(0.4f, 0f, 0.2f, 1f))
+                    .withEndAction(() -> sheen.setVisibility(View.INVISIBLE)).start();
+        }
+
         final View card;
         final ImageView banner;
         final ImageView icon;
         final TextView label;
         final TextView name;
         boolean reducedMotion;
+        /** A soft diagonal highlight that crosses the banner once when focus lands (hidden otherwise). */
+        private final View sheen;
 
         Holder(View v, TileListener listener, boolean reducedMotion) {
             super(v);
@@ -621,6 +655,17 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.Holder> {
                 }
             });
             card.setClipToOutline(true);
+
+            sheen = new View(v.getContext());
+            sheen.setBackground(new android.graphics.drawable.GradientDrawable(
+                    android.graphics.drawable.GradientDrawable.Orientation.LEFT_RIGHT,
+                    new int[]{0x00FFFFFF, 0x38FFFFFF, 0x00FFFFFF}));
+            sheen.setRotation(14f);
+            sheen.setVisibility(View.INVISIBLE);
+            if (card instanceof FrameLayout) {
+                ((FrameLayout) card).addView(sheen, new FrameLayout.LayoutParams(
+                        Math.round(56 * density), Math.round(240 * density), android.view.Gravity.CENTER_VERTICAL));
+            }
 
             card.setOnKeyListener((view, keyCode, event) -> {
                 if (event.getAction() != KeyEvent.ACTION_DOWN) return false;
@@ -651,6 +696,7 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.Holder> {
                     name.animate().alpha(focused ? 1f : 0f)
                             .translationY(focused ? density * 3f : -density * 5f)
                             .setDuration(160).withLayer().start();
+                    sweep(focused, density);
                 }
                 int pos = getBindingAdapterPosition();
                 if (focused && listener != null && pos != RecyclerView.NO_POSITION) {

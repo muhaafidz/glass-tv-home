@@ -73,6 +73,33 @@ final class PrayerBlock {
         if (barFill != null) barFill.setScaleX(progress);
     }
 
+    /**
+     * The moment a prayer arrives: its cell lifts to 1.12x and an accent outline fades in and out over 2.2 s
+     * (scale and alpha only, once), then settles; the cell keeps its outline only if it is the next prayer.
+     */
+    void pulse(int index) {
+        if (index < 0 || index > 5 || labels[index] == null) return;
+        final View cell = (View) labels[index].getParent();
+        final Drawable outline = cell.getContext().getDrawable(R.drawable.tn_prayer_next).mutate();
+        final View keep = nextCell;
+        cell.setBackground(outline);
+        outline.setAlpha(0);
+        cell.animate().cancel();
+        cell.animate().scaleX(1.12f).scaleY(1.12f).setDuration(700)
+                .setInterpolator(new android.view.animation.PathInterpolator(0.2f, 0.8f, 0.2f, 1f))
+                .withEndAction(() -> cell.animate().scaleX(1f).scaleY(1f).setDuration(1500).start()).start();
+        ValueAnimator a = ValueAnimator.ofInt(0, 255, 0);
+        a.setDuration(2200);
+        a.addUpdateListener(v -> outline.setAlpha((Integer) v.getAnimatedValue()));
+        a.addListener(new android.animation.AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(android.animation.Animator animation) {
+                if (cell != nextCell && cell != keep) cell.setBackground(null);
+            }
+        });
+        a.start();
+    }
+
     /** Stops the breathing; the next setPrayers puts the outline and its breathing back. */
     void pause() {
         if (glow != null) {

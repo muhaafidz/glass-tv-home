@@ -62,6 +62,19 @@ slowly moving canvas, one soft accent ring, and no glass blur. The home folds a 
 line, a daily ayah or Khutbah Minbar shelf, all six prayer times, and the app dock into one information rail.
 The old place caption is off by default, so your wallpaper stays unobstructed.
 
+## What's New in 6.3 — small moments
+
+Delight from moments, not constant motion: each one runs once, on an event, with movement and fade only, and
+nothing runs while another app is in front.
+
+- **A prayer time arriving** lifts and softly glows that prayer's cell once; in Lautan the star lattice glows too.
+- **Greetings for special days**: Jumaat Mubarak on Friday, Selamat berpuasa in Ramadan, Selamat Hari Raya on Raya.
+- **A screensaver in each look**: the look's own background under the clock by day; black with the red clock from
+  22:00 to 06:00 to spare OLED panels.
+- **Apps grow out of the tile you pressed**, and a soft sheen crosses a tile once when focus lands on it.
+- **A look per profile**: each profile keeps its own look and palette, and the greeting uses the profile's name.
+- **Palette dots**: Settings → Appearance → Warna shows every palette as colour dots, so you choose by sight.
+
 ## What's New in 6.1 — Lautan and Sorot
 
 Two more looks next to Tenang, switchable on the TV in Settings → Appearance → **🎨 Tema** (Automatik → Malam →

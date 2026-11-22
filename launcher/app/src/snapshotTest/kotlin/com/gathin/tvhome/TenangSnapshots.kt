@@ -127,6 +127,41 @@ class TenangSnapshots {
         if (name != null) paparazzi.snapshot(view, name) else paparazzi.snapshot(view)
     }
 
+    /** The daytime screensaver: the look's background under the clock (black at night, not rendered here). */
+    private fun screensaver(overlay: Int, spot: Int? = null) {
+        paparazzi.context.theme.applyStyle(R.style.ThemeOverlay_Tenang_Malam, true)
+        if (overlay != 0) paparazzi.context.theme.applyStyle(overlay, true)
+        Design.load(paparazzi.context)
+        val view = LayoutInflater.from(paparazzi.context).inflate(R.layout.view_nightstand, null) as android.widget.FrameLayout
+        val ambient = AmbientView(paparazzi.context)
+        view.addView(ambient, 0, android.widget.FrameLayout.LayoutParams(-1, -1))
+        if (spot != null) ambient.setSpot(intArrayOf(spot, AppAdapter.secondColor(null, spot)), false)
+        paparazzi.snapshot(view)
+    }
+
+    /** Settings → Warna: the dots for each look's palettes, one row each (current ringed). */
+    @Test fun swatches() {
+        paparazzi.context.theme.applyStyle(R.style.ThemeOverlay_Tenang_Malam, true)
+        Design.load(paparazzi.context)
+        val d = paparazzi.context.resources.displayMetrics.density
+        val col = android.widget.LinearLayout(paparazzi.context)
+        col.orientation = android.widget.LinearLayout.VERTICAL
+        col.setBackgroundColor(Design.SURFACE)
+        col.setPadding((24 * d).toInt(), (16 * d).toInt(), (24 * d).toInt(), (16 * d).toInt())
+        for ((look, current) in listOf("tenang" to "auto", "lautan" to "karang", "sorot" to "mawar")) {
+            val label = android.widget.TextView(paparazzi.context)
+            label.text = "Warna · $look"
+            label.setTextColor(Design.TEXT)
+            col.addView(label)
+            col.addView(Swatches.row(paparazzi.context, look, current, d))
+        }
+        paparazzi.snapshot(col)
+    }
+
+    @Test fun screensaverTenang() = screensaver(0)
+    @Test fun screensaverLautan() = screensaver(R.style.ThemeOverlay_Look_Lautan)
+    @Test fun screensaverSorot() = screensaver(R.style.ThemeOverlay_Look_Sorot, 0xFF22B573.toInt())
+
     @Test fun lookLautan() = look(R.style.ThemeOverlay_Look_Lautan, null)
 
     // Every palette of every look (docs/PALETTES.md), one render each.
