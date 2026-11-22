@@ -3,6 +3,27 @@
 For whoever publishes (the release APK must be signed with the key behind 5.0.0 and 6.0.0, certificate
 SHA-256 `f2ebc93c2a357a5948c2621177b8b1e17656973d8a2d38385bc311e76d9bf4b9`, or installed TVs refuse the update).
 
+## 6.3.0 (versionCode 64)
+
+Same publishing steps as below; 6.3.0 includes everything in 6.2.0 and 6.1.0.
+
+`release/version.json` changelog:
+
+```
+✨ Glass TV v6.3.0 — Detik-detik kecil yang menyenangkan:
+• Waktu solat tiba: sel solat itu terangkat dan bercahaya sekali; dalam Lautan, corak bintang turut bercahaya.
+• Ucapan khas: Jumaat Mubarak (siang Jumaat), Selamat berpuasa (Ramadan), Selamat Hari Raya (Syawal dan Aidiladha).
+• Penyelamat skrin mengikut rupa: latar Tenang, Lautan atau Sorot di bawah jam pada waktu siang; hitam dengan jam merah pada 10 malam hingga 6 pagi.
+• Aplikasi membesar keluar daripada jubin yang ditekan.
+• Setiap profil mengingati rupa dan warnanya sendiri; ucapan menyebut nama profil apabila ada lebih satu.
+• Tetapan → Warna menunjukkan titik warna bagi setiap palet; kilauan lembut melintasi jubin sekali apabila fokus tiba.
+```
+
+English summary: a calm moment when a prayer time arrives; Friday, Ramadan and Raya greetings; a screensaver in
+each look; apps grow out of the pressed tile; a look and palette per profile (the greeting uses the profile's
+name when there are several); palette colour dots in Settings; a one-off sheen on focus. All event-driven, movement
+and fade only, nothing running while another app is in front.
+
 ## 6.2.0 (versionCode 63)
 
 Same publishing steps as 6.1.0 below. 6.2.0 includes everything in 6.1.0, so publishing 6.2.0 alone is fine.

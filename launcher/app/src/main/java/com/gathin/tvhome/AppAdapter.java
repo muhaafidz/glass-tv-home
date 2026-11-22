@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -611,12 +612,30 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.Holder> {
     }
 
     static final class Holder extends RecyclerView.ViewHolder {
+        /** The sheen crosses the tile once (0.45 s, movement only); on losing focus it stops and hides. */
+        void sweep(boolean focused, float density) {
+            sheen.animate().cancel();
+            if (!focused) {
+                sheen.setVisibility(View.INVISIBLE);
+                return;
+            }
+            float w = card.getWidth();
+            if (w <= 0) return;
+            sheen.setTranslationX(-56 * density);
+            sheen.setVisibility(View.VISIBLE);
+            sheen.animate().translationX(w).setDuration(450)
+                    .setInterpolator(new android.view.animation.PathInterpolator(0.4f, 0f, 0.2f, 1f))
+                    .withEndAction(() -> sheen.setVisibility(View.INVISIBLE)).start();
+        }
+
         final View card;
         final ImageView banner;
         final ImageView icon;
         final TextView label;
         final TextView name;
         boolean reducedMotion;
+        /** A soft diagonal highlight that crosses the banner once when focus lands (hidden otherwise). */
+        private final View sheen;
 
         Holder(View v, TileListener listener, boolean reducedMotion) {
             super(v);
@@ -636,6 +655,17 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.Holder> {
                 }
             });
             card.setClipToOutline(true);
+
+            sheen = new View(v.getContext());
+            sheen.setBackground(new android.graphics.drawable.GradientDrawable(
+                    android.graphics.drawable.GradientDrawable.Orientation.LEFT_RIGHT,
+                    new int[]{0x00FFFFFF, 0x38FFFFFF, 0x00FFFFFF}));
+            sheen.setRotation(14f);
+            sheen.setVisibility(View.INVISIBLE);
+            if (card instanceof FrameLayout) {
+                ((FrameLayout) card).addView(sheen, new FrameLayout.LayoutParams(
+                        Math.round(56 * density), Math.round(240 * density), android.view.Gravity.CENTER_VERTICAL));
+            }
 
             card.setOnKeyListener((view, keyCode, event) -> {
                 if (event.getAction() != KeyEvent.ACTION_DOWN) return false;
@@ -666,6 +696,7 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.Holder> {
                     name.animate().alpha(focused ? 1f : 0f)
                             .translationY(focused ? density * 3f : -density * 5f)
                             .setDuration(160).withLayer().start();
+                    sweep(focused, density);
                 }
                 int pos = getBindingAdapterPosition();
                 if (focused && listener != null && pos != RecyclerView.NO_POSITION) {

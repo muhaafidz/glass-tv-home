@@ -292,3 +292,18 @@ Audit result: Lautan's five palettes already fit (the test only widened the wate
 emerald lagoon). Sorot's rings were too colourful (up to 52 % saturation): the stage is now near-black and almost
 neutral (brightness ≤ 12 %, saturation ≤ 45 %) and the ring a tinted white (saturation ≤ 20 %), so the app's colours
 are the star. Tenang's body text was glaring (15:1): softened to ≤ 14:1 on all dark palettes.
+
+## 16. Small moments (6.3.0, 2026-11-22)
+
+Philosophy: lightweight but satisfying. Delight from moments, not loops: one-shot, event-driven, movement and fade
+only, stopped when another app is in front, off with animations off.
+
+- [x] Prayer-time moment (`HomeText.arrivedPrayer`, `PrayerBlock.pulse`, `AmbientView.moment`) and special-day
+  greetings (`HomeText.greeting` with Friday, Ramadan, Raya, Aidiladha; `PrayerTimes.hijriParts`).
+- [x] Per-look screensaver by day (`MainActivity.syncScreensaverBackdrop`, `Tenang.overlays`); black and red at night.
+- [x] Launch transition: Android's scale-up from the pressed tile (`AppAdapter.launchOptions`), a fade otherwise.
+- [x] A look per profile (`Tenang.saveForProfile`/`loadForProfile`, hooked into `ProfileManager.setActiveProfile`);
+  the greeting carries the name with more than one profile (`HomeText.withName`).
+- [x] Palette dots in Warna (`Swatches`), read from the palette blocks.
+- [x] One-off sheen on tile focus (`AppAdapter.Holder.sweep`).
+- Not built (kept as ideas): weather-mood tint, first-of-the-day reveal, original per-look sounds.
