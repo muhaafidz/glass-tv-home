@@ -239,3 +239,21 @@ belongs at the top or on the right.
 - [x] Version 6.1.0 (code 62). 68 tests; snapshots `lookLautan`, `lookSorot`, `lookLautanMenu`.
 - Publishing: `release/` and `version.json` are untouched. The OTA build must be signed with the key behind
   5.0.0 and 6.0.0 (`f2ebc93c…`), which is not in this repository; build and sign 6.1.0 where 6.0.0 was made.
+
+## 12. L0 finished for the long term (2026-11-22)
+
+- [x] `WarningChip`: the MET warning chip (show with a breathing dot, hide, pause). `MainActivity` keeps only which
+  alert and whether it was dismissed.
+- [x] `Arrangement`: one class per look (`Arrangement.Tenang`, `.Lautan`, `.Sorot`) answers where things go:
+  `arrange(home)` once after inflation, `dockPadding`, `railTop`, and whether the look has its own backdrop, a
+  side list, an app spotlight or a prayer strip. `MainActivity` and `LookType` no longer check which look is on;
+  `LookType` is now the small helpers the arrangements are written with (`toEnd`, `stackRail`, `rightColumn`,
+  `slantedDisplayType`, …).
+- [x] Verified: all 20 Home and look snapshots are pixel-identical to before the refactor; 68 unit tests pass.
+  (The two update-dialog snapshots changed only because they had not been re-rendered since the email line.)
+
+**Adding a fourth look** now means: a `ThemeOverlay.Look.<Name>` with its colours and tokens, an
+`Arrangement.<Name>` (usually a few `LookType` calls and maybe `dockPadding`/`railTop`), a `tnBackdrop` value if
+it needs a new background in `AmbientView`, its entry in `Tenang.CHOICES`, and a snapshot test.
+What stays in `MainActivity` by design: the top buttons' focus paths with the `Glider` highlight and the app grid's
+own focus and scroll handling, which every look shares.
