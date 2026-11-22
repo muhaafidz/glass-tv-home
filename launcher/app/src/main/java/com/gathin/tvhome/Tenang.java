@@ -276,13 +276,29 @@ final class Tenang {
     }
 
     /** Malam's tokens as the base, then the look's overlay on top (its colours, focus shape, backdrop). */
+    /** Applies a key's overlays to a theme: "look:palette" (Malam's tokens, the look, its palette) or a Tenang palette. */
+    static void overlays(android.content.res.Resources.Theme theme, String key) {
+        int colon = key.indexOf(':');
+        if (colon > 0) {
+            String look = key.substring(0, colon);
+            theme.applyStyle(R.style.ThemeOverlay_Tenang_Malam, true);
+            theme.applyStyle(LOOK_LAUTAN.equals(look) ? R.style.ThemeOverlay_Look_Lautan : R.style.ThemeOverlay_Look_Sorot, true);
+            int colours = lookPaletteOverlay(key.substring(colon + 1));
+            if (colours != 0) theme.applyStyle(colours, true);
+        } else {
+            theme.applyStyle(overlayFor(key), true);
+        }
+    }
+
+    /** The screensaver's key: the current look's (Lautan, Sorot), or Malam for Tenang (bright is not calm at rest). */
+    static String screensaverKey(Context ctx) {
+        String key = currentKey(ctx);
+        return key.indexOf(':') > 0 ? key : MALAM;
+    }
+
     /** key = "look:palette": Malam's tokens as the base, the look's overlay, then its palette's colours. */
     private static String applyLook(Activity activity, String key) {
-        String look = key.substring(0, key.indexOf(':'));
-        activity.getTheme().applyStyle(R.style.ThemeOverlay_Tenang_Malam, true);
-        activity.getTheme().applyStyle(LOOK_LAUTAN.equals(look) ? R.style.ThemeOverlay_Look_Lautan : R.style.ThemeOverlay_Look_Sorot, true);
-        int colours = lookPaletteOverlay(key.substring(key.indexOf(':') + 1));
-        if (colours != 0) activity.getTheme().applyStyle(colours, true);
+        overlays(activity.getTheme(), key);
         Design.load(activity);
         applied = key;
         if (activity.getWindow() != null) activity.getWindow().setBackgroundDrawable(new ColorDrawable(Design.BG1));

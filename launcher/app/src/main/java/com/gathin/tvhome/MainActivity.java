@@ -5884,10 +5884,10 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         screensaverActive = true;
         if (ambientView != null) ambientView.stop();
         if (screensaverView == null) {
-            // The screensaver is always Malam, whatever the time: a bright screen at rest is not calm.
-            android.view.ContextThemeWrapper night = new android.view.ContextThemeWrapper(this, getTheme());
-            night.getTheme().applyStyle(R.style.ThemeOverlay_Tenang_Malam, true);
-            screensaverView = android.view.LayoutInflater.from(night).inflate(R.layout.view_nightstand, root, false);
+            // The screensaver takes the look's colours (Lautan, Sorot) or Malam for Tenang: bright is not calm at rest.
+            screensaverThemed = new android.view.ContextThemeWrapper(this, getTheme());
+            Tenang.overlays(screensaverThemed.getTheme(), Tenang.screensaverKey(this));
+            screensaverView = android.view.LayoutInflater.from(screensaverThemed).inflate(R.layout.view_nightstand, root, false);
             screensaverView.setOnClickListener(v -> dismissScreensaver());
             root.addView(screensaverView, new FrameLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
@@ -5899,6 +5899,33 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         screensaverView.setAlpha(0f);
         screensaverView.animate().alpha(1f).setDuration(500).start();
         android.util.Log.i("TvHome", "Nightstand screensaver activated");
+    }
+
+    /** The look's background under the screensaver clock by day (6:00 to 22:00); black at night, to spare OLED panels. */
+    private android.view.ContextThemeWrapper screensaverThemed;
+    private AmbientView screensaverBackdrop;
+
+    private void syncScreensaverBackdrop(boolean night) {
+        if (screensaverView == null || !(screensaverView instanceof FrameLayout)) return;
+        if (night) {
+            if (screensaverBackdrop != null) {
+                screensaverBackdrop.stop();
+                ((FrameLayout) screensaverView).removeView(screensaverBackdrop);
+                screensaverBackdrop = null;
+            }
+            return;
+        }
+        if (screensaverBackdrop == null) {
+            Design.load(screensaverThemed);   // the backdrop paints with the screensaver's colours...
+            screensaverBackdrop = new AmbientView(screensaverThemed);
+            Design.load(this);                // ...then Home's own return
+            ((FrameLayout) screensaverView).addView(screensaverBackdrop, 0, new FrameLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            if (arrangement.appSpotlight() && adapter != null) {
+                screensaverBackdrop.setSpot(adapter.spotColoursAt(Math.max(0, lastFocused)), false);
+            }
+        }
+        if (screensaverActive) screensaverBackdrop.start(reducedMotion || Backdrop.STILL.equals(backdropChoice));
     }
 
     private void updateNightstandScreensaver() {
@@ -5921,6 +5948,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         java.util.Calendar cal = java.util.Calendar.getInstance();
         int hour = cal.get(java.util.Calendar.HOUR_OF_DAY);
         boolean isNightMode = (hour >= 22 || hour < 6);
+        syncScreensaverBackdrop(isNightMode);
 
         TextView clock = screensaverView.findViewById(R.id.nightstandClock);
         TextView ampm = screensaverView.findViewById(R.id.nightstandAmPm);
@@ -5960,6 +5988,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     private void dismissScreensaver() {
         if (!screensaverActive || screensaverView == null) return;
         screensaverActive = false;
+        if (screensaverBackdrop != null) screensaverBackdrop.stop();   // nothing moves behind a hidden screensaver
         if (ambientView != null && hasWindowFocus()) ambientView.start(reducedMotion || Backdrop.STILL.equals(backdropChoice));
         lastUserInteraction = android.os.SystemClock.elapsedRealtime();
         screensaverView.animate().alpha(0f).setDuration(350).withEndAction(() -> {

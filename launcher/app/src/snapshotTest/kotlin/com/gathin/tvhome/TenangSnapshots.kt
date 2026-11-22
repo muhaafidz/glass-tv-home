@@ -127,6 +127,22 @@ class TenangSnapshots {
         if (name != null) paparazzi.snapshot(view, name) else paparazzi.snapshot(view)
     }
 
+    /** The daytime screensaver: the look's background under the clock (black at night, not rendered here). */
+    private fun screensaver(overlay: Int, spot: Int? = null) {
+        paparazzi.context.theme.applyStyle(R.style.ThemeOverlay_Tenang_Malam, true)
+        if (overlay != 0) paparazzi.context.theme.applyStyle(overlay, true)
+        Design.load(paparazzi.context)
+        val view = LayoutInflater.from(paparazzi.context).inflate(R.layout.view_nightstand, null) as android.widget.FrameLayout
+        val ambient = AmbientView(paparazzi.context)
+        view.addView(ambient, 0, android.widget.FrameLayout.LayoutParams(-1, -1))
+        if (spot != null) ambient.setSpot(intArrayOf(spot, AppAdapter.secondColor(null, spot)), false)
+        paparazzi.snapshot(view)
+    }
+
+    @Test fun screensaverTenang() = screensaver(0)
+    @Test fun screensaverLautan() = screensaver(R.style.ThemeOverlay_Look_Lautan)
+    @Test fun screensaverSorot() = screensaver(R.style.ThemeOverlay_Look_Sorot, 0xFF22B573.toInt())
+
     @Test fun lookLautan() = look(R.style.ThemeOverlay_Look_Lautan, null)
 
     // Every palette of every look (docs/PALETTES.md), one render each.
