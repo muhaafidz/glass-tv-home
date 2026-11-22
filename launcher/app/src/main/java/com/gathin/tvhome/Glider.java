@@ -291,6 +291,10 @@ final class Glider extends View {
      * keeps the ring and drops the glow.
      */
     private void drawRing(Canvas canvas, float r, int rgb, int alpha, float widthDp) {
+        if (Design.FOCUS_SHAPE == 1) {
+            drawSlash(canvas, rgb, alpha);
+            return;
+        }
         paint.setStyle(Paint.Style.STROKE);
         if (!reducedMotion) {
             final float[] step = {3.5f, 6.5f, 9.5f};
@@ -307,6 +311,29 @@ final class Glider extends View {
         paint.setColor((alpha << 24) | rgb);
         canvas.drawRoundRect(shape, r, r, paint);
         paint.setStyle(Paint.Style.FILL);
+    }
+
+    /**
+     * Lautan's focus: a slanted white frame with a red one offset behind it, like a slash. Outlines only,
+     * so it never covers the banner; no glow, so it costs less than the ring.
+     */
+    private void drawSlash(Canvas canvas, int rgb, int alpha) {
+        canvas.save();
+        float cx = shape.centerX(), cy = shape.centerY();
+        canvas.translate(cx, cy);
+        canvas.skew(-0.21f, 0f);   // about −12°
+        canvas.translate(-cx, -cy);
+        paint.setStyle(Paint.Style.STROKE);
+        float o = 6f * density;
+        paint.setStrokeWidth(4f * density);
+        paint.setColor((alpha << 24) | rgb);
+        glowRect.set(shape.left + o, shape.top + o * .5f, shape.right + o, shape.bottom + o * .5f);
+        canvas.drawRect(glowRect, paint);
+        paint.setStrokeWidth(3f * density);
+        paint.setColor((alpha << 24) | 0xFFFFFF);
+        canvas.drawRect(shape, paint);
+        paint.setStyle(Paint.Style.FILL);
+        canvas.restore();
     }
 
     private void fadeTo(float to, long ms) {

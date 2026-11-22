@@ -37,6 +37,12 @@ final class AmbientView extends FrameLayout {
     private final Handler handler = new Handler(Looper.getMainLooper());
     private final View blobA, blobB, waves;
     private final View[] twinklers;
+    /** Lautan: the drifting star lattice and two light shafts. Sorot: two app-colour layers. */
+    private LatticeView lattice;
+    private View shaftA, shaftB;
+    private android.widget.ImageView artFront, artBack;
+    private final int mode;
+    private static final long LATTICE_MS = 90_000, SHAFT_MS = 26_000;
     private final float density;
     private boolean running, still;
     private long startedAt;
@@ -53,9 +59,18 @@ final class AmbientView extends FrameLayout {
     AmbientView(Context ctx) {
         super(ctx);
         density = getResources().getDisplayMetrics().density;
+        mode = Design.BACKDROP;
         setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS);
         setFocusable(false);
-        setBackground(new GradientDrawable(GradientDrawable.Orientation.TL_BR, new int[]{Design.BG1, Design.BG2}));
+        if (mode == 1) {
+            // Lautan: light water at the top into the deep at the bottom.
+            setBackground(new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,
+                    new int[]{Design.BLOB_A | 0xFF000000, Design.BG2, Design.BG1}));
+        } else if (mode == 2) {
+            setBackgroundColor(Design.BG1);
+        } else {
+            setBackground(new GradientDrawable(GradientDrawable.Orientation.TL_BR, new int[]{Design.BG1, Design.BG2}));
+        }
 
         blobA = blob(Design.BLOB_A);
         blobB = blob(Design.BLOB_B);
@@ -71,6 +86,71 @@ final class AmbientView extends FrameLayout {
         waves = new Waves(ctx);
         addView(waves);
         setClipChildren(true);
+        if (mode != 0) {
+            // Lautan and Sorot do without the Tenang glows, stars and waves.
+            blobA.setVisibility(GONE);
+            blobB.setVisibility(GONE);
+            starField.setVisibility(GONE);
+            for (View t : twinklers) t.setVisibility(GONE);
+            waves.setVisibility(GONE);
+        }
+        if (mode == 1) {
+            shaftA = shaft(.28f);
+            shaftB = shaft(.18f);
+            lattice = new LatticeView(ctx);
+            addView(lattice);
+        } else if (mode == 2) {
+            artBack = art(ctx);
+            artFront = art(ctx);
+            View shade = new View(ctx);
+            shade.setBackground(new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,
+                    new int[]{0x8C05070D, 0x0005070D, 0x0005070D, 0xD905070D, 0xFF05070D}));
+            addView(shade, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+            View side = new View(ctx);
+            side.setBackground(new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT,
+                    new int[]{0xBF05070D, 0x2605070D, 0x0005070D}));
+            addView(side, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+        }
+    }
+
+    /** A soft vertical light shaft (Lautan), tilted; only its translation and alpha change. */
+    private View shaft(float alpha) {
+        View v = new View(getContext());
+        v.setBackground(new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,
+                new int[]{Design.alpha(Design.CYAN, Math.round(alpha * 255)), Design.alpha(Design.CYAN, 0)}));
+        addView(v);
+        return v;
+    }
+
+    private android.widget.ImageView art(Context ctx) {
+        android.widget.ImageView v = new android.widget.ImageView(ctx);
+        v.setScaleType(android.widget.ImageView.ScaleType.FIT_XY);
+        v.setAlpha(0f);
+        addView(v, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+        return v;
+    }
+
+    /**
+     * Sorot: show an app's colours full screen. The bitmap is tiny (32×18); stretched with filtering it
+     * reads as a soft colour field. Crossfades from the previous one (opacity only).
+     */
+    void setArt(android.graphics.Bitmap tiny, boolean animate) {
+        if (mode != 2 || tiny == null) return;
+        android.widget.ImageView next = artBack;
+        artBack = artFront;
+        artFront = next;
+        android.graphics.drawable.BitmapDrawable d = new android.graphics.drawable.BitmapDrawable(getResources(), tiny);
+        d.setFilterBitmap(true);
+        next.setImageDrawable(d);   // both layers sit under the shades; a two-way fade needs no reordering
+        next.animate().cancel();
+        artBack.animate().cancel();
+        if (animate) {
+            next.animate().alpha(1f).setDuration(600).start();
+            artBack.animate().alpha(0f).setDuration(600).start();
+        } else {
+            next.setAlpha(1f);
+            artBack.setAlpha(0f);
+        }
     }
 
     private View blob(int color) {
@@ -103,7 +183,26 @@ final class AmbientView extends FrameLayout {
             sl.topMargin = Math.round(STARS[i][1] * h);
             s.setLayoutParams(sl);
         }
+        if (lattice != null) {
+            int tile = lattice.tile();
+            LayoutParams ll = new LayoutParams(w + 2 * tile, h + 2 * tile);
+            ll.leftMargin = -tile;
+            ll.topMargin = -tile;
+            lattice.setLayoutParams(ll);
+            placeShaft(shaftA, 180 * k, 880 * k, h * 1.3f, 14f);
+            placeShaft(shaftB, 110 * k, 1180 * k, h * 1.3f, 10f);
+        }
         apply(running ? SystemClock.uptimeMillis() - startedAt : 0);
+    }
+
+    private void placeShaft(View v, float width, float x, float height, float deg) {
+        LayoutParams lp = new LayoutParams(Math.round(width), Math.round(height));
+        lp.leftMargin = Math.round(x);
+        lp.topMargin = Math.round(-height * 0.1f);
+        v.setLayoutParams(lp);
+        v.setPivotX(width / 2f);
+        v.setPivotY(0f);
+        v.setRotation(deg);
     }
 
     /** Home position by margins (negative is fine), so translation is free for the drift. */
@@ -120,7 +219,7 @@ final class AmbientView extends FrameLayout {
     /** Starts the drift; with still=true (reduced motion, low-spec) it only draws once. */
     void start(boolean still) {
         this.still = still;
-        if (still) {
+        if (still || mode == 2) {
             stop();
             return;
         }
@@ -149,6 +248,18 @@ final class AmbientView extends FrameLayout {
     private void apply(long t) {
         int w = getWidth();
         if (w == 0) return;
+        if (mode == 2) return;   // Sorot only crossfades when the focused app changes
+        if (mode == 1) {
+            if (lattice != null) {
+                float f = (t % LATTICE_MS) / (float) LATTICE_MS * lattice.tile();
+                lattice.setTranslationX(f);
+                lattice.setTranslationY(f);
+            }
+            float s = ease(pingPong(t, SHAFT_MS));
+            if (shaftA != null) { shaftA.setTranslationX(60 * density * s); shaftA.setAlpha(1f - .45f * s); }
+            if (shaftB != null) { shaftB.setTranslationX(-50 * density * s); shaftB.setAlpha(.55f + .45f * s); }
+            return;
+        }
         float k = w / 1600f;
         float a = ease(pingPong(t, DRIFT_A_MS));
         float b = ease(pingPong(t, DRIFT_B_MS));
@@ -185,6 +296,54 @@ final class AmbientView extends FrameLayout {
     /** CSS ease-in-out, close enough for drifting. */
     static float ease(float x) {
         return x < .5f ? 2 * x * x : 1 - (float) Math.pow(-2 * x + 2, 2) / 2;
+    }
+
+    /**
+     * Lautan's 8-point-star lattice: one small tile drawn once into an ALPHA_8 bitmap (a few KB), repeated
+     * by a BitmapShader and tinted by the palette's wave colour. It moves by translation only, one tile per
+     * LATTICE_MS, which loops without a jump.
+     */
+    private final class LatticeView extends View {
+        private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
+        private final int tile;
+
+        LatticeView(Context ctx) {
+            super(ctx);
+            tile = Math.max(48, Math.round(72 * density));
+            android.graphics.Bitmap b = android.graphics.Bitmap.createBitmap(tile, tile, android.graphics.Bitmap.Config.ALPHA_8);
+            Canvas c = new Canvas(b);
+            Paint line = new Paint(Paint.ANTI_ALIAS_FLAG);
+            line.setStyle(Paint.Style.STROKE);
+            line.setStrokeWidth(Math.max(1f, density * .8f));
+            line.setColor(0xFFFFFFFF);
+            float cx = tile / 2f, r = tile / 3f;
+            Path star = new Path();
+            for (int i = 0; i <= 8; i++) {   // {8/3} star polygon
+                double a = Math.PI / 8 + (i * 3 % 8) * Math.PI / 4;
+                float x = cx + (float) (r * Math.cos(a)), y = cx + (float) (r * Math.sin(a));
+                if (i == 0) star.moveTo(x, y); else star.lineTo(x, y);
+            }
+            star.close();
+            c.drawPath(star, line);
+            for (int i = 0; i < 4; i++) {   // arms reaching the tile edges, so neighbours join
+                double a = i * Math.PI / 2;
+                c.drawLine(cx + (float) (r * .92 * Math.cos(a)), cx + (float) (r * .92 * Math.sin(a)),
+                        cx + (float) (cx * Math.cos(a)), cx + (float) (cx * Math.sin(a)), line);
+            }
+            c.drawCircle(cx, cx, r * .45f, line);
+            paint.setShader(new android.graphics.BitmapShader(b, android.graphics.Shader.TileMode.REPEAT, android.graphics.Shader.TileMode.REPEAT));
+            paint.setColor(Design.WAVE | 0xFF000000);
+            setAlpha(((Design.WAVE >>> 24) & 0xFF) / 255f);
+        }
+
+        int tile() {
+            return tile;
+        }
+
+        @Override
+        protected void onDraw(Canvas c) {
+            c.drawRect(0, 0, getWidth(), getHeight(), paint);
+        }
     }
 
     /** The still stars, drawn once; the twinkling ones are separate tiny views so only their alpha changes. */

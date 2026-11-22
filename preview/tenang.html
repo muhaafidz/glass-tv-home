@@ -249,6 +249,7 @@ button:focus{outline:none}
   <button data-p="embun" aria-pressed="false">Embun</button>
   <button id="lite" aria-pressed="false">Lite</button>
   <button id="live" aria-pressed="false">Live clock</button>
+  <a href="lautan.html"><button>Lautan ↩</button></a>
 </div>
 
 <script>
@@ -329,6 +330,9 @@ button:focus{outline:none}
     });
   });
   focusAt(2,0);
+  // Opened from Lautan's Tema menu: show the palette that was chosen there (auto = Malam here).
+  var asked=(location.search.match(/palette=(\w+)/)||[])[1];
+  if(asked&&asked!=='auto'&&asked!=='malam'){busy=false;setPalette(asked);}
 })();
 </script>
 </body>

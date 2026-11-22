@@ -188,11 +188,15 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     private View btnAssistant;
     private View btnCandyBox;
     private View badgeSettingsUpdate;
-    private TextView ampmView, dateView;
     /** Tenang home (docs/REVAMP.md P2): greeting, IPU chip, prayer countdown. */
-    private TextView greetingView, aqiChipView, prayerPrevView, prayerNextInView;
-    private View prayerBarFill, prayerNextCell;
-    private ObjectAnimator prayerGlowAnimator;
+    private ClockBlock clockBlock;
+    private PrayerBlock prayerUi;
+    private StatusChips statusChips;
+    private AyahBlock ayahUi;
+    /** Lautan's slanted Home menu; null in other looks. */
+    private LautanMenu lautanMenu;
+    /** Lautan's vertical Home list (the grid is hidden in Lautan); null in other looks. */
+    private LautanList lautanList;
     private TextView shamsiDate;
     private TextView prayerTimesView;
     private TextView weatherAirQualityView;
@@ -215,11 +219,8 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     private View islamicShelf;
     private View ayahBlock;
     private View prayerBlock;
-    private TextView ayahLabel, ayahArabic, ayahText, prayerHeader;
     private boolean ayahRunning;
     private boolean homeWeatherRunning;
-    private TextView lblSubuh, lblSyuruk, lblZohor, lblAsar, lblMaghrib, lblIsyak;
-    private TextView timeSubuh, timeSyuruk, timeZohor, timeAsar, timeMaghrib, timeIsyak;
     private boolean shamsi;
     private String vpnApp;
     private boolean glassShown;
@@ -546,7 +547,12 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         if (heroDesc != null) heroDesc.setMaxWidth(heroMaxWidth);
 
         String activeCat = getSharedPreferences("wallpaper_prefs", MODE_PRIVATE).getString("active_category", TENANG_CATEGORY);
-        if ("Custom".equalsIgnoreCase(activeCat)) {
+        if (Design.BACKDROP != 0) {
+            // Lautan and Sorot bring their own background; photos return with Tenang.
+            placesMode = false;
+            wallpapers = Collections.emptyList();
+            showAmbient(true);
+        } else if ("Custom".equalsIgnoreCase(activeCat)) {
             placesMode = false;
             File customDir = new File(getFilesDir(), "custom_wallpapers");
             File[] files = customDir.listFiles((dir, name) -> name.endsWith(".jpg") || name.endsWith(".png") || name.endsWith(".jpeg"));
@@ -608,13 +614,16 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         heroShelf.addOnLayoutChangeListener((v, l, t, r, b, ol, ot, orr, ob) -> {
             if (heroBottom > 0) v.setY(heroBottom - v.getHeight());
         });
-        ampmView = findViewById(R.id.ampm);
-        dateView = findViewById(R.id.date);
-        greetingView = findViewById(R.id.greeting);
-        aqiChipView = findViewById(R.id.aqiChip);
-        prayerPrevView = findViewById(R.id.prayerPrev);
-        prayerNextInView = findViewById(R.id.prayerNextIn);
-        prayerBarFill = findViewById(R.id.prayerBarFill);
+        View homeRoot = findViewById(R.id.root);
+        LookType.apply(homeRoot);
+        if (Design.BACKDROP == 1) {
+            setUpLautanMenu();
+            setUpLautanList();
+        }
+        clockBlock = new ClockBlock(homeRoot);
+        prayerUi = new PrayerBlock(homeRoot);
+        statusChips = new StatusChips(homeRoot);
+        ayahUi = new AyahBlock(homeRoot);
         updateDateAndPeriod();
         weatherAirQualityView = findViewById(R.id.weatherAirQuality);
         if (weatherAirQualityView != null) {
@@ -820,29 +829,8 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
                     return false;
                 });
             }
-            ayahLabel = findViewById(R.id.ayahLabel);
-            ayahArabic = findViewById(R.id.ayahArabic);
-            ayahText = findViewById(R.id.ayahText);
-            prayerHeader = findViewById(R.id.prayerHeader);
 
-            int uWidth = getResources().getDisplayMetrics().widthPixels - (int) ((55 + 56) * density);
-            int iMaxWidth = Math.round(uWidth * 0.50f);
-            if (ayahArabic != null) ayahArabic.setMaxWidth(iMaxWidth);
-            if (ayahText != null) ayahText.setMaxWidth(iMaxWidth);
 
-            lblSubuh = findViewById(R.id.lblSubuh);
-            lblSyuruk = findViewById(R.id.lblSyuruk);
-            lblZohor = findViewById(R.id.lblZohor);
-            lblAsar = findViewById(R.id.lblAsar);
-            lblMaghrib = findViewById(R.id.lblMaghrib);
-            lblIsyak = findViewById(R.id.lblIsyak);
-
-            timeSubuh = findViewById(R.id.timeSubuh);
-            timeSyuruk = findViewById(R.id.timeSyuruk);
-            timeZohor = findViewById(R.id.timeZohor);
-            timeAsar = findViewById(R.id.timeAsar);
-            timeMaghrib = findViewById(R.id.timeMaghrib);
-            timeIsyak = findViewById(R.id.timeIsyak);
 
             islamicShelf.addOnLayoutChangeListener((v, l, t, r, b, ol, ot, orr, ob) -> {
                 if (infoRailBottom > 0) v.setY(infoRailTop(v.getHeight()));
@@ -1481,6 +1469,81 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         super.onStop();
     }
 
+    /** Sorot's hero: the app's name, sliding in 24 dp under the app row; hidden below the first row. */
+    private void showSorotHero(int position, View card) {
+        View hero = findViewById(R.id.sorotHero);
+        TextView title = findViewById(R.id.sorotTitle);
+        if (hero == null || title == null) return;
+        if (position >= COLUMNS) {
+            hero.animate().alpha(0f).setDuration(120).start();
+            return;
+        }
+        Rect r = new Rect(0, 0, card.getWidth(), card.getHeight());
+        root.offsetDescendantRectToMyCoords(card, r);
+        float y = r.bottom + 20 * density;
+        boolean changed = !adapter.labelAt(position).contentEquals(title.getText());
+        title.setText(adapter.labelAt(position));
+        hero.setY(y);
+        hero.animate().cancel();
+        if (changed && !reducedMotion) {
+            hero.setAlpha(0f);
+            hero.setTranslationX(0f);
+            hero.setY(y + 24 * density);
+            hero.animate().alpha(1f).y(y).setDuration(320)
+                    .setInterpolator(new android.view.animation.PathInterpolator(0.2f, 0.8f, 0.2f, 1f)).start();
+        } else {
+            hero.setAlpha(1f);
+        }
+    }
+
+    /** Lautan: the slanted vertical list on the left replaces the grid; Left from it opens the menu. */
+    private void setUpLautanList() {
+        lautanList = new LautanList(this, () -> {
+            if (lautanMenu != null) lautanMenu.open();
+        });
+        android.util.DisplayMetrics dm = getResources().getDisplayMetrics();
+        int w = Math.round(Math.max(dm.widthPixels, dm.heightPixels) * 0.40f);
+        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(w, ViewGroup.LayoutParams.MATCH_PARENT);
+        lp.leftMargin = Math.round(40 * density);
+        lp.topMargin = Math.round(30 * density);
+        root.addView(lautanList, lp);
+        View gw = findViewById(R.id.gridWrap);
+        if (gw != null) gw.setVisibility(View.INVISIBLE);   // laid out (the dock maths still runs) but never focused
+        lautanList.rebuild(adapter, lautanShortcuts());
+    }
+
+    private LautanList.Shortcut[] lautanShortcuts() {
+        return new LautanList.Shortcut[]{
+                new LautanList.Shortcut("INPUT", this::showInputs),
+                new LautanList.Shortcut("CUACA", () -> startActivity(new Intent(this, WeatherActivity.class))),
+                new LautanList.Shortcut("SOLAT", this::showPrayerPopup),
+                new LautanList.Shortcut("TEMA", () -> {
+                    Tenang.setChoice(this, Tenang.nextChoice(Tenang.choice(this)));
+                    paletteCheck(true);
+                }),
+                new LautanList.Shortcut("TETAPAN", this::showSettingsPopup),
+        };
+    }
+
+    /** Lautan's menu: the entries call what Home already does. ◀ from the first app or Menu opens it. */
+    private void setUpLautanMenu() {
+        LautanMenu.Entry[] entries = {
+                new LautanMenu.Entry("APLIKASI", "Kembali ke aplikasi", () -> focusTile(0)),
+                new LautanMenu.Entry("INPUT", "HDMI, AV dan TV", this::showInputs),
+                new LautanMenu.Entry("CUACA", "Cuaca, IPU dan amaran MET", () -> startActivity(new Intent(this, WeatherActivity.class))),
+                new LautanMenu.Entry("SOLAT", "Waktu solat dan azan", this::showPrayerPopup),
+                new LautanMenu.Entry("TEMA", "Tukar rupa: " + Tenang.label(this, Tenang.nextChoice(Tenang.choice(this))), () -> {
+                    Tenang.setChoice(this, Tenang.nextChoice(Tenang.choice(this)));
+                    paletteCheck(true);
+                }),
+                new LautanMenu.Entry("PROFIL", "Siapa menonton?", this::showCandyBoxPopup),
+                new LautanMenu.Entry("TETAPAN", "Paparan, jam, mod kanak-kanak, sistem", this::showSettingsPopup),
+                new LautanMenu.Entry("TUTUP", "Kembali ke skrin utama", () -> focusTile(0)),
+        };
+        lautanMenu = new LautanMenu(this, entries, reducedMotion);
+        root.addView(lautanMenu, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+    }
+
     /** Shows (or removes) the Tenang background under everything; pictures and it never stack. */
     private void showAmbient(boolean on) {
         if (on) {
@@ -1530,7 +1593,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         if (paletteSwitching || appliedPalette == null || isFinishing()) return false;
         // On the minute tick, only switch while Home itself has focus: no dialog, menu or other app.
         if (!fromResume && !hasWindowFocus()) return false;
-        String due = Tenang.current(this);
+        String due = Tenang.currentKey(this);   // a look, or the Tenang palette due now
         if (due.equals(appliedPalette)) return false;
         paletteSwitching = true;
         sFadeInAfterPaletteSwitch = !reducedMotion;
@@ -1617,6 +1680,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             ambient.setAlpha(0f);
             syncGlassGlow();
         }
+        if (lautanList != null) lautanList.rebuild(adapter, lautanShortcuts());
         android.util.Log.i("TvHome.Perf", "tiles " + (rebuilt ? "rebuilt" : "unchanged") + " in "
                 + (android.os.SystemClock.uptimeMillis() - started) + " ms");
         // The tiles rise into place on the first launch only. Replayed on every return from an app,
@@ -1680,11 +1744,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     protected void onPause() {
         super.onPause();
         if (ambientView != null) ambientView.stop();
-        if (prayerGlowAnimator != null) {   // nothing animates while another app is in front
-            prayerGlowAnimator.cancel();
-            prayerGlowAnimator = null;
-        }
-        prayerNextCell = null;   // so onResume puts the outline and its breathing back
+        if (prayerUi != null) prayerUi.pause();   // nothing animates while another app is in front
         if (btnCandyBox instanceof FrameLayout) {
             FrameLayout fb = (FrameLayout) btnCandyBox;
             for (int i = 0; i < fb.getChildCount(); i++) {
@@ -1734,11 +1794,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     protected void onDestroy() {
         super.onDestroy();
         stopWarningAnimation();
-        if (prayerGlowAnimator != null) {   // nothing animates while another app is in front
-            prayerGlowAnimator.cancel();
-            prayerGlowAnimator = null;
-        }
-        prayerNextCell = null;   // so the next resume puts the outline and its breathing back
+        if (prayerUi != null) prayerUi.pause();
         if (sInstance != null && sInstance.get() == this) {
             sInstance = null;
         }
@@ -1843,6 +1899,11 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     @Override
     public void onTileFocused(int position, View card) {
         if (!resuming && hasWindowFocus()) SoundEffects.playNav();
+        // Sorot: the focused app's colours fill the screen, and its name becomes the hero under the row.
+        if (Design.BACKDROP == 2) {
+            if (ambientView != null) ambientView.setArt(adapter.artAt(position), !reducedMotion);
+            showSorotHero(position, card);
+        }
         lastFocused = position;
         lastFocusedKey = adapter.keyAt(position);
         // Tile rect in root coordinates, using layout positions (ignores the scale animation).
@@ -2209,6 +2270,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         int itemH = AppAdapter.itemHeightPx(AppAdapter.tileHeightPx(AppAdapter.tileWidthPx(inner, COLUMNS, density)), density);
         int dockRow = itemH + (int) ((6 + 12) * density);   // item height plus DockDecoration offsets
         int want = Math.max(0, h - dockRow - itemH * rowsBelowDockSetting - (int) (16 * density));
+        if (Design.BACKDROP == 2) want = (int) (6 * density);   // Sorot: the app row sits at the top
         if (grid.getPaddingTop() == want) return true;
         grid.setPadding(grid.getPaddingLeft(), want, grid.getPaddingRight(), grid.getPaddingBottom());
         return false;
@@ -2236,6 +2298,20 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
      * clock grew.
      */
     private float infoRailTop(int railHeight) {
+        // Lautan: the right column, under the weather chips.
+        if (Design.BACKDROP == 1) {
+            View chips = findViewById(R.id.weatherRow);
+            if (chips != null && chips.getHeight() > 0) {
+                Rect c = new Rect(0, 0, chips.getWidth(), chips.getHeight());
+                root.offsetDescendantRectToMyCoords(chips, c);
+                return c.bottom + 18 * density;
+            }
+        }
+        // Sorot: beside the hero, on the right (the prayer times are a strip at the top).
+        if (Design.BACKDROP == 2) {
+            View hero = findViewById(R.id.sorotHero);
+            if (hero != null && hero.getVisibility() == View.VISIBLE && hero.getY() > 0) return hero.getY();
+        }
         float dockTop = infoRailBottom + INFO_RAIL_GAP_DP * density;
         float minGap = 18 * density;
         View above = nowPlayingCard != null && nowPlayingCard.getVisibility() == View.VISIBLE
@@ -2532,6 +2608,20 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             }
             return true;
         }
+        if (lautanMenu != null && !screensaverActive) {
+            int k = event.getKeyCode();
+            if (lautanMenu.isOpen() && (k == KeyEvent.KEYCODE_BACK || k == KeyEvent.KEYCODE_ESCAPE)) {
+                if (event.getAction() == KeyEvent.ACTION_UP) {
+                    lautanMenu.close();
+                    focusTile(0);
+                }
+                return true;
+            }
+            if (!lautanMenu.isOpen() && k == KeyEvent.KEYCODE_MENU) {
+                if (event.getAction() == KeyEvent.ACTION_UP) lautanMenu.open();
+                return true;
+            }
+        }
         int code = event.getKeyCode();
         if (wallpaperFullscreen) {
             if (event.getAction() == KeyEvent.ACTION_UP) {
@@ -2636,6 +2726,10 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         // Horizontal: swallow the key at a row's ends so focus never wraps to the next row or
         // escapes up into the top bar. Mid-row moves fall through to the default focus search.
         if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
+            if (position == 0 && lautanMenu != null) {   // Lautan: ◀ from the first app opens the menu
+                lautanMenu.open();
+                return true;
+            }
             return position % COLUMNS == 0;
         }
         if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
@@ -2677,6 +2771,10 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     };
 
     private void focusTile(int position) {
+        if (lautanList != null) {   // Lautan: the list stands in for the grid
+            lautanList.focus(position);
+            return;
+        }
         if (adapter.getItemCount() == 0) {
             (btnWifi.getVisibility() == View.VISIBLE ? btnWifi : findViewById(R.id.btnSettings)).requestFocus();
             return;
@@ -2743,43 +2841,10 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     private void showHomeWeather(HomeWeather.Line line) {
         if (weatherAirQualityView == null) return;
         if (line == null) {
-            weatherAirQualityView.setText(WeatherAirQuality.getFormatted(this));
+            statusChips.setPlain(WeatherAirQuality.getFormatted(this));
             return;
         }
-        // Tenang: weather and air quality are two chips; the IPU chip carries a status dot in the API colour.
-        if (aqiChipView != null) {
-            weatherAirQualityView.setText(line.weather.isEmpty() ? line.api : line.weather);
-            if (!line.weather.isEmpty() && !line.api.isEmpty()) {
-                aqiChipView.setText(line.api);
-                Drawable dot = getDrawable(R.drawable.tn_dot).mutate();
-                dot.setTint(line.apiColor);
-                int dotPx = Math.round(7 * density);
-                dot.setBounds(0, 0, dotPx, dotPx);
-                aqiChipView.setCompoundDrawables(dot, null, null, null);
-                aqiChipView.setCompoundDrawablePadding(Math.round(7 * density));
-                aqiChipView.setVisibility(View.VISIBLE);
-            } else {
-                aqiChipView.setVisibility(View.GONE);
-            }
-        } else {
-            String sep = line.weather.isEmpty() || line.api.isEmpty() ? "" : "     ·     ";
-            android.text.SpannableString text = new android.text.SpannableString(line.weather + sep + line.api);
-            if (!line.api.isEmpty()) {
-                text.setSpan(new android.text.style.ForegroundColorSpan(line.apiColor), text.length() - line.api.length(),
-                        text.length(), android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            }
-            weatherAirQualityView.setText(text);
-        }
-        if (line.icon != 0) {
-            Drawable d = getDrawable(line.icon);
-            int px = Math.round(17 * density);
-            int yOffset = 0;
-            d.setBounds(0, yOffset, px, px + yOffset);
-            weatherAirQualityView.setCompoundDrawables(d, null, null, null);
-            weatherAirQualityView.setCompoundDrawablePadding(Math.round(7 * density));
-        } else {
-            weatherAirQualityView.setCompoundDrawables(null, null, null, null);
-        }
+        statusChips.set(line);
         updateWeatherOverlay(line);
         updateWeatherWarning();
     }
@@ -3190,75 +3255,62 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
 
         Location.Zone currentZone = Location.chosen(this);
         String zoneTitle = (currentZone != null && currentZone.town != null) ? currentZone.town : PrayerTimes.getShortZoneName(this);
-        if (prayerHeader != null) {
-            String pPrefix = AppLanguage.getPrayerHeaderPrefix(this);
-            prayerHeader.setText(pPrefix + "  •  " + zoneTitle + "  •  " + PrayerTimes.getHijriDate(this));
-        }
-
+        if (prayerUi == null) return;
+        prayerUi.setHeader(AppLanguage.getPrayerHeaderPrefix(this) + "  •  " + zoneTitle + "  •  " + PrayerTimes.getHijriDate(this));
         PrayerTimes.PrayerItem[] items = PrayerTimes.getPrayerItems(this);
         if (items != null && items.length >= 6) {
-            TextView[] labels = {lblSubuh, lblSyuruk, lblZohor, lblAsar, lblMaghrib, lblIsyak};
-            TextView[] times = {timeSubuh, timeSyuruk, timeZohor, timeAsar, timeMaghrib, timeIsyak};
-            Typeface prayerFont = getResources().getFont(R.font.outfit);
-
-            View nextCell = null;
-            for (int i = 0; i < 6; i++) {
-                if (times[i] != null) times[i].setText(items[i].timeStr);
-                if (labels[i] != null) {
-                    labels[i].setText(items[i].name);
-                    boolean next = items[i].isNext;
-                    labels[i].setTextColor(next ? Design.ACCENT : Design.TEXT_MUTED);
-                    labels[i].setTypeface(prayerFont);
-                    Fonts.weight(labels[i], next ? 500 : 400);
-                    if (times[i] != null) {
-                        times[i].setTextColor(Design.TEXT);
-                        times[i].setTypeface(prayerFont);
-                        Fonts.weight(times[i], next ? 400 : 300);
-                    }
-                    View cell = (View) labels[i].getParent();
-                    if (next) nextCell = cell;
-                    else cell.setBackground(null);
-                }
-            }
-            showPrayerNext(nextCell);
+            prayerUi.setPrayers(items, isAnimationsEnabled());
             updatePrayerCountdown();
+            if (Design.BACKDROP == 2) updatePrayerStrip(items, zoneTitle);
         }
     }
 
-    /** Outlines the next prayer's cell; its outline breathes slowly unless motion is reduced. */
-    private void showPrayerNext(View cell) {
-        if (cell == prayerNextCell && cell != null && cell.getBackground() != null) return;
-        if (prayerGlowAnimator != null) {
-            prayerGlowAnimator.cancel();
-            prayerGlowAnimator = null;
+    /** Sorot's strip: "SETERUSNYA  Maghrib 19:01 · dalam 2j 16m    Subuh 05:46  Zohor 13:02 …    1 Jamadilakhir 1448H · Shah Alam". */
+    private void updatePrayerStrip(PrayerTimes.PrayerItem[] items, String zone) {
+        TextView strip = findViewById(R.id.prayerStrip);
+        if (strip == null || items == null || items.length < 6) return;
+        android.text.SpannableStringBuilder b = new android.text.SpannableStringBuilder();
+        int next = 0;
+        for (int i = 0; i < 6; i++) if (items[i].isNext) next = i;
+        String lang = AppLanguage.getLanguage(this);
+        long[] t = PrayerTimes.todayTimes(this);
+        String in = "";
+        if (t != null && t.length >= 6) {
+            long now = System.currentTimeMillis();
+            long[] w = HomeText.window(t, now);
+            in = "  ·  " + HomeText.nextIn(lang, "", (w[3] - now + 59_999) / 60_000).trim();
         }
-        prayerNextCell = cell;
-        if (cell == null) return;
-        Drawable glow = getDrawable(R.drawable.tn_prayer_next).mutate();
-        cell.setBackground(glow);
-        if (isAnimationsEnabled()) {
-            prayerGlowAnimator = ObjectAnimator.ofInt(glow, "alpha", 255, 90);
-            prayerGlowAnimator.setDuration(2000);
-            prayerGlowAnimator.setRepeatMode(ValueAnimator.REVERSE);
-            prayerGlowAnimator.setRepeatCount(ValueAnimator.INFINITE);
-            prayerGlowAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
-            prayerGlowAnimator.start();
+        int s0 = b.length();
+        b.append(AppLanguage.LANG_EN.equals(lang) ? "NEXT  " : "SETERUSNYA  ");
+        b.setSpan(new android.text.style.ForegroundColorSpan(Design.TEXT_MUTED), s0, b.length(), 0);
+        s0 = b.length();
+        b.append(items[next].name).append(" ").append(items[next].timeStr);
+        b.setSpan(new android.text.style.StyleSpan(Typeface.BOLD), s0, b.length(), 0);
+        b.append(in).append("      ");
+        for (int i = 0; i < 6; i++) {
+            if (i == next || i == 1) continue;   // the next one is above; Syuruk is a time, not a prayer
+            s0 = b.length();
+            b.append(items[i].name).append(" ").append(items[i].timeStr).append("    ");
+            b.setSpan(new android.text.style.ForegroundColorSpan(items[i].isPast ? Design.ink(0x80) : Design.TEXT_MUTED), s0, b.length(), 0);
         }
+        s0 = b.length();
+        b.append("  ").append(PrayerTimes.getHijriDate(this)).append(" · ").append(zone);
+        b.setSpan(new android.text.style.ForegroundColorSpan(Design.TEXT_MUTED), s0, b.length(), 0);
+        strip.setText(b);
     }
 
     /** "Isyak ━━━━━ Subuh dalam 5j 36m": the previous prayer, a progress bar and time left to the next. */
     private void updatePrayerCountdown() {
-        if (prayerNextInView == null || prayerBarFill == null) return;
+        if (prayerUi == null) return;
         long[] t = PrayerTimes.todayTimes(this);
         if (t == null || t.length < 6) return;
         long now = System.currentTimeMillis();
         long[] w = HomeText.window(t, now);
         String[] names = AppLanguage.getPrayerNames(this);
-        String lang = AppLanguage.getLanguage(this);
         long minutes = (w[3] - now + 59_999) / 60_000;
-        if (prayerPrevView != null) prayerPrevView.setText(names[(int) w[0]]);
-        prayerNextInView.setText(HomeText.nextIn(lang, names[(int) w[1]], minutes));
-        prayerBarFill.setScaleX(HomeText.progress(w[2], w[3], now));
+        prayerUi.setCountdown(names[(int) w[0]],
+                HomeText.nextIn(AppLanguage.getLanguage(this), names[(int) w[1]], minutes),
+                HomeText.progress(w[2], w[3], now));
     }
 
     void updateAyah() {
@@ -3277,110 +3329,26 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     }
 
     void showAyah(WeeklyAyah.Ayah a) {
-        if (ayahBlock == null) return;
-        if (!WeeklyAyah.shown(this) || (nowPlayingCard != null && nowPlayingCard.getVisibility() == View.VISIBLE)) {
-            ayahBlock.setVisibility(View.GONE);
+        if (ayahUi == null || !ayahUi.exists()) return;
+        if (!WeeklyAyah.shown(this) || (nowPlayingCard != null && nowPlayingCard.getVisibility() == View.VISIBLE)
+                || a == null || a.arabic == null || a.arabic.isEmpty()) {
+            ayahUi.hide();
             return;
         }
-        if (a == null || a.arabic == null || a.arabic.isEmpty()) {
-            ayahBlock.setVisibility(View.GONE);
-            return;
-        }
-
-        int usable = getResources().getDisplayMetrics().widthPixels - (int) ((55 + 56) * density);
-        int islamicMaxWidth = Math.round(usable * 0.50f);
-        boolean is4K = (getResources().getDisplayMetrics().widthPixels >= 3840 || getResources().getDisplayMetrics().heightPixels >= 2160);
-
-        if (ayahLabel != null) {
-            ayahLabel.setText(AppLanguage.getAyahLabel(this, a.reference));
-            ayahLabel.setTextSize(TypedValue.COMPLEX_UNIT_SP, is4K ? 15f : 12.5f);
-        }
-        if (ayahArabic != null) {
-            String text = a.arabic.trim();
-            ayahArabic.setMaxWidth(islamicMaxWidth);
-            ayahArabic.setSingleLine(false);
-            ayahArabic.setMaxLines(2);
-            ayahArabic.setEllipsize(TextUtils.TruncateAt.END);
-            ayahArabic.setTextDirection(View.TEXT_DIRECTION_RTL);
-            ayahArabic.setGravity(Gravity.RIGHT);   // Arabic sits on the right edge; END would mean left in RTL
-            ayahArabic.setIncludeFontPadding(false);
-            try {
-                ayahArabic.setTypeface(androidx.core.content.res.ResourcesCompat.getFont(this, R.font.amiri_quran), Typeface.NORMAL);
-            } catch (Exception ignored) {}
-            ayahArabic.setTextColor(Design.AMBER);
-            // A fixed TV size, with two lines, rather than shrinking the verse to fit one line.
-            ayahArabic.setTextSize(TypedValue.COMPLEX_UNIT_SP, is4K ? 22f : 16f);
-            ayahArabic.setText(text);
-        }
-        if (ayahText != null) {
-            ayahText.setMaxWidth(islamicMaxWidth);
-            String lang = AppLanguage.getLanguage(this);
-            String tr = a.translation(lang);
-            ayahText.setText(tr != null ? tr.trim() : "");
-            ayahText.setTextSize(TypedValue.COMPLEX_UNIT_SP, is4K ? 17f : 14f);
-            ayahText.setVisibility(tr != null && !tr.trim().isEmpty() ? View.VISIBLE : View.GONE);
-        }
-        ayahBlock.setVisibility(View.VISIBLE);
+        ayahUi.showAyah(AppLanguage.getAyahLabel(this, a.reference), a.arabic,
+                a.translation(AppLanguage.getLanguage(this)));
     }
 
     void showMinbar(MinbarManager.KhutbahItem k) {
-        if (ayahBlock == null) return;
-        if (!WeeklyAyah.shown(this) || (nowPlayingCard != null && nowPlayingCard.getVisibility() == View.VISIBLE)) {
-            ayahBlock.setVisibility(View.GONE);
+        if (ayahUi == null || !ayahUi.exists()) return;
+        if (!WeeklyAyah.shown(this) || (nowPlayingCard != null && nowPlayingCard.getVisibility() == View.VISIBLE)
+                || k == null || k.title == null || k.title.isEmpty()) {
+            ayahUi.hide();
             return;
         }
-        if (k == null || k.title == null || k.title.isEmpty()) {
-            ayahBlock.setVisibility(View.GONE);
-            return;
-        }
-
-        int usable = getResources().getDisplayMetrics().widthPixels - (int) ((55 + 56) * density);
-        int islamicMaxWidth = Math.round(usable * 0.50f);
-        boolean is4K = (getResources().getDisplayMetrics().widthPixels >= 3840 || getResources().getDisplayMetrics().heightPixels >= 2160);
-
-        if (ayahLabel != null) {
-            String datePart = (k.date != null && !k.date.isEmpty()) ? "  •  " + k.date : "";
-            ayahLabel.setText("Khutbah Minbar  •  " + k.authority + datePart);
-            ayahLabel.setTextSize(TypedValue.COMPLEX_UNIT_SP, is4K ? 15f : 12.5f);
-        }
-        if (ayahArabic != null) {
-            String text = k.title.trim();
-            ayahArabic.setMaxWidth(islamicMaxWidth);
-            ayahArabic.setSingleLine(true);
-            ayahArabic.setMaxLines(1);
-            ayahArabic.setEllipsize(TextUtils.TruncateAt.END);
-            ayahArabic.setTextDirection(View.TEXT_DIRECTION_LTR);
-            ayahArabic.setGravity(Gravity.END);
-            try {
-                ayahArabic.setTypeface(androidx.core.content.res.ResourcesCompat.getFont(this, R.font.outfit), Typeface.BOLD);
-            } catch (Exception e) {
-                ayahArabic.setTypeface(Typeface.create("sans-serif-medium", Typeface.BOLD));
-            }
-            ayahArabic.setTextColor(Design.AMBER);
-
-            float baseSp = is4K ? 16f : 13.5f;
-            android.text.TextPaint paint = new android.text.TextPaint(ayahArabic.getPaint());
-            paint.setTextSize(baseSp * getResources().getDisplayMetrics().scaledDensity);
-            float textWidth = paint.measureText(text);
-
-            float targetSp = baseSp;
-            float maxAllowed = islamicMaxWidth * 0.95f;
-            while (textWidth > maxAllowed && targetSp > 11.0f) {
-                targetSp -= 0.5f;
-                paint.setTextSize(targetSp * getResources().getDisplayMetrics().scaledDensity);
-                textWidth = paint.measureText(text);
-            }
-            ayahArabic.setTextSize(TypedValue.COMPLEX_UNIT_SP, targetSp);
-            ayahArabic.setText(text);
-        }
-        if (ayahText != null) {
-            ayahText.setMaxWidth(islamicMaxWidth);
-            String summary = (k.subtitle != null && !k.subtitle.isEmpty()) ? k.subtitle + " — " + k.excerpt : k.excerpt;
-            ayahText.setText(summary != null ? summary.trim() : "");
-            ayahText.setTextSize(TypedValue.COMPLEX_UNIT_SP, is4K ? 12.5f : 10.5f);
-            ayahText.setVisibility(summary != null && !summary.trim().isEmpty() ? View.VISIBLE : View.GONE);
-        }
-        ayahBlock.setVisibility(View.VISIBLE);
+        String datePart = (k.date != null && !k.date.isEmpty()) ? "  •  " + k.date : "";
+        String summary = (k.subtitle != null && !k.subtitle.isEmpty()) ? k.subtitle + " — " + k.excerpt : k.excerpt;
+        ayahUi.showKhutbah("Khutbah Minbar  •  " + k.authority + datePart, k.title, summary);
     }
 
     void showIslamicDetailDialog() {
@@ -3723,9 +3691,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         String lang = AppLanguage.getLanguage(this);
         String dateStr = HomeText.date(lang, day, month, year);
 
-        if (ampmView != null) ampmView.setText(period);
-        if (dateView != null) dateView.setText(dateStr);
-        if (greetingView != null) greetingView.setText(HomeText.greeting(lang, hour) + " \u2726");
+        if (clockBlock != null) clockBlock.set(period, dateStr, HomeText.greeting(lang, hour) + " \u2726");
     }
 
     /** Shows the Wi-Fi network name on the button when we can read it, otherwise the connection type. */

@@ -95,4 +95,74 @@
         <item name="tnStars">0.0</item>
         <item name="tnIsLight">true</item>
     </style>
+    <!-- Look: Lautan. Replaces the Tenang palette while chosen; the palette choice is kept for going back. -->
+    <style name="ThemeOverlay.Look.Lautan" parent="">
+        <item name="tnBg1">#020D33</item>
+        <item name="tnBg2">#0634A8</item>
+        <item name="tnBlobA">#FF0A7FE0</item>
+        <item name="tnBlobB">#000634A8</item>
+        <item name="tnSurface">#0A1F66</item>
+        <item name="tnSurfaceRaised">#0E2A80</item>
+        <item name="tnSurfaceFocus">#123494</item>
+        <item name="tnHairline">#2A5BC0</item>
+        <item name="tnCard">#66020E34</item>
+        <item name="tnChip">#26020E34</item>
+        <item name="tnLine">#597FE6FF</item>
+        <item name="tnText">#FFFFFF</item>
+        <item name="tnMuted">#A9D8FF</item>
+        <item name="tnAccent">#FF2E55</item>
+        <item name="tnAccentSoft">#1FFF2E55</item>
+        <item name="tnAccentDim">#D91F43</item>
+        <item name="tnAccentGlow">#73FF2E55</item>
+        <item name="tnOnAccent">#FFFFFF</item>
+        <item name="tnWarm">#FFD35A</item>
+        <item name="tnAmber">#FFD35A</item>
+        <item name="tnAmberBg">#24FFD35A</item>
+        <item name="tnGood">#7DFFB2</item>
+        <item name="tnCoral">#FF8A8A</item>
+        <item name="tnCyan">#7FE6FF</item>
+        <item name="tnViolet">#A79BE8</item>
+        <item name="tnWave">#2E7FE6FF</item>
+        <item name="tnInk">#FFFFFFFF</item>
+        <item name="tnStars">0.0</item>
+        <item name="tnIsLight">false</item>
+        <item name="tnFocusShape">1</item>
+        <item name="tnBackdrop">1</item>
+        <item name="tnTextSkew">-0.2</item>
+    </style>
+    <!-- Look: Sorot. Replaces the Tenang palette while chosen; the palette choice is kept for going back. -->
+    <style name="ThemeOverlay.Look.Sorot" parent="">
+        <item name="tnBg1">#05070D</item>
+        <item name="tnBg2">#0B0F1A</item>
+        <item name="tnBlobA">#00000000</item>
+        <item name="tnBlobB">#00000000</item>
+        <item name="tnSurface">#151923</item>
+        <item name="tnSurfaceRaised">#1C212C</item>
+        <item name="tnSurfaceFocus">#252B38</item>
+        <item name="tnHairline">#2A303C</item>
+        <item name="tnCard">#14FFFFFF</item>
+        <item name="tnChip">#1AFFFFFF</item>
+        <item name="tnLine">#2EFFFFFF</item>
+        <item name="tnText">#FFFFFF</item>
+        <item name="tnMuted">#A3A8B3</item>
+        <item name="tnAccent">#FFFFFF</item>
+        <item name="tnAccentSoft">#1FFFFFFF</item>
+        <item name="tnAccentDim">#D9DDE5</item>
+        <item name="tnAccentGlow">#59FFFFFF</item>
+        <item name="tnOnAccent">#05070D</item>
+        <item name="tnWarm">#F1D3A1</item>
+        <item name="tnAmber">#FFD35A</item>
+        <item name="tnAmberBg">#24FFD35A</item>
+        <item name="tnGood">#7DFFB2</item>
+        <item name="tnCoral">#FF8A8A</item>
+        <item name="tnCyan">#8CCFE6</item>
+        <item name="tnViolet">#A79BE8</item>
+        <item name="tnWave">#00FFFFFF</item>
+        <item name="tnInk">#FFFFFFFF</item>
+        <item name="tnStars">0.0</item>
+        <item name="tnIsLight">false</item>
+        <item name="tnFocusShape">2</item>
+        <item name="tnBackdrop">2</item>
+        <item name="tnTextSkew">0.0</item>
+    </style>
 </resources>

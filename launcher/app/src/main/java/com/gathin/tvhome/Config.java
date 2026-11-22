@@ -210,6 +210,13 @@ final class Config {
                 places, wallpaperOnline, wallpaperFeed, cacheCleanDays, applied);
     }
 
+    /** The theme's "look" key (tenang, lautan or sorot), or null when the theme has none. */
+    static String lookKey(Context ctx) {
+        File dir = dir(ctx);
+        JSONObject json = read(dir != null ? new File(dir, FILE_NAME) : null);
+        return json != null ? string(json, "look", null) : null;
+    }
+
     /** The theme's "palette" key (malam, senja, embun or auto), or null when the theme has none. */
     static String paletteMode(Context ctx) {
         File dir = dir(ctx);

@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sorot — Glass TV preview</title>
+<style>
+/*
+  Sorot ("spotlight"): a console-style home for Glass TV, offered next to Tenang and Lautan (Settings → Tema).
+  The mechanics of a console home (one row of apps at the top; the focused app takes over the whole screen
+  with its own colours and a big hero), in an original design: no console maker's logos, fonts, icons or sounds.
+
+  Lightweight rules (they carry over to the launcher):
+  - The full-screen "art" is the app's own banner shrunk to 32×18 px and stretched: the GPU's smoothing turns
+    it into a soft colour field for free. No blur, no big decode (a 32×18 image is ~2 KB in memory).
+  - Changing app crossfades two of those layers (opacity only); the hero banner slides 24 px and fades.
+  - Fonts already in the APK (Outfit). The stage is 1600×900; ×0.6 for dp on a 1080p TV.
+*/
+@font-face{font-family:Outfit;font-weight:300;src:url("../launcher/app/src/main/res/font/outfit_light.ttf") format("truetype")}
+@font-face{font-family:Outfit;font-weight:400;src:url("../launcher/app/src/main/res/font/outfit_regular.ttf") format("truetype")}
+@font-face{font-family:Outfit;font-weight:500;src:url("../launcher/app/src/main/res/font/outfit_medium.ttf") format("truetype")}
+@font-face{font-family:"Amiri Quran";src:url("../launcher/app/src/main/res/font/amiri_quran.ttf") format("truetype")}
+@font-face{font-family:Outfit;font-weight:700;src:url("../launcher/app/src/main/res/font/outfit_bold.ttf") format("truetype")}
+
+.stage{--ink:#fff;--muted:rgba(255,255,255,.62);--glass:rgba(255,255,255,.1);--line:rgba(255,255,255,.18);--ease:cubic-bezier(.2,.8,.2,1)}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#000;overflow:hidden}
+body{font-family:Outfit,system-ui,sans-serif;-webkit-font-smoothing:antialiased;user-select:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+button:focus{outline:none}
+.stage{position:absolute;left:50%;top:50%;width:1600px;height:900px;margin:-450px 0 0 -800px;overflow:hidden;color:var(--ink);background:#05070d}
+
+/* ---------- backdrop: the focused app's colours, two layers crossfading ---------- */
+.art{position:absolute;inset:-40px;opacity:0;transition:opacity .6s ease;image-rendering:auto}
+.art.on{opacity:1}
+.art canvas{width:100%;height:100%;display:block;filter:none}
+.shade{position:absolute;inset:0;background:
+  linear-gradient(180deg,rgba(5,7,13,.55) 0%,rgba(5,7,13,0) 22%,rgba(5,7,13,0) 45%,rgba(5,7,13,.85) 78%,#05070d 100%),
+  linear-gradient(90deg,rgba(5,7,13,.75) 0%,rgba(5,7,13,.15) 55%,rgba(5,7,13,0) 100%)}
+
+/* ---------- top bar ---------- */
+.top{position:absolute;left:80px;right:80px;top:40px;display:flex;align-items:center;gap:28px;font-size:22px}
+.tabs{display:flex;gap:30px;font-weight:500}
+.tabs span{opacity:.55}.tabs span.on{opacity:1;position:relative}
+.tabs span.on::after{content:"";position:absolute;left:0;right:0;bottom:-8px;height:3px;border-radius:2px;background:#fff}
+.top .sp{flex:1}
+.ico{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:var(--glass)}
+.ico svg{width:24px;height:24px}
+.top .time{font-size:26px;font-weight:500;letter-spacing:.5px}
+
+/* ---------- the app row ---------- */
+.row{position:absolute;left:80px;top:196px;display:flex;align-items:flex-start;gap:18px}
+.app{position:relative;width:116px;height:116px;border-radius:22px;flex:none;transition:width .35s var(--ease),height .35s var(--ease);overflow:visible}
+.app .face{position:absolute;inset:0;border-radius:inherit;display:grid;place-items:center;font-weight:700;font-size:20px;background:var(--bnr);color:var(--bnrText,#fff);overflow:hidden;
+  box-shadow:0 10px 30px rgba(0,0,0,.35);transition:box-shadow .3s}
+.app .name{position:absolute;left:calc(100% + 22px);top:50%;transform:translate(-10px,-50%);white-space:nowrap;font-size:30px;font-weight:500;opacity:0;transition:opacity .25s,transform .35s var(--ease)}
+.app.is-focus{width:176px;height:176px;border-radius:30px}
+.app.is-focus .face{box-shadow:0 0 0 4px #fff,0 16px 40px rgba(0,0,0,.45)}
+.app.is-focus .name{opacity:1;transform:translate(0,-50%)}
+.app.is-focus + .app{margin-left:240px;transition:margin .35s var(--ease)}
+.app + .app{transition:margin .35s var(--ease)}
+
+/* ---------- hero: what the focused app is ---------- */
+.hero{position:absolute;left:80px;top:440px;width:760px;transition:opacity .3s,transform .4s var(--ease)}
+.hero.swap{opacity:0;transform:translateY(24px)}
+.hero .logo{font-size:80px;font-weight:700;letter-spacing:-2px;line-height:1}
+.hero p{margin-top:18px;font-size:24px;font-weight:300;color:var(--muted);max-width:640px;line-height:1.35}
+.actions{display:flex;gap:16px;margin-top:30px}
+.btn{height:64px;padding:0 44px;border-radius:32px;font-size:24px;font-weight:500;background:var(--glass);border:1px solid var(--line);transition:transform .25s var(--ease),background .2s,color .2s}
+.btn.primary{background:#fff;color:#05070d}
+.btn.round{width:64px;padding:0;display:grid;place-items:center;font-size:28px}
+.btn.is-focus{transform:scale(1.06);box-shadow:0 0 0 4px rgba(255,255,255,.9)}
+
+/* ---------- prayer strip: right under the top bar ---------- */
+.strip{position:absolute;left:80px;right:80px;top:112px;height:58px;display:flex;align-items:center;gap:26px;padding:0 26px;border-radius:29px;
+  background:rgba(255,255,255,.1);border:1px solid var(--line);font-size:20px;white-space:nowrap}
+.strip .nx{display:flex;align-items:center;gap:12px;font-weight:500}
+.strip .nx b{font-size:26px;font-weight:700}
+.strip .nx i{font-style:normal;color:#05070d;background:#fff;border-radius:14px;padding:3px 12px;font-size:16px;font-weight:700}
+.strip .t{color:var(--muted)}.strip .t b{color:#fff;font-weight:500;margin-left:6px}
+.strip .t.past{opacity:.5}
+.strip .sp{flex:1}
+.strip .hj{color:var(--muted)}
+/* ---------- ayah: a card on the right, beside the hero ---------- */
+.ayahcard{position:absolute;right:80px;top:440px;width:560px;padding:22px 28px;border-radius:22px;background:rgba(5,7,13,.45);border:1px solid var(--line)}
+.ayahcard small{display:block;font-size:15px;letter-spacing:2px;font-weight:500;color:var(--muted)}
+.ayahcard .ar{font-family:"Amiri Quran",serif;font-size:28px;line-height:1.55;text-align:right;color:#f1d3a1;margin:8px 0 6px}
+.ayahcard p{font-size:18px;font-weight:300;line-height:1.4;color:rgba(255,255,255,.85)}
+
+/* ---------- cards: the launcher's own widgets ---------- */
+.cards{position:absolute;left:80px;right:80px;bottom:44px;display:flex;gap:20px}
+
+.card{flex:1;height:150px;border-radius:22px;padding:20px 24px;background:rgba(255,255,255,.08);border:1px solid var(--line);transition:transform .25s var(--ease),background .2s}
+.card small{display:block;font-size:15px;letter-spacing:2px;font-weight:500;color:var(--muted)}
+.card b{display:block;font-size:40px;font-weight:500;margin-top:10px}
+.card span{display:block;font-size:18px;color:var(--muted);margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card.is-focus{transform:scale(1.04);background:rgba(255,255,255,.16);box-shadow:0 0 0 4px rgba(255,255,255,.9)}
+.card.warn b{color:#ffd35a;font-size:28px;margin-top:16px}
+
+/* ---------- entrance ---------- */
+@keyframes up{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+.in{animation:up .6s var(--ease) both}.d1{animation-delay:.08s}.d2{animation-delay:.16s}.d3{animation-delay:.24s}
+.stage.lite .art{transition:none}.stage.lite .in{animation:none}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition-duration:.01s!important}}
+
+.cards .card{height:118px}.cards .card b{font-size:34px;margin-top:6px}
+.tools{position:fixed;left:50%;transform:translateX(-50%);bottom:8px;display:flex;gap:8px;font:14px/1 system-ui,sans-serif;z-index:99;opacity:.85}
+.tools button{padding:8px 12px;border-radius:8px;background:#222;color:#ddd;border:1px solid #444}
+.tools button[aria-pressed="true"]{background:#ddd;color:#111}
+</style>
+</head>
+<body>
+<div class="stage" id="stage">
+  <div class="art" id="artA"><canvas width="32" height="18"></canvas></div>
+  <div class="art" id="artB"><canvas width="32" height="18"></canvas></div>
+  <div class="shade"></div>
+
+  <div class="top in">
+    <div class="tabs"><span class="on">Aplikasi</span><span>Media</span><span>Langsung</span></div>
+    <div class="sp"></div>
+    <div class="ico" title="Input"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9V6a1.5 1.5 0 0 1 1.5-1.5h15A1.5 1.5 0 0 1 21 6v12a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 18v-3"/><path d="M2 12h11"/><path d="m10 8.5 3.5 3.5-3.5 3.5"/></svg></div>
+    <div class="ico" title="Cari"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg></div>
+    <div class="ico" title="Tetapan"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><circle cx="12" cy="12" r="7.6" stroke-width="3.2" stroke-dasharray="2.98 2.98"/><circle cx="12" cy="12" r="2.6"/></svg></div>
+    <div class="ico" style="background:#7fb6e8;color:#1d2f45;font-weight:700">M</div>
+    <div class="time" id="time">8:45 PM</div>
+  </div>
+
+  <div class="strip in d1">
+    <span class="nx"><i>SETERUSNYA</i>MAGHRIB <b>19:01</b> dalam 2j 16m</span>
+    <span class="t past">Subuh<b>05:46</b></span><span class="t past">Zohor<b>13:02</b></span><span class="t past">Asar<b>16:22</b></span><span class="t">Isyak<b>20:13</b></span>
+    <span class="sp"></span><span class="hj">1 Jamadilakhir 1448H · Shah Alam</span>
+  </div>
+
+  <nav class="row in d1" id="row"></nav>
+
+  <section class="hero" id="hero">
+    <div class="logo" id="heroLogo">YouTube</div>
+    <p id="heroDesc">Sambung tontonan anda, atau lihat apa yang sedang hangat hari ini.</p>
+    <div class="actions" id="actions">
+      <button class="btn primary" data-k="act">Buka</button>
+      <button class="btn round" data-k="act">⋯</button>
+    </div>
+  </section>
+
+  <section class="ayahcard in d2">
+    <small>DOA HARIAN · AL-BAQARAH 2:201</small>
+    <p class="ar" dir="rtl" lang="ar">رَبَّنَآ ءَاتِنَا فِى ٱلدُّنْيَا حَسَنَةً وَفِى ٱلْءَاخِرَةِ حَسَنَةً وَقِنَا عَذَابَ ٱلنَّارِ</p>
+    <p>"Wahai Tuhan kami, berilah kami kebaikan di dunia dan kebaikan di akhirat, dan peliharalah kami dari azab neraka."</p>
+  </section>
+
+  <div class="cards in d3" id="cards">
+    <div class="card" data-k="card"><small>CUACA</small><b>29°</b><span>Berawan · Shah Alam</span></div>
+    <div class="card" data-k="card"><small>KUALITI UDARA</small><b>IPU 48</b><span>Baik · stesen Shah Alam</span></div>
+    <div class="card warn" data-k="card"><small>AMARAN MET</small><b>Ribut petir</b><span>Selangor, W.P. Kuala Lumpur · 9 PM</span></div>
+  </div>
+</div>
+
+<div class="tools" aria-label="Preview controls">
+  <button id="lite" aria-pressed="false">Lite</button>
+  <a href="tenang.html"><button>Tenang ↗</button></a>
+  <a href="lautan.html"><button>Lautan ↗</button></a>
+</div>
+
+<script>
+(function(){
+  var stage=document.getElementById('stage');
+  function fit(){stage.style.transform='scale('+Math.min(innerWidth/1600,innerHeight/900)+')';}
+  addEventListener('resize',fit);fit();
+
+  // Stand-ins for app banners. On the TV each app's real banner is shrunk to 32×18 for the backdrop.
+  var APPS=[
+    {n:'YouTube',bg:'#f4f4f4',fg:'#e00',label:'▶',c:['#ff2020','#2a0505','#f4f4f4'],d:'Sambung tontonan anda, atau lihat apa yang sedang hangat hari ini.'},
+    {n:'Netflix',bg:'#000',fg:'#e50914',label:'N',c:['#e50914','#140203','#3a0a0d'],d:'Siri dan filem; profil keluarga dan kanak-kanak.'},
+    {n:'HBO Max',bg:'#2b1460',fg:'#fff',label:'max',c:['#5b2bd6','#120933','#2e7cf6'],d:'Drama, filem dan dokumentari.'},
+    {n:'Media Player',bg:'#6c63ff',fg:'#fff',label:'▶',c:['#6c63ff','#0d0b33','#2bd6c4'],d:'Video dan gambar dari USB atau rangkaian rumah.'},
+    {n:'Live TV',bg:'#1f8f5b',fg:'#fff',label:'TV',c:['#22b573','#04170f','#0e5b8c'],d:'Saluran TV dan input HDMI.'},
+    {n:'Spotify',bg:'#111',fg:'#1db954',label:'♫',c:['#1db954','#04140a','#0b3d22'],d:'Muzik, podcast dan zikir.'}
+  ];
+  var row=document.getElementById('row');
+  APPS.forEach(function(a,i){
+    var b=document.createElement('button');b.className='app';b.dataset.k='app';
+    b.innerHTML='<span class="face" style="--bnr:'+a.bg+';--bnrText:'+a.fg+'">'+a.label+'</span><span class="name">'+a.n+'</span>';
+    b.addEventListener('click',function(){go('app',i);});row.appendChild(b);
+  });
+
+  // Paint the 32×18 "art" for an app: its colours, as a shrunk banner would give, stretched by the GPU.
+  function paint(canvas,c){var x=canvas.getContext('2d'),g=x.createLinearGradient(0,0,32,18);
+    g.addColorStop(0,c[1]);g.addColorStop(.55,c[0]);g.addColorStop(1,c[2]);x.fillStyle=g;x.fillRect(0,0,32,18);
+    x.fillStyle=c[1];x.globalAlpha=.7;x.fillRect(0,12,32,6);x.globalAlpha=.5;x.fillStyle=c[2];x.fillRect(20,2,8,5);}
+  var arts=[document.getElementById('artA'),document.getElementById('artB')],front=0;
+  function showArt(i){var back=arts[1-front];paint(back.querySelector('canvas'),APPS[i].c);back.classList.add('on');arts[front].classList.remove('on');front=1-front;}
+
+  var hero=document.getElementById('hero'),heroLogo=document.getElementById('heroLogo'),heroDesc=document.getElementById('heroDesc');
+  var zones={app:[].slice.call(row.children),act:[].slice.call(document.querySelectorAll('[data-k="act"]')),card:[].slice.call(document.querySelectorAll('[data-k="card"]'))};
+  var order=['app','act','card'],Z='app',I=0,appI=0,heroTimer;
+  function go(z,i){
+    var list=zones[z];i=Math.max(0,Math.min(i,list.length-1));
+    document.querySelectorAll('.is-focus').forEach(function(e){e.classList.remove('is-focus');});
+    list[i].classList.add('is-focus');Z=z;I=i;
+    if(z==='app'&&i!==appI){appI=i;showArt(i);
+      hero.classList.add('swap');clearTimeout(heroTimer);
+      heroTimer=setTimeout(function(){heroLogo.textContent=APPS[i].n;heroDesc.textContent=APPS[i].d;hero.classList.remove('swap');},180);}
+  }
+  addEventListener('keydown',function(e){var k=e.key,zi=order.indexOf(Z);
+    if(k==='ArrowLeft')go(Z,I-1);else if(k==='ArrowRight')go(Z,I+1);
+    else if(k==='ArrowDown'&&zi<order.length-1)go(order[zi+1],0);
+    else if(k==='ArrowUp'&&zi>0)go(order[zi-1],order[zi-1]==='app'?appI:0);
+    else return;e.preventDefault();});
+  var liteB=document.getElementById('lite');
+  liteB.onclick=function(){liteB.setAttribute('aria-pressed',String(stage.classList.toggle('lite')));};
+  paint(arts[0].querySelector('canvas'),APPS[0].c);arts[0].classList.add('on');
+  var start=+((location.search.match(/app=(\d)/)||[])[1]||0);
+  appI=-1;go('app',start);
+  if(/down=1/.test(location.search))go('card',1);
+})();
+</script>
+</body>
+</html>

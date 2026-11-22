@@ -31,4 +31,8 @@
     <attr name="tnInk" format="color" />
     <attr name="tnStars" format="float" />
     <attr name="tnIsLight" format="boolean" />
+    <!-- Look tokens (docs/LAYOUT-RESEARCH.md): what changes between Tenang, Lautan and Sorot beyond colour. -->
+    <attr name="tnFocusShape" format="integer" />  <!-- 0 rounded ring (Tenang), 1 slash (Lautan), 2 white ring (Sorot) -->
+    <attr name="tnBackdrop" format="integer" />    <!-- 0 Tenang glows, 1 Lautan water and lattice, 2 Sorot app colours -->
+    <attr name="tnTextSkew" format="float" />      <!-- display text slant, Paint.setTextSkewX: 0, or -0.2 for Lautan -->
 </resources>

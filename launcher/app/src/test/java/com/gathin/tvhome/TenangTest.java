@@ -67,6 +67,24 @@ public class TenangTest {
     }
 
     @Test
+    public void temaCyclesThroughPalettesThenLooks() {
+        assertEquals("malam", Tenang.nextChoice("auto"));
+        assertEquals("embun", Tenang.nextChoice("senja"));
+        assertEquals("lautan", Tenang.nextChoice("embun"));
+        assertEquals("sorot", Tenang.nextChoice("lautan"));
+        assertEquals("auto", Tenang.nextChoice("sorot"));
+        assertEquals("malam", Tenang.nextChoice("rubbish"));
+    }
+
+    @Test
+    public void unknownLookIsTenang() {
+        assertEquals("tenang", Tenang.normaliseLook(null));
+        assertEquals("tenang", Tenang.normaliseLook("ps5"));
+        assertEquals("lautan", Tenang.normaliseLook(" LAUTAN "));
+        assertEquals("sorot", Tenang.normaliseLook("sorot"));
+    }
+
+    @Test
     public void settingsCycleThroughEveryMode() {
         assertEquals("malam", Tenang.nextMode("auto"));
         assertEquals("senja", Tenang.nextMode("malam"));

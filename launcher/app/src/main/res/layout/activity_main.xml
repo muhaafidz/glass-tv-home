@@ -88,6 +88,36 @@
             android:visibility="gone" />
     </LinearLayout>
 
+    <!-- Sorot hero: the focused app's name, big, under the app row. Hidden in other looks. -->
+    <LinearLayout
+        android:id="@+id/sorotHero"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="56dp"
+        android:orientation="vertical"
+        android:visibility="gone">
+        <TextView
+            android:id="@+id/sorotTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:includeFontPadding="false"
+            android:singleLine="true"
+            android:textColor="?attr/tnText"
+            android:textSize="44sp"
+            android:letterSpacing="-0.02"
+            android:fontFamily="@font/outfit_bold" />
+        <TextView
+            android:id="@+id/sorotHint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:includeFontPadding="false"
+            android:text="OK untuk buka  ·  tahan OK untuk pilihan"
+            android:textColor="?attr/tnMuted"
+            android:textSize="15sp"
+            android:fontFamily="@font/outfit_light" />
+    </LinearLayout>
+
     <!-- Information rail: daily ayah on the left, prayer times on the right. Aligned with the dock. -->
     <com.gathin.tvhome.EqualHeightRow
         android:id="@+id/islamicShelf"
@@ -649,6 +679,25 @@
             </LinearLayout>
 
             <!-- Now Playing Widget Card: Matching bravia-glass-tv design -->
+            <!-- Sorot: the prayer times as one strip under the chips (top of the screen). Hidden in other looks. -->
+            <TextView
+                android:id="@+id/prayerStrip"
+                android:layout_width="match_parent"
+                android:layout_height="32dp"
+                android:layout_below="@id/weatherRow"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/tn_chip"
+                android:gravity="center_vertical"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:includeFontPadding="false"
+                android:textColor="?attr/tnText"
+                android:textSize="13sp"
+                android:fontFamily="@font/outfit"
+                android:visibility="gone" />
             <LinearLayout
                 android:id="@+id/nowPlayingCard"
                 android:layout_width="wrap_content"

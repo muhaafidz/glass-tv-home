@@ -42,27 +42,19 @@ class TenangSnapshots {
     private fun fill(root: View) {
         fun text(id: Int, value: CharSequence) { root.findViewById<TextView>(id)?.text = value }
         val density = root.resources.displayMetrics.density
-        text(R.id.ampm, "MLM"); text(R.id.date, "16 Nov 2026"); text(R.id.greeting, "Selamat malam \u2726")
-        text(R.id.weatherAirQuality, "24\u00b0  Hujan renyai")
-        root.findViewById<TextView>(R.id.aqiChip).apply { text = "IPU 65 Sederhana"; visibility = View.VISIBLE }
+        // Through the same components MainActivity uses (L0), so the snapshot exercises their code.
+        ClockBlock(root).set("MLM", "16 Nov 2026", "Selamat malam \u2726")
+        StatusChips(root).set(HomeWeather.Line("24\u00b0  Hujan renyai", "IPU 65 Sederhana", Design.GOOD, 0))
         root.findViewById<View>(R.id.weatherWarningPill).visibility = View.VISIBLE
         text(R.id.weatherWarningText, "Amaran Ribut Petir \u00b7 Amaran Angin Kencang dan Laut Bergelora")
-        root.findViewById<View>(R.id.ayahBlock).visibility = View.VISIBLE
-        text(R.id.ayahLabel, "Doa harian  \u2022  Al-Baqarah 2:156")
-        text(R.id.ayahArabic, "\u0671\u0644\u0651\u064e\u0630\u0650\u064a\u0646\u064e \u0625\u0650\u0630\u064e\u0622 \u0623\u064e\u0635\u064e\u0670\u0628\u064e\u062a\u0652\u0647\u064f\u0645 \u0645\u0651\u064f\u0635\u0650\u064a\u0628\u064e\u0629\u064c")
-        text(R.id.ayahText, "(Iaitu) orang-orang yang apabila mereka ditimpa oleh sesuatu kesusahan, mereka berkata: \"Sesungguhnya kami adalah kepunyaan Allah dan kepada Allah jualah kami kembali.\"")
-        text(R.id.prayerHeader, "Waktu solat  \u2022  Shah Alam  \u2022  6 Jamadilakhir 1448H")
+        AyahBlock(root).showAyah("Doa harian  \u2022  Al-Baqarah 2:156", "\u0671\u0644\u0651\u064e\u0630\u0650\u064a\u0646\u064e \u0625\u0650\u0630\u064e\u0622 \u0623\u064e\u0635\u064e\u0670\u0628\u064e\u062a\u0652\u0647\u064f\u0645 \u0645\u0651\u064f\u0635\u0650\u064a\u0628\u064e\u0629\u064c",
+            "(Iaitu) orang-orang yang apabila mereka ditimpa oleh sesuatu kesusahan, mereka berkata: \"Sesungguhnya kami adalah kepunyaan Allah dan kepada Allah jualah kami kembali.\"")
+        val prayer = PrayerBlock(root)
+        prayer.setHeader("Waktu solat  \u2022  Shah Alam  \u2022  6 Jamadilakhir 1448H")
         val names = listOf("Subuh", "Syuruk", "Zohor", "Asar", "Maghrib", "Isyak")
         val times = listOf("05:48", "06:55", "13:00", "16:20", "18:58", "20:10")
-        val lbl = listOf(R.id.lblSubuh, R.id.lblSyuruk, R.id.lblZohor, R.id.lblAsar, R.id.lblMaghrib, R.id.lblIsyak)
-        val tm = listOf(R.id.timeSubuh, R.id.timeSyuruk, R.id.timeZohor, R.id.timeAsar, R.id.timeMaghrib, R.id.timeIsyak)
-        for (i in 0 until 6) {
-            val l = root.findViewById<TextView>(lbl[i]); l.text = names[i]
-            val t = root.findViewById<TextView>(tm[i]); t.text = times[i]; t.setTextColor(Design.TEXT)
-            l.setTextColor(if (i == 0) Design.ACCENT else Design.TEXT_MUTED)
-            if (i == 0) (l.parent as View).setBackgroundResource(R.drawable.tn_prayer_next)
-        }
-        text(R.id.prayerPrev, "Isyak"); text(R.id.prayerNextIn, "Subuh dalam 5j 36m")
+        prayer.setPrayers(Array(6) { PrayerTimes.PrayerItem(names[it], times[it], it == 0, false) }, false)
+        prayer.setCountdown("Isyak", "Subuh dalam 5j 36m", 0.13f)
         // Same rule as MainActivity.infoRailTop: centred between the chips and the dock (top at 409 dp on 1080p).
         val dockTop = 409 * density
         val shelf = root.findViewById<View>(R.id.islamicShelf)
@@ -91,6 +83,68 @@ class TenangSnapshots {
         })
         (root as android.widget.FrameLayout).addView(AmbientView(root.context), 0,
             android.widget.FrameLayout.LayoutParams(android.view.ViewGroup.LayoutParams.MATCH_PARENT, android.view.ViewGroup.LayoutParams.MATCH_PARENT))
+    }
+
+    /** A look on top of Malam, as Tenang.applyLook does, placed as MainActivity places it. */
+    private fun look(overlay: Int, art: Int?) {
+        paparazzi.context.theme.applyStyle(R.style.ThemeOverlay_Tenang_Malam, true)
+        paparazzi.context.theme.applyStyle(overlay, true)
+        Design.load(paparazzi.context)
+        val view = LayoutInflater.from(paparazzi.context).inflate(R.layout.activity_main, null) as android.widget.FrameLayout
+        fill(view)
+        val d = view.resources.displayMetrics.density
+        val dock = view.getChildAt(view.childCount - 1)
+        val shelf = view.findViewById<View>(R.id.islamicShelf)
+        if (art == null) {
+            // Lautan: the list on the left (stand-in rows), the grid and dock hidden, the rail under the chips.
+            LookType.apply(view)
+            dock.visibility = View.GONE
+            val list = LautanList(view.context) {}
+            val rows = listOf("YouTube", "Netflix", "HBO Max", "Media Player", "Live TV", "Spotify")
+                .map { LautanList.Shortcut(it, Runnable {}) } + listOf("INPUT", "CUACA", "SOLAT", "TEMA", "TETAPAN").map { LautanList.Shortcut(it, Runnable {}) }
+            list.rebuild(null, rows.toTypedArray())
+            view.addView(list, android.widget.FrameLayout.LayoutParams((maxOf(view.resources.displayMetrics.widthPixels, view.resources.displayMetrics.heightPixels) * 0.40f).toInt(), -1).apply {
+                leftMargin = (40 * d).toInt(); topMargin = (30 * d).toInt() })
+            val chips = view.findViewById<View>(R.id.weatherRow)
+            shelf.viewTreeObserver.addOnPreDrawListener {
+                val c = android.graphics.Rect(0, 0, chips.width, chips.height)
+                view.offsetDescendantRectToMyCoords(chips, c); shelf.y = c.bottom + 18 * d; true }
+        } else {
+            val ambient = view.getChildAt(0) as AmbientView
+            val tiny = android.graphics.Bitmap.createBitmap(32, 18, android.graphics.Bitmap.Config.ARGB_8888)
+            val c = android.graphics.Canvas(tiny)
+            c.drawColor(art)
+            c.drawRect(20f, 2f, 30f, 9f, android.graphics.Paint().apply { color = 0xFF3D0A0D.toInt() })
+            c.drawRect(0f, 12f, 32f, 18f, android.graphics.Paint().apply { color = 0xFF140203.toInt() })
+            ambient.setArt(tiny, false)
+            LookType.apply(view)
+            // Sorot: strip under the chips, the app row, the hero, and the ayah beside the hero on the right.
+            view.findViewById<TextView>(R.id.prayerStrip).text =
+                "SETERUSNYA  Maghrib 19:01  ·  dalam 2j 16m      Subuh 05:46    Zohor 13:02    Asar 16:22    Isyak 20:13      1 Jamadilakhir 1448H · Shah Alam"
+            (dock.layoutParams as android.widget.FrameLayout.LayoutParams).topMargin = (180 * d).toInt()
+            view.findViewById<TextView>(R.id.sorotTitle).text = "Netflix"
+            val hero = view.findViewById<View>(R.id.sorotHero)
+            hero.y = (180 + 68 + 20) * d
+            shelf.viewTreeObserver.addOnPreDrawListener { shelf.y = hero.y; true }
+        }
+        paparazzi.snapshot(view)
+    }
+
+    @Test fun lookLautan() = look(R.style.ThemeOverlay_Look_Lautan, null)
+    @Test fun lookSorot() = look(R.style.ThemeOverlay_Look_Sorot, 0xFFC8101E.toInt())
+
+    @Test fun lookLautanMenu() {
+        paparazzi.context.theme.applyStyle(R.style.ThemeOverlay_Tenang_Malam, true)
+        paparazzi.context.theme.applyStyle(R.style.ThemeOverlay_Look_Lautan, true)
+        Design.load(paparazzi.context)
+        val view = LayoutInflater.from(paparazzi.context).inflate(R.layout.activity_main, null) as android.widget.FrameLayout
+        fill(view)
+        LookType.apply(view)
+        val names = listOf("APLIKASI", "INPUT", "CUACA", "SOLAT", "TEMA", "PROFIL", "TETAPAN", "TUTUP")
+        val menu = LautanMenu(paparazzi.context, names.map { LautanMenu.Entry(it, "Penerangan $it", Runnable {}) }.toTypedArray(), true)
+        view.addView(menu, android.widget.FrameLayout.LayoutParams(-1, -1))
+        menu.open()
+        paparazzi.snapshot(view)
     }
 
     @Test fun homeMalam() = home(R.style.ThemeOverlay_Tenang_Malam)
