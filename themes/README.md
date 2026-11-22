@@ -15,8 +15,8 @@ powershell -ExecutionPolicy Bypass -File tools\theme.ps1 -TvHost 192.168.1.50 th
 | `default/` | The built-in look written out as JSON, as a starting point for your own |
 | `six-columns/` | Six smaller tiles per row and one grid row visible under the dock |
 | `tenang/` | Tenang: calm palettes that follow the prayer times, with its slow moving background |
-| `lautan/` | Lautan (6.1): deep sea, a drifting star lattice, a slanted list of apps on the left and the prayer times and ayah on the right |
-| `sorot/` | Sorot (6.1): the focused app's colours fill the screen; prayer strip at the top, the ayah beside the app's name |
+| `lautan/` | Lautan (7.0): deep sea, a drifting star lattice, a slanted list of apps on the left and the prayer times and ayah on the right |
+| `sorot/` | Sorot (7.0): the focused app's colours fill the screen; prayer strip at the top, the ayah beside the app's name |
 
 The background belongs to the look (Settings → Appearance → Latar: Bergerak, Pegun or Foto saya), so themes no
 longer ship wallpaper collections. A theme may still bring pictures (`wallpaper.jpg` or `wallpapers/`): they

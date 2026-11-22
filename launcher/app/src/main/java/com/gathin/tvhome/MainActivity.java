@@ -275,7 +275,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     String testWeatherOverride = null;
     /** Settings kept for the places refresh, which runs after onCreate. */
     private Config config;
-    /** Always false since 6.2 (places were removed); kept so older checks read clearly. */
+    /** Always false since 7.0 (places were removed); kept so older checks read clearly. */
     private boolean placesMode;
     private volatile boolean placesRefreshRunning;
     private static final long SCREENSAVER_TIMEOUT_MS = 10L * 60 * 1000L; // 10 minutes idle -> screensaver

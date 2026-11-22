@@ -26,7 +26,7 @@ Sila muat turun fail pemasangan rasmi mengikut peranti anda:
   [**`glass-tv-installer.apk`** (6.9 MB)](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-installer.apk) — **Pilihan Utama!** Pasang terus ke TV dan kunci butang Home melalui Wi-Fi tanpa perlukan komputer (PC) atau kabel.
 * 📺 **Untuk Android TV / Google TV (Launcher Utama v6.0)**:  
   [**`glass-tv-home.apk`** (1.8 MB)](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-home.apk) — Versi terkini `v6.0.0` — **Tenang**: warna lembut yang mengikut waktu solat (Malam, Senja, Embun), latar bergerak perlahan dan skrin utama yang lebih tenang; lihat [docs/REVAMP.md](docs/REVAMP.md).
-  Seterusnya, `v6.1.0`: dua rupa baharu, **Lautan** (senarai aplikasi condong di kiri, waktu solat dan ayat di kanan) dan **Sorot** (warna aplikasi memenuhi skrin); tukar di Tetapan → Penampilan → Tema.
+  Seterusnya, `v7.0.0`: tiga rupa (**Tenang**, **Lautan**, **Sorot**) dengan lima palet warna atau lebih setiap satu, latar milik setiap rupa, dan detik kecil seperti cahaya apabila waktu solat tiba; tukar di Tetapan → Penampilan → Rupa / Warna / Latar.
 
 > [!CAUTION]
 > ### ⚠️ JANGAN PASANG APK SECARA SIDELOAD BIASA TANPA INSTALLER / AI!
