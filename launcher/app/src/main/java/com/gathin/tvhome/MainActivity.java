@@ -193,6 +193,8 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     private PrayerBlock prayerUi;
     private StatusChips statusChips;
     private AyahBlock ayahUi;
+    /** Lautan's slanted Home menu; null in other looks. */
+    private LautanMenu lautanMenu;
     private TextView shamsiDate;
     private TextView prayerTimesView;
     private TextView weatherAirQualityView;
@@ -612,6 +614,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         });
         View homeRoot = findViewById(R.id.root);
         LookType.apply(homeRoot);
+        if (Design.BACKDROP == 1) setUpLautanMenu();
         clockBlock = new ClockBlock(homeRoot);
         prayerUi = new PrayerBlock(homeRoot);
         statusChips = new StatusChips(homeRoot);
@@ -1459,6 +1462,25 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         handler.removeCallbacks(cacheClean);
         handler.removeCallbacks(nowPlayingPoll);
         super.onStop();
+    }
+
+    /** Lautan's menu: the entries call what Home already does. ◀ from the first app or Menu opens it. */
+    private void setUpLautanMenu() {
+        LautanMenu.Entry[] entries = {
+                new LautanMenu.Entry("APLIKASI", "Kembali ke aplikasi", () -> focusTile(0)),
+                new LautanMenu.Entry("INPUT", "HDMI, AV dan TV", this::showInputs),
+                new LautanMenu.Entry("CUACA", "Cuaca, IPU dan amaran MET", () -> startActivity(new Intent(this, WeatherActivity.class))),
+                new LautanMenu.Entry("SOLAT", "Waktu solat dan azan", this::showPrayerPopup),
+                new LautanMenu.Entry("TEMA", "Tukar rupa: " + Tenang.label(this, Tenang.nextChoice(Tenang.choice(this))), () -> {
+                    Tenang.setChoice(this, Tenang.nextChoice(Tenang.choice(this)));
+                    paletteCheck(true);
+                }),
+                new LautanMenu.Entry("PROFIL", "Siapa menonton?", this::showCandyBoxPopup),
+                new LautanMenu.Entry("TETAPAN", "Paparan, jam, mod kanak-kanak, sistem", this::showSettingsPopup),
+                new LautanMenu.Entry("TUTUP", "Kembali ke skrin utama", () -> focusTile(0)),
+        };
+        lautanMenu = new LautanMenu(this, entries, reducedMotion);
+        root.addView(lautanMenu, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
     /** Shows (or removes) the Tenang background under everything; pictures and it never stack. */
@@ -2506,6 +2528,20 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             }
             return true;
         }
+        if (lautanMenu != null && !screensaverActive) {
+            int k = event.getKeyCode();
+            if (lautanMenu.isOpen() && (k == KeyEvent.KEYCODE_BACK || k == KeyEvent.KEYCODE_ESCAPE)) {
+                if (event.getAction() == KeyEvent.ACTION_UP) {
+                    lautanMenu.close();
+                    focusTile(0);
+                }
+                return true;
+            }
+            if (!lautanMenu.isOpen() && k == KeyEvent.KEYCODE_MENU) {
+                if (event.getAction() == KeyEvent.ACTION_UP) lautanMenu.open();
+                return true;
+            }
+        }
         int code = event.getKeyCode();
         if (wallpaperFullscreen) {
             if (event.getAction() == KeyEvent.ACTION_UP) {
@@ -2610,6 +2646,10 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         // Horizontal: swallow the key at a row's ends so focus never wraps to the next row or
         // escapes up into the top bar. Mid-row moves fall through to the default focus search.
         if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
+            if (position == 0 && lautanMenu != null) {   // Lautan: ◀ from the first app opens the menu
+                lautanMenu.open();
+                return true;
+            }
             return position % COLUMNS == 0;
         }
         if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {

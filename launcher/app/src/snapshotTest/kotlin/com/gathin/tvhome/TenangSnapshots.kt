@@ -106,6 +106,20 @@ class TenangSnapshots {
     }
 
     @Test fun lookLautan() = look(R.style.ThemeOverlay_Look_Lautan, null)
+
+    @Test fun lookLautanMenu() {
+        paparazzi.context.theme.applyStyle(R.style.ThemeOverlay_Tenang_Malam, true)
+        paparazzi.context.theme.applyStyle(R.style.ThemeOverlay_Look_Lautan, true)
+        Design.load(paparazzi.context)
+        val view = LayoutInflater.from(paparazzi.context).inflate(R.layout.activity_main, null) as android.widget.FrameLayout
+        fill(view)
+        LookType.apply(view)
+        val names = listOf("APLIKASI", "INPUT", "CUACA", "SOLAT", "TEMA", "PROFIL", "TETAPAN", "TUTUP")
+        val menu = LautanMenu(paparazzi.context, names.map { LautanMenu.Entry(it, "Penerangan $it", Runnable {}) }.toTypedArray(), true)
+        view.addView(menu, android.widget.FrameLayout.LayoutParams(-1, -1))
+        menu.open()
+        paparazzi.snapshot(view)
+    }
     @Test fun lookSorot() = look(R.style.ThemeOverlay_Look_Sorot, 0xFFC8101E.toInt())
 
     @Test fun homeMalam() = home(R.style.ThemeOverlay_Tenang_Malam)
