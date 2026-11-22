@@ -1522,7 +1522,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
                 new LautanList.Shortcut("CUACA", () -> startActivity(new Intent(this, WeatherActivity.class))),
                 new LautanList.Shortcut("SOLAT", this::showPrayerPopup),
                 new LautanList.Shortcut("TEMA", () -> {
-                    Tenang.setChoice(this, Tenang.nextChoice(Tenang.choice(this)));
+                    Tenang.setLook(this, Tenang.next(Tenang.LOOKS, Tenang.look(this)));
                     paletteCheck(true);
                 }),
                 new LautanList.Shortcut("TETAPAN", this::showSettingsPopup),
@@ -1536,8 +1536,8 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
                 new LautanMenu.Entry("INPUT", "HDMI, AV dan TV", this::showInputs),
                 new LautanMenu.Entry("CUACA", "Cuaca, IPU dan amaran MET", () -> startActivity(new Intent(this, WeatherActivity.class))),
                 new LautanMenu.Entry("SOLAT", "Waktu solat dan azan", this::showPrayerPopup),
-                new LautanMenu.Entry("TEMA", "Tukar rupa: " + Tenang.label(this, Tenang.nextChoice(Tenang.choice(this))), () -> {
-                    Tenang.setChoice(this, Tenang.nextChoice(Tenang.choice(this)));
+                new LautanMenu.Entry("TEMA", "Tukar rupa: " + Tenang.label(this, Tenang.next(Tenang.LOOKS, Tenang.look(this))), () -> {
+                    Tenang.setLook(this, Tenang.next(Tenang.LOOKS, Tenang.look(this)));
                     paletteCheck(true);
                 }),
                 new LautanMenu.Entry("PROFIL", "Siapa menonton?", this::showCandyBoxPopup),

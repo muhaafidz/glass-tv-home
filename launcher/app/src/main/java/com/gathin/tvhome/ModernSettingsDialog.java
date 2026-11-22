@@ -843,14 +843,24 @@ public final class ModernSettingsDialog {
                 addHeader(rightContent, outfit, "Appearance");
 
                 // Tenang palette (docs/REVAMP.md P7): OK cycles Auto → Malam → Senja → Embun.
-                // Tema: OK cycles Automatik → Malam → Senja → Embun → Lautan → Sorot. Choosing Lautan or Sorot
-                // keeps the Tenang palette, so coming back to a Tenang entry restores it exactly.
-                final String temaChoice = Tenang.choice(activity);
+                // Rupa: OK cycles the looks (Tenang → Lautan → Sorot). Warna: OK cycles the current look's palettes.
+                // Each look remembers its own palette, so switching back restores it.
+                final String curLook = Tenang.look(activity);
+                final String curPalette = Tenang.paletteOf(activity, curLook);
                 rightContent.addView(buildCardRow(activity, density, outfit,
-                        "🎨 Tema: " + Tenang.label(activity, temaChoice),
-                        Tenang.describe(activity, temaChoice),
+                        "🎨 Rupa: " + Tenang.label(activity, curLook),
+                        Tenang.describe(activity, curLook),
                         () -> {
-                            Tenang.setChoice(activity, Tenang.nextChoice(temaChoice));
+                            Tenang.setLook(activity, Tenang.next(Tenang.LOOKS, curLook));
+                            if (renderRightPane[0] != null) renderRightPane[0].run();
+                        }));
+                rightContent.addView(buildCardRow(activity, density, outfit,
+                        "🌈 Warna: " + Tenang.label(activity, curPalette)
+                                + "  (" + (java.util.Arrays.asList(Tenang.palettesOf(curLook)).indexOf(curPalette) + 1)
+                                + "/" + Tenang.palettesOf(curLook).length + ")",
+                        Tenang.describe(activity, curPalette),
+                        () -> {
+                            Tenang.setPalette(activity, curLook, Tenang.next(Tenang.palettesOf(curLook), curPalette));
                             if (renderRightPane[0] != null) renderRightPane[0].run();
                         }));
                 rightContent.addView(buildSwitchRow(activity, density, outfit,

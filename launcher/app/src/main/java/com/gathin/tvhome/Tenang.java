@@ -17,6 +17,15 @@ final class Tenang {
     static final String MALAM = "malam", SENJA = "senja", EMBUN = "embun", AUTO = "auto";
     /** Looks (docs/LAYOUT-RESEARCH.md): Tenang uses the palettes above; Lautan and Sorot have their own colours. */
     static final String LOOK_TENANG = "tenang", LOOK_LAUTAN = "lautan", LOOK_SOROT = "sorot";
+    static final String[] LOOKS = {LOOK_TENANG, LOOK_LAUTAN, LOOK_SOROT};
+
+    /**
+     * Each look's palettes, in the order Settings → Warna cycles them. The first of Lautan and Sorot is the
+     * look's own default; Tenang's Auto follows the prayer times between Embun, Senja and Malam.
+     */
+    static final String[] TENANG_PALETTES = {AUTO, MALAM, SENJA, EMBUN, "subuh", "hutan", "pasir"};
+    static final String[] LAUTAN_PALETTES = {"biru", "karang", "bulan", "zamrud", "senjakala"};
+    static final String[] SOROT_PALETTES = {"gelap", "arang", "hangat", "pudina", "mawar"};
 
     /**
      * Whether Auto may pick the light palette (Syuruk to Asar). Every screen reads the tokens since
@@ -39,7 +48,8 @@ final class Tenang {
     static String normaliseMode(String mode) {
         if (mode == null) return AUTO;
         String m = mode.trim().toLowerCase(java.util.Locale.ROOT);
-        return MALAM.equals(m) || SENJA.equals(m) || EMBUN.equals(m) ? m : AUTO;
+        for (String known : TENANG_PALETTES) if (known.equals(m)) return m;
+        return AUTO;
     }
 
     /**
@@ -106,7 +116,7 @@ final class Tenang {
      */
     static String currentKey(Context ctx) {
         String look = look(ctx);
-        return LOOK_TENANG.equals(look) ? current(ctx) : look;
+        return LOOK_TENANG.equals(look) ? current(ctx) : look + ":" + paletteOf(ctx, look);
     }
 
     /**
@@ -155,37 +165,104 @@ final class Tenang {
 
     static String label(Context ctx, String mode) {
         boolean en = AppLanguage.LANG_EN.equals(AppLanguage.getLanguage(ctx));
-        switch (normaliseMode(mode)) {
-            case MALAM: return "Malam";
-            case SENJA: return "Senja";
-            case EMBUN: return "Embun";
-            default:
-                if (LOOK_LAUTAN.equals(mode)) return "Lautan";
-                if (LOOK_SOROT.equals(mode)) return "Sorot";
-                return en ? "Auto" : "Automatik";
+        if (mode == null) return "";
+        if (AUTO.equals(mode)) return en ? "Auto" : "Automatik";
+        switch (mode) {
+            case LOOK_TENANG: return "Tenang";
+            case "senjakala": return "Senja Kala";
+            default: return Character.toUpperCase(mode.charAt(0)) + mode.substring(1);
         }
     }
 
     static String describe(Context ctx, String mode) {
         boolean en = AppLanguage.LANG_EN.equals(AppLanguage.getLanguage(ctx));
-        switch (normaliseMode(mode)) {
-            case MALAM: return en ? "Deep teal night, always" : "Biru kehijauan malam, sepanjang masa";
-            case SENJA: return en ? "Warm dusk, always" : "Senja hangat, sepanjang masa";
-            case EMBUN: return en ? "Light morning dew, always" : "Embun pagi yang cerah, sepanjang masa";
-            default:
-                if (LOOK_LAUTAN.equals(mode)) return en ? "Deep sea: slanted type, a red-and-white slash on focus, drifting star lattice"
-                        : "Laut dalam: tulisan condong, sorotan merah-putih, corak bintang hanyut";
-                if (LOOK_SOROT.equals(mode)) return en ? "Spotlight: the focused app colours the whole screen"
-                        : "Sorot: warna aplikasi yang dipilih memenuhi skrin";
-                return en ? "Follows prayer times: Embun by day, Senja from Asar, Malam from Isyak • OK to change"
-                    : "Ikut waktu solat: Embun siang, Senja dari Asar, Malam dari Isyak • Tekan OK untuk tukar";
+        if (mode == null) return "";
+        switch (mode) {
+            case AUTO: return en ? "Follows prayer times: Embun by day, Senja from Asar, Malam from Isyak"
+                    : "Ikut waktu solat: Embun siang, Senja dari Asar, Malam dari Isyak";
+            case MALAM: return en ? "Deep teal night" : "Biru kehijauan malam";
+            case SENJA: return en ? "Warm dusk" : "Senja hangat";
+            case EMBUN: return en ? "Light morning dew" : "Embun pagi yang cerah";
+            case "subuh": return en ? "Pre-dawn indigo and lavender" : "Nila dan ungu lembut sebelum subuh";
+            case "hutan": return en ? "Quiet forest greens" : "Hijau hutan yang tenang";
+            case "pasir": return en ? "Warm sand and coffee" : "Pasir dan kopi yang hangat";
+            case LOOK_TENANG: return en ? "Calm: colours that follow the day" : "Tenang: warna yang mengikut hari";
+            case LOOK_LAUTAN: return en ? "Deep sea: slanted list left, Islamic info right" : "Laut dalam: senarai condong kiri, maklumat Islam kanan";
+            case LOOK_SOROT: return en ? "Spotlight: the focused app colours the screen" : "Sorot: warna aplikasi memenuhi skrin";
+            case "karang": return en ? "Reef teal with coral" : "Biru karang dengan oren karang";
+            case "bulan": return en ? "Midnight navy with gold" : "Biru tengah malam dengan emas";
+            case "zamrud": return en ? "Emerald with yellow" : "Zamrud dengan kuning";
+            case "senjakala": return en ? "Violet dusk with pink" : "Ungu senja dengan merah jambu";
+            case "biru": return en ? "Deep blue with red" : "Biru laut dalam dengan merah";
+            case "gelap": return en ? "Black with a white ring" : "Hitam dengan cincin putih";
+            case "arang": return en ? "Charcoal blue with sky" : "Arang kebiruan dengan biru langit";
+            case "hangat": return en ? "Warm dark with amber" : "Gelap hangat dengan ambar";
+            case "pudina": return en ? "Dark mint" : "Pudina gelap";
+            case "mawar": return en ? "Dark rose" : "Mawar gelap";
+            default: return "";
         }
     }
 
     static int overlayFor(String palette) {
-        if (SENJA.equals(palette)) return R.style.ThemeOverlay_Tenang_Senja;
-        if (EMBUN.equals(palette)) return R.style.ThemeOverlay_Tenang_Embun;
-        return R.style.ThemeOverlay_Tenang_Malam;
+        switch (palette == null ? "" : palette) {
+            case SENJA: return R.style.ThemeOverlay_Tenang_Senja;
+            case EMBUN: return R.style.ThemeOverlay_Tenang_Embun;
+            case "subuh": return R.style.ThemeOverlay_Tenang_Subuh;
+            case "hutan": return R.style.ThemeOverlay_Tenang_Hutan;
+            case "pasir": return R.style.ThemeOverlay_Tenang_Pasir;
+            default: return R.style.ThemeOverlay_Tenang_Malam;
+        }
+    }
+
+    /** A Lautan or Sorot palette's colour overlay, or 0 for the look's own default colours. */
+    static int lookPaletteOverlay(String palette) {
+        switch (palette == null ? "" : palette) {
+            case "karang": return R.style.ThemeOverlay_Look_Lautan_Karang;
+            case "bulan": return R.style.ThemeOverlay_Look_Lautan_Bulan;
+            case "zamrud": return R.style.ThemeOverlay_Look_Lautan_Zamrud;
+            case "senjakala": return R.style.ThemeOverlay_Look_Lautan_Senjakala;
+            case "arang": return R.style.ThemeOverlay_Look_Sorot_Arang;
+            case "hangat": return R.style.ThemeOverlay_Look_Sorot_Hangat;
+            case "pudina": return R.style.ThemeOverlay_Look_Sorot_Pudina;
+            case "mawar": return R.style.ThemeOverlay_Look_Sorot_Mawar;
+            default: return 0;
+        }
+    }
+
+    static String[] palettesOf(String look) {
+        if (LOOK_LAUTAN.equals(look)) return LAUTAN_PALETTES;
+        if (LOOK_SOROT.equals(look)) return SOROT_PALETTES;
+        return TENANG_PALETTES;
+    }
+
+    /** One of the look's palettes, or its first (the default) for anything unknown. */
+    static String normalisePalette(String look, String palette) {
+        if (LOOK_TENANG.equals(look)) return normaliseMode(palette);
+        String[] list = palettesOf(look);
+        String p = palette == null ? "" : palette.trim().toLowerCase(java.util.Locale.ROOT);
+        for (String known : list) if (known.equals(p)) return p;
+        return list[0];
+    }
+
+    /** The next item in a list, wrapping; the first for anything not in it. */
+    static String next(String[] list, String current) {
+        for (int i = 0; i < list.length; i++) if (list[i].equals(current)) return list[(i + 1) % list.length];
+        return list[0];
+    }
+
+    /** The chosen palette of a look (each look remembers its own). */
+    static String paletteOf(Context ctx, String look) {
+        if (LOOK_TENANG.equals(look)) return mode(ctx);
+        return normalisePalette(look, ctx.getSharedPreferences("theme_prefs", Context.MODE_PRIVATE).getString(look + "_palette", null));
+    }
+
+    static void setLook(Context ctx, String look) {
+        ctx.getSharedPreferences("theme_prefs", Context.MODE_PRIVATE).edit().putString("look", normaliseLook(look)).apply();
+    }
+
+    static void setPalette(Context ctx, String look, String palette) {
+        String key = LOOK_TENANG.equals(look) ? "palette" : look + "_palette";
+        ctx.getSharedPreferences("theme_prefs", Context.MODE_PRIVATE).edit().putString(key, normalisePalette(look, palette)).apply();
     }
 
     /**
@@ -194,24 +271,28 @@ final class Tenang {
      */
     static String apply(Activity activity) {
         String key = currentKey(activity);
-        if (LOOK_LAUTAN.equals(key) || LOOK_SOROT.equals(key)) return applyLook(activity, key);
+        if (key.indexOf(':') > 0) return applyLook(activity, key);
         return apply(activity, key);
     }
 
     /** Malam's tokens as the base, then the look's overlay on top (its colours, focus shape, backdrop). */
-    private static String applyLook(Activity activity, String look) {
+    /** key = "look:palette": Malam's tokens as the base, the look's overlay, then its palette's colours. */
+    private static String applyLook(Activity activity, String key) {
+        String look = key.substring(0, key.indexOf(':'));
         activity.getTheme().applyStyle(R.style.ThemeOverlay_Tenang_Malam, true);
         activity.getTheme().applyStyle(LOOK_LAUTAN.equals(look) ? R.style.ThemeOverlay_Look_Lautan : R.style.ThemeOverlay_Look_Sorot, true);
+        int colours = lookPaletteOverlay(key.substring(key.indexOf(':') + 1));
+        if (colours != 0) activity.getTheme().applyStyle(colours, true);
         Design.load(activity);
-        applied = look;
+        applied = key;
         if (activity.getWindow() != null) activity.getWindow().setBackgroundDrawable(new ColorDrawable(Design.BG1));
-        return look;
+        return key;
     }
 
     /** For screens drawn for the dark (the weather sky, the azan card): Embun becomes Malam. */
     static String applyDark(Activity activity) {
         String key = currentKey(activity);
-        if (LOOK_LAUTAN.equals(key) || LOOK_SOROT.equals(key)) return applyLook(activity, key);   // both are dark
+        if (key.indexOf(':') > 0) return applyLook(activity, key);   // Lautan and Sorot palettes are all dark
         String p = current(activity);
         return apply(activity, EMBUN.equals(p) ? MALAM : p);
     }
