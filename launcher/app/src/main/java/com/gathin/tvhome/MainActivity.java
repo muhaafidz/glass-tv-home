@@ -192,6 +192,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     private ClockBlock clockBlock;
     private PrayerBlock prayerUi;
     private StatusChips statusChips;
+    private AyahBlock ayahUi;
     private TextView shamsiDate;
     private TextView prayerTimesView;
     private TextView weatherAirQualityView;
@@ -214,7 +215,6 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     private View islamicShelf;
     private View ayahBlock;
     private View prayerBlock;
-    private TextView ayahLabel, ayahArabic, ayahText;
     private boolean ayahRunning;
     private boolean homeWeatherRunning;
     private boolean shamsi;
@@ -609,6 +609,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         clockBlock = new ClockBlock(homeRoot);
         prayerUi = new PrayerBlock(homeRoot);
         statusChips = new StatusChips(homeRoot);
+        ayahUi = new AyahBlock(homeRoot);
         updateDateAndPeriod();
         weatherAirQualityView = findViewById(R.id.weatherAirQuality);
         if (weatherAirQualityView != null) {
@@ -814,14 +815,6 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
                     return false;
                 });
             }
-            ayahLabel = findViewById(R.id.ayahLabel);
-            ayahArabic = findViewById(R.id.ayahArabic);
-            ayahText = findViewById(R.id.ayahText);
-
-            int uWidth = getResources().getDisplayMetrics().widthPixels - (int) ((55 + 56) * density);
-            int iMaxWidth = Math.round(uWidth * 0.50f);
-            if (ayahArabic != null) ayahArabic.setMaxWidth(iMaxWidth);
-            if (ayahText != null) ayahText.setMaxWidth(iMaxWidth);
 
 
 
@@ -3169,110 +3162,26 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     }
 
     void showAyah(WeeklyAyah.Ayah a) {
-        if (ayahBlock == null) return;
-        if (!WeeklyAyah.shown(this) || (nowPlayingCard != null && nowPlayingCard.getVisibility() == View.VISIBLE)) {
-            ayahBlock.setVisibility(View.GONE);
+        if (ayahUi == null || !ayahUi.exists()) return;
+        if (!WeeklyAyah.shown(this) || (nowPlayingCard != null && nowPlayingCard.getVisibility() == View.VISIBLE)
+                || a == null || a.arabic == null || a.arabic.isEmpty()) {
+            ayahUi.hide();
             return;
         }
-        if (a == null || a.arabic == null || a.arabic.isEmpty()) {
-            ayahBlock.setVisibility(View.GONE);
-            return;
-        }
-
-        int usable = getResources().getDisplayMetrics().widthPixels - (int) ((55 + 56) * density);
-        int islamicMaxWidth = Math.round(usable * 0.50f);
-        boolean is4K = (getResources().getDisplayMetrics().widthPixels >= 3840 || getResources().getDisplayMetrics().heightPixels >= 2160);
-
-        if (ayahLabel != null) {
-            ayahLabel.setText(AppLanguage.getAyahLabel(this, a.reference));
-            ayahLabel.setTextSize(TypedValue.COMPLEX_UNIT_SP, is4K ? 15f : 12.5f);
-        }
-        if (ayahArabic != null) {
-            String text = a.arabic.trim();
-            ayahArabic.setMaxWidth(islamicMaxWidth);
-            ayahArabic.setSingleLine(false);
-            ayahArabic.setMaxLines(2);
-            ayahArabic.setEllipsize(TextUtils.TruncateAt.END);
-            ayahArabic.setTextDirection(View.TEXT_DIRECTION_RTL);
-            ayahArabic.setGravity(Gravity.RIGHT);   // Arabic sits on the right edge; END would mean left in RTL
-            ayahArabic.setIncludeFontPadding(false);
-            try {
-                ayahArabic.setTypeface(androidx.core.content.res.ResourcesCompat.getFont(this, R.font.amiri_quran), Typeface.NORMAL);
-            } catch (Exception ignored) {}
-            ayahArabic.setTextColor(Design.AMBER);
-            // A fixed TV size, with two lines, rather than shrinking the verse to fit one line.
-            ayahArabic.setTextSize(TypedValue.COMPLEX_UNIT_SP, is4K ? 22f : 16f);
-            ayahArabic.setText(text);
-        }
-        if (ayahText != null) {
-            ayahText.setMaxWidth(islamicMaxWidth);
-            String lang = AppLanguage.getLanguage(this);
-            String tr = a.translation(lang);
-            ayahText.setText(tr != null ? tr.trim() : "");
-            ayahText.setTextSize(TypedValue.COMPLEX_UNIT_SP, is4K ? 17f : 14f);
-            ayahText.setVisibility(tr != null && !tr.trim().isEmpty() ? View.VISIBLE : View.GONE);
-        }
-        ayahBlock.setVisibility(View.VISIBLE);
+        ayahUi.showAyah(AppLanguage.getAyahLabel(this, a.reference), a.arabic,
+                a.translation(AppLanguage.getLanguage(this)));
     }
 
     void showMinbar(MinbarManager.KhutbahItem k) {
-        if (ayahBlock == null) return;
-        if (!WeeklyAyah.shown(this) || (nowPlayingCard != null && nowPlayingCard.getVisibility() == View.VISIBLE)) {
-            ayahBlock.setVisibility(View.GONE);
+        if (ayahUi == null || !ayahUi.exists()) return;
+        if (!WeeklyAyah.shown(this) || (nowPlayingCard != null && nowPlayingCard.getVisibility() == View.VISIBLE)
+                || k == null || k.title == null || k.title.isEmpty()) {
+            ayahUi.hide();
             return;
         }
-        if (k == null || k.title == null || k.title.isEmpty()) {
-            ayahBlock.setVisibility(View.GONE);
-            return;
-        }
-
-        int usable = getResources().getDisplayMetrics().widthPixels - (int) ((55 + 56) * density);
-        int islamicMaxWidth = Math.round(usable * 0.50f);
-        boolean is4K = (getResources().getDisplayMetrics().widthPixels >= 3840 || getResources().getDisplayMetrics().heightPixels >= 2160);
-
-        if (ayahLabel != null) {
-            String datePart = (k.date != null && !k.date.isEmpty()) ? "  •  " + k.date : "";
-            ayahLabel.setText("Khutbah Minbar  •  " + k.authority + datePart);
-            ayahLabel.setTextSize(TypedValue.COMPLEX_UNIT_SP, is4K ? 15f : 12.5f);
-        }
-        if (ayahArabic != null) {
-            String text = k.title.trim();
-            ayahArabic.setMaxWidth(islamicMaxWidth);
-            ayahArabic.setSingleLine(true);
-            ayahArabic.setMaxLines(1);
-            ayahArabic.setEllipsize(TextUtils.TruncateAt.END);
-            ayahArabic.setTextDirection(View.TEXT_DIRECTION_LTR);
-            ayahArabic.setGravity(Gravity.END);
-            try {
-                ayahArabic.setTypeface(androidx.core.content.res.ResourcesCompat.getFont(this, R.font.outfit), Typeface.BOLD);
-            } catch (Exception e) {
-                ayahArabic.setTypeface(Typeface.create("sans-serif-medium", Typeface.BOLD));
-            }
-            ayahArabic.setTextColor(Design.AMBER);
-
-            float baseSp = is4K ? 16f : 13.5f;
-            android.text.TextPaint paint = new android.text.TextPaint(ayahArabic.getPaint());
-            paint.setTextSize(baseSp * getResources().getDisplayMetrics().scaledDensity);
-            float textWidth = paint.measureText(text);
-
-            float targetSp = baseSp;
-            float maxAllowed = islamicMaxWidth * 0.95f;
-            while (textWidth > maxAllowed && targetSp > 11.0f) {
-                targetSp -= 0.5f;
-                paint.setTextSize(targetSp * getResources().getDisplayMetrics().scaledDensity);
-                textWidth = paint.measureText(text);
-            }
-            ayahArabic.setTextSize(TypedValue.COMPLEX_UNIT_SP, targetSp);
-            ayahArabic.setText(text);
-        }
-        if (ayahText != null) {
-            ayahText.setMaxWidth(islamicMaxWidth);
-            String summary = (k.subtitle != null && !k.subtitle.isEmpty()) ? k.subtitle + " — " + k.excerpt : k.excerpt;
-            ayahText.setText(summary != null ? summary.trim() : "");
-            ayahText.setTextSize(TypedValue.COMPLEX_UNIT_SP, is4K ? 12.5f : 10.5f);
-            ayahText.setVisibility(summary != null && !summary.trim().isEmpty() ? View.VISIBLE : View.GONE);
-        }
-        ayahBlock.setVisibility(View.VISIBLE);
+        String datePart = (k.date != null && !k.date.isEmpty()) ? "  •  " + k.date : "";
+        String summary = (k.subtitle != null && !k.subtitle.isEmpty()) ? k.subtitle + " — " + k.excerpt : k.excerpt;
+        ayahUi.showKhutbah("Khutbah Minbar  •  " + k.authority + datePart, k.title, summary);
     }
 
     void showIslamicDetailDialog() {

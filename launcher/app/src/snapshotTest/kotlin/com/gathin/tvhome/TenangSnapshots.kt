@@ -47,10 +47,8 @@ class TenangSnapshots {
         StatusChips(root).set(HomeWeather.Line("24\u00b0  Hujan renyai", "IPU 65 Sederhana", Design.GOOD, 0))
         root.findViewById<View>(R.id.weatherWarningPill).visibility = View.VISIBLE
         text(R.id.weatherWarningText, "Amaran Ribut Petir \u00b7 Amaran Angin Kencang dan Laut Bergelora")
-        root.findViewById<View>(R.id.ayahBlock).visibility = View.VISIBLE
-        text(R.id.ayahLabel, "Doa harian  \u2022  Al-Baqarah 2:156")
-        text(R.id.ayahArabic, "\u0671\u0644\u0651\u064e\u0630\u0650\u064a\u0646\u064e \u0625\u0650\u0630\u064e\u0622 \u0623\u064e\u0635\u064e\u0670\u0628\u064e\u062a\u0652\u0647\u064f\u0645 \u0645\u0651\u064f\u0635\u0650\u064a\u0628\u064e\u0629\u064c")
-        text(R.id.ayahText, "(Iaitu) orang-orang yang apabila mereka ditimpa oleh sesuatu kesusahan, mereka berkata: \"Sesungguhnya kami adalah kepunyaan Allah dan kepada Allah jualah kami kembali.\"")
+        AyahBlock(root).showAyah("Doa harian  \u2022  Al-Baqarah 2:156", "\u0671\u0644\u0651\u064e\u0630\u0650\u064a\u0646\u064e \u0625\u0650\u0630\u064e\u0622 \u0623\u064e\u0635\u064e\u0670\u0628\u064e\u062a\u0652\u0647\u064f\u0645 \u0645\u0651\u064f\u0635\u0650\u064a\u0628\u064e\u0629\u064c",
+            "(Iaitu) orang-orang yang apabila mereka ditimpa oleh sesuatu kesusahan, mereka berkata: \"Sesungguhnya kami adalah kepunyaan Allah dan kepada Allah jualah kami kembali.\"")
         val prayer = PrayerBlock(root)
         prayer.setHeader("Waktu solat  \u2022  Shah Alam  \u2022  6 Jamadilakhir 1448H")
         val names = listOf("Subuh", "Syuruk", "Zohor", "Asar", "Maghrib", "Isyak")

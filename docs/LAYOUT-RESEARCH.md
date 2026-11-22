@@ -128,8 +128,16 @@ Decisions (2026-11-22): mockup the characters first (done: A songkok, B tudung, 
   places only, both now matching the app: the IPU chip's status dot and the prayer font weights, which the
   old snapshot code set by hand and skipped. From here on, extraction must keep these images identical.
 - [x] 66 unit tests pass; release build green.
-- Next slices: the ayah/khutbah block, the warning chip, the top buttons, then the app row, so `MainActivity`
-  keeps only data and wiring.
+**L0, slice 2: the ayah / khutbah card**
+- [x] `AyahBlock` renders the daily ayah or the Khutbah Minbar title; `MainActivity` keeps only the choice and
+  the hiding rules.
+- [x] Fixed on the way: the runtime code still set the Sinar-era styling (Arabic 16 sp in amber), overriding
+  Tenang's card on the TV. It now uses Tenang's values (Arabic 22 sp in `warm`, label 12 sp, body 14 sp;
+  ×1.3 on 4K panels with a 1080p-like density).
+- [x] Snapshots render the card through `AyahBlock`; the only change is the Arabic line's tighter font padding,
+  which the app always applied, so the cards are a few pixels shorter, as on the TV.
+- Next slices: the warning chip, the top buttons, then the app row, so `MainActivity` keeps only data and
+  wiring.
 
 **Decision (2026-11-22): no character; Islamic geometry instead.** The silhouettes were dropped. Lautan's
 centrepiece is now an 8-fold medallion (two interlaced 8-point stars, a ring of squares, eight petals, a small
