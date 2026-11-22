@@ -113,3 +113,20 @@ L0 is the investment; after it, Lautan and later looks are mostly XML and tokens
   [Optimizing the performance of vector drawables](https://upday.github.io/blog/vector_drawables_optimisation)
 - The Persona 3 Reload menu: [Automaton: what ideas went into its design](https://automaton-media.com/en/news/20240207-26873/),
   [GamesRadar: Persona 3 Reload's UI](https://www.gamesradar.com/persona-3-reloads-ui-goes-hard-and-one-indie-dev-reckons-theyve-figured-out-why)
+
+## 6. Progress
+
+Decisions (2026-11-22): mockup the characters first (done: A songkok, B tudung, C pekaka in
+[preview/lautan.html](../preview/lautan.html)), then start L0.
+
+**L0, slice 1: the first shared components**
+- [x] `PrayerBlock` (header, six prayers with the next outlined and breathing, countdown), `ClockBlock`
+  (period, date, greeting) and `StatusChips` (weather and IPU chips). Each binds by the standard view IDs and
+  skips any a layout leaves out, so a Lautan layout can reuse them with different XML.
+- [x] `MainActivity` delegates to them (110 lines and 16 fields fewer); its data reading is unchanged.
+- [x] The Home snapshots now render through these components with sample data. The baseline changed in two
+  places only, both now matching the app: the IPU chip's status dot and the prayer font weights, which the
+  old snapshot code set by hand and skipped. From here on, extraction must keep these images identical.
+- [x] 66 unit tests pass; release build green.
+- Next slices: the ayah/khutbah block, the warning chip, the top buttons, then the app row, so `MainActivity`
+  keeps only data and wiring.

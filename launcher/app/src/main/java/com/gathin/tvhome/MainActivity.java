@@ -188,11 +188,10 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     private View btnAssistant;
     private View btnCandyBox;
     private View badgeSettingsUpdate;
-    private TextView ampmView, dateView;
     /** Tenang home (docs/REVAMP.md P2): greeting, IPU chip, prayer countdown. */
-    private TextView greetingView, aqiChipView, prayerPrevView, prayerNextInView;
-    private View prayerBarFill, prayerNextCell;
-    private ObjectAnimator prayerGlowAnimator;
+    private ClockBlock clockBlock;
+    private PrayerBlock prayerUi;
+    private StatusChips statusChips;
     private TextView shamsiDate;
     private TextView prayerTimesView;
     private TextView weatherAirQualityView;
@@ -215,11 +214,9 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     private View islamicShelf;
     private View ayahBlock;
     private View prayerBlock;
-    private TextView ayahLabel, ayahArabic, ayahText, prayerHeader;
+    private TextView ayahLabel, ayahArabic, ayahText;
     private boolean ayahRunning;
     private boolean homeWeatherRunning;
-    private TextView lblSubuh, lblSyuruk, lblZohor, lblAsar, lblMaghrib, lblIsyak;
-    private TextView timeSubuh, timeSyuruk, timeZohor, timeAsar, timeMaghrib, timeIsyak;
     private boolean shamsi;
     private String vpnApp;
     private boolean glassShown;
@@ -608,13 +605,10 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         heroShelf.addOnLayoutChangeListener((v, l, t, r, b, ol, ot, orr, ob) -> {
             if (heroBottom > 0) v.setY(heroBottom - v.getHeight());
         });
-        ampmView = findViewById(R.id.ampm);
-        dateView = findViewById(R.id.date);
-        greetingView = findViewById(R.id.greeting);
-        aqiChipView = findViewById(R.id.aqiChip);
-        prayerPrevView = findViewById(R.id.prayerPrev);
-        prayerNextInView = findViewById(R.id.prayerNextIn);
-        prayerBarFill = findViewById(R.id.prayerBarFill);
+        View homeRoot = findViewById(R.id.root);
+        clockBlock = new ClockBlock(homeRoot);
+        prayerUi = new PrayerBlock(homeRoot);
+        statusChips = new StatusChips(homeRoot);
         updateDateAndPeriod();
         weatherAirQualityView = findViewById(R.id.weatherAirQuality);
         if (weatherAirQualityView != null) {
@@ -823,26 +817,13 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             ayahLabel = findViewById(R.id.ayahLabel);
             ayahArabic = findViewById(R.id.ayahArabic);
             ayahText = findViewById(R.id.ayahText);
-            prayerHeader = findViewById(R.id.prayerHeader);
 
             int uWidth = getResources().getDisplayMetrics().widthPixels - (int) ((55 + 56) * density);
             int iMaxWidth = Math.round(uWidth * 0.50f);
             if (ayahArabic != null) ayahArabic.setMaxWidth(iMaxWidth);
             if (ayahText != null) ayahText.setMaxWidth(iMaxWidth);
 
-            lblSubuh = findViewById(R.id.lblSubuh);
-            lblSyuruk = findViewById(R.id.lblSyuruk);
-            lblZohor = findViewById(R.id.lblZohor);
-            lblAsar = findViewById(R.id.lblAsar);
-            lblMaghrib = findViewById(R.id.lblMaghrib);
-            lblIsyak = findViewById(R.id.lblIsyak);
 
-            timeSubuh = findViewById(R.id.timeSubuh);
-            timeSyuruk = findViewById(R.id.timeSyuruk);
-            timeZohor = findViewById(R.id.timeZohor);
-            timeAsar = findViewById(R.id.timeAsar);
-            timeMaghrib = findViewById(R.id.timeMaghrib);
-            timeIsyak = findViewById(R.id.timeIsyak);
 
             islamicShelf.addOnLayoutChangeListener((v, l, t, r, b, ol, ot, orr, ob) -> {
                 if (infoRailBottom > 0) v.setY(infoRailTop(v.getHeight()));
@@ -1680,11 +1661,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     protected void onPause() {
         super.onPause();
         if (ambientView != null) ambientView.stop();
-        if (prayerGlowAnimator != null) {   // nothing animates while another app is in front
-            prayerGlowAnimator.cancel();
-            prayerGlowAnimator = null;
-        }
-        prayerNextCell = null;   // so onResume puts the outline and its breathing back
+        if (prayerUi != null) prayerUi.pause();   // nothing animates while another app is in front
         if (btnCandyBox instanceof FrameLayout) {
             FrameLayout fb = (FrameLayout) btnCandyBox;
             for (int i = 0; i < fb.getChildCount(); i++) {
@@ -1734,11 +1711,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     protected void onDestroy() {
         super.onDestroy();
         stopWarningAnimation();
-        if (prayerGlowAnimator != null) {   // nothing animates while another app is in front
-            prayerGlowAnimator.cancel();
-            prayerGlowAnimator = null;
-        }
-        prayerNextCell = null;   // so the next resume puts the outline and its breathing back
+        if (prayerUi != null) prayerUi.pause();
         if (sInstance != null && sInstance.get() == this) {
             sInstance = null;
         }
@@ -2743,43 +2716,10 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     private void showHomeWeather(HomeWeather.Line line) {
         if (weatherAirQualityView == null) return;
         if (line == null) {
-            weatherAirQualityView.setText(WeatherAirQuality.getFormatted(this));
+            statusChips.setPlain(WeatherAirQuality.getFormatted(this));
             return;
         }
-        // Tenang: weather and air quality are two chips; the IPU chip carries a status dot in the API colour.
-        if (aqiChipView != null) {
-            weatherAirQualityView.setText(line.weather.isEmpty() ? line.api : line.weather);
-            if (!line.weather.isEmpty() && !line.api.isEmpty()) {
-                aqiChipView.setText(line.api);
-                Drawable dot = getDrawable(R.drawable.tn_dot).mutate();
-                dot.setTint(line.apiColor);
-                int dotPx = Math.round(7 * density);
-                dot.setBounds(0, 0, dotPx, dotPx);
-                aqiChipView.setCompoundDrawables(dot, null, null, null);
-                aqiChipView.setCompoundDrawablePadding(Math.round(7 * density));
-                aqiChipView.setVisibility(View.VISIBLE);
-            } else {
-                aqiChipView.setVisibility(View.GONE);
-            }
-        } else {
-            String sep = line.weather.isEmpty() || line.api.isEmpty() ? "" : "     ·     ";
-            android.text.SpannableString text = new android.text.SpannableString(line.weather + sep + line.api);
-            if (!line.api.isEmpty()) {
-                text.setSpan(new android.text.style.ForegroundColorSpan(line.apiColor), text.length() - line.api.length(),
-                        text.length(), android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            }
-            weatherAirQualityView.setText(text);
-        }
-        if (line.icon != 0) {
-            Drawable d = getDrawable(line.icon);
-            int px = Math.round(17 * density);
-            int yOffset = 0;
-            d.setBounds(0, yOffset, px, px + yOffset);
-            weatherAirQualityView.setCompoundDrawables(d, null, null, null);
-            weatherAirQualityView.setCompoundDrawablePadding(Math.round(7 * density));
-        } else {
-            weatherAirQualityView.setCompoundDrawables(null, null, null, null);
-        }
+        statusChips.set(line);
         updateWeatherOverlay(line);
         updateWeatherWarning();
     }
@@ -3190,75 +3130,27 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
 
         Location.Zone currentZone = Location.chosen(this);
         String zoneTitle = (currentZone != null && currentZone.town != null) ? currentZone.town : PrayerTimes.getShortZoneName(this);
-        if (prayerHeader != null) {
-            String pPrefix = AppLanguage.getPrayerHeaderPrefix(this);
-            prayerHeader.setText(pPrefix + "  •  " + zoneTitle + "  •  " + PrayerTimes.getHijriDate(this));
-        }
-
+        if (prayerUi == null) return;
+        prayerUi.setHeader(AppLanguage.getPrayerHeaderPrefix(this) + "  •  " + zoneTitle + "  •  " + PrayerTimes.getHijriDate(this));
         PrayerTimes.PrayerItem[] items = PrayerTimes.getPrayerItems(this);
         if (items != null && items.length >= 6) {
-            TextView[] labels = {lblSubuh, lblSyuruk, lblZohor, lblAsar, lblMaghrib, lblIsyak};
-            TextView[] times = {timeSubuh, timeSyuruk, timeZohor, timeAsar, timeMaghrib, timeIsyak};
-            Typeface prayerFont = getResources().getFont(R.font.outfit);
-
-            View nextCell = null;
-            for (int i = 0; i < 6; i++) {
-                if (times[i] != null) times[i].setText(items[i].timeStr);
-                if (labels[i] != null) {
-                    labels[i].setText(items[i].name);
-                    boolean next = items[i].isNext;
-                    labels[i].setTextColor(next ? Design.ACCENT : Design.TEXT_MUTED);
-                    labels[i].setTypeface(prayerFont);
-                    Fonts.weight(labels[i], next ? 500 : 400);
-                    if (times[i] != null) {
-                        times[i].setTextColor(Design.TEXT);
-                        times[i].setTypeface(prayerFont);
-                        Fonts.weight(times[i], next ? 400 : 300);
-                    }
-                    View cell = (View) labels[i].getParent();
-                    if (next) nextCell = cell;
-                    else cell.setBackground(null);
-                }
-            }
-            showPrayerNext(nextCell);
+            prayerUi.setPrayers(items, isAnimationsEnabled());
             updatePrayerCountdown();
-        }
-    }
-
-    /** Outlines the next prayer's cell; its outline breathes slowly unless motion is reduced. */
-    private void showPrayerNext(View cell) {
-        if (cell == prayerNextCell && cell != null && cell.getBackground() != null) return;
-        if (prayerGlowAnimator != null) {
-            prayerGlowAnimator.cancel();
-            prayerGlowAnimator = null;
-        }
-        prayerNextCell = cell;
-        if (cell == null) return;
-        Drawable glow = getDrawable(R.drawable.tn_prayer_next).mutate();
-        cell.setBackground(glow);
-        if (isAnimationsEnabled()) {
-            prayerGlowAnimator = ObjectAnimator.ofInt(glow, "alpha", 255, 90);
-            prayerGlowAnimator.setDuration(2000);
-            prayerGlowAnimator.setRepeatMode(ValueAnimator.REVERSE);
-            prayerGlowAnimator.setRepeatCount(ValueAnimator.INFINITE);
-            prayerGlowAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
-            prayerGlowAnimator.start();
         }
     }
 
     /** "Isyak ━━━━━ Subuh dalam 5j 36m": the previous prayer, a progress bar and time left to the next. */
     private void updatePrayerCountdown() {
-        if (prayerNextInView == null || prayerBarFill == null) return;
+        if (prayerUi == null) return;
         long[] t = PrayerTimes.todayTimes(this);
         if (t == null || t.length < 6) return;
         long now = System.currentTimeMillis();
         long[] w = HomeText.window(t, now);
         String[] names = AppLanguage.getPrayerNames(this);
-        String lang = AppLanguage.getLanguage(this);
         long minutes = (w[3] - now + 59_999) / 60_000;
-        if (prayerPrevView != null) prayerPrevView.setText(names[(int) w[0]]);
-        prayerNextInView.setText(HomeText.nextIn(lang, names[(int) w[1]], minutes));
-        prayerBarFill.setScaleX(HomeText.progress(w[2], w[3], now));
+        prayerUi.setCountdown(names[(int) w[0]],
+                HomeText.nextIn(AppLanguage.getLanguage(this), names[(int) w[1]], minutes),
+                HomeText.progress(w[2], w[3], now));
     }
 
     void updateAyah() {
@@ -3723,9 +3615,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         String lang = AppLanguage.getLanguage(this);
         String dateStr = HomeText.date(lang, day, month, year);
 
-        if (ampmView != null) ampmView.setText(period);
-        if (dateView != null) dateView.setText(dateStr);
-        if (greetingView != null) greetingView.setText(HomeText.greeting(lang, hour) + " \u2726");
+        if (clockBlock != null) clockBlock.set(period, dateStr, HomeText.greeting(lang, hour) + " \u2726");
     }
 
     /** Shows the Wi-Fi network name on the button when we can read it, otherwise the connection type. */
