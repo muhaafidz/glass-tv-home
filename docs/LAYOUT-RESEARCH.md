@@ -130,3 +130,11 @@ Decisions (2026-11-22): mockup the characters first (done: A songkok, B tudung, 
 - [x] 66 unit tests pass; release build green.
 - Next slices: the ayah/khutbah block, the warning chip, the top buttons, then the app row, so `MainActivity`
   keeps only data and wiring.
+
+**Decision (2026-11-22): no character; Islamic geometry instead.** The silhouettes were dropped. Lautan's
+centrepiece is now an 8-fold medallion (two interlaced 8-point stars, a ring of squares, eight petals, a small
+star at the centre) turning very slowly, its two rings in opposite directions (180 s and 240 s a turn), over an
+8-point-star lattice that drifts one tile every 90 s and loops. Corak A = medallion + lattice, Corak B = lattice
+only. On the TV: the lattice is one ~120 px `ALPHA_8` tile repeated by a `BitmapShader` (a few KB of memory),
+the medallion one ~700 px `ALPHA_8` image per ring (~0.5 MB each), both tinted by the palette and moved by
+rotation and translation only, on the shared 15 fps tick. Lite shows them still.
