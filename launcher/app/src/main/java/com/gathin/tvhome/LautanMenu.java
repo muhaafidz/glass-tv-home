@@ -12,6 +12,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.StateListDrawable;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.PathInterpolator;
 import android.widget.FrameLayout;
@@ -123,6 +124,28 @@ final class LautanMenu extends FrameLayout {
 
     boolean isOpen() {
         return open;
+    }
+
+    /**
+     * Keeps the D-pad inside the open menu. Up and Down step through the entries and stop at the
+     * ends; Left and Right are swallowed so focus cannot slip to the screen under the wash. A menu
+     * that is closed ignores every key, letting Home handle it as usual.
+     *
+     * @return true when the key belonged to the menu and Home must not act on it
+     */
+    boolean handleKeyEvent(KeyEvent event) {
+        if (!open) return false;
+        int key = event.getKeyCode();
+        boolean vertical = key == KeyEvent.KEYCODE_DPAD_UP || key == KeyEvent.KEYCODE_DPAD_DOWN;
+        boolean horizontal = key == KeyEvent.KEYCODE_DPAD_LEFT || key == KeyEvent.KEYCODE_DPAD_RIGHT;
+        if (!vertical && !horizontal) return false;
+        if (event.getAction() == KeyEvent.ACTION_DOWN && vertical) {
+            View focused = findFocus();
+            int current = focused == null ? -1 : list.indexOfChild(focused);
+            int next = LautanNav.nextIndex(current, list.getChildCount(), key == KeyEvent.KEYCODE_DPAD_DOWN);
+            if (next >= 0) list.getChildAt(next).requestFocus();
+        }
+        return true;
     }
 
     void open() {

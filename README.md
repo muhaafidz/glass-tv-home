@@ -20,12 +20,12 @@ Embun in the morning, Senja from Asar, Malam from Isyak.**
 
 <p align="center">
   <em>Tenang home in Malam, Senja and Embun (layout renders at 1080p; the app tiles are not drawn in these
-  renders). The download below is 6.0.0 (Tenang).</em>
+  renders). The download below is 7.0.0 (Tiga rupa).</em>
 </p>
 
 <p align="center">
   <a href="https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-home.apk">
-    <img src="https://img.shields.io/badge/Download_TV_Launcher-glass--tv--home.apk_(v6.0.0)-success?style=for-the-badge&logo=android" alt="Download Glass TV Home">
+    <img src="https://img.shields.io/badge/Download_TV_Launcher-glass--tv--home.apk_(v7.0.0)-success?style=for-the-badge&logo=android" alt="Download Glass TV Home">
   </a>
   &nbsp;
   <a href="https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-installer.apk">
@@ -41,11 +41,11 @@ Embun in the morning, Senja from Asar, Malam from Isyak.**
 > 
 > 👉 **GUNAKAN 2 KAEDAH PALING PRAKTIKAL & MUDAH DI BAWAH:**
 > 1. 🤖 **Kaedah 1 (Paling Disyorkan — 1-Baris Prompt AI)**: Salin prompt di [AI_INSTALL_PROMPT.md](AI_INSTALL_PROMPT.md) ke pembantu AI (Google Antigravity, Claude Code, Cursor). AI akan mengaudit versi TV, resolusi 1080p vs 4K, DPI, dan mengunci butang Home secara automatik!
-> 2. 📱 **Kaedah 2 (Tanpa PC — Aplikasi Telefon Android)**: Pasang [**`release/glass-tv-installer.apk`**](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-installer.apk) di telefon pintar anda. Sambung ke Wi-Fi sama, dan tekan *Pasang Terus ke TV* untuk kunci butang Home dalam 1-klik tanpa komputer!
+> 2. 📱 **Kaedah 2 (Tanpa PC — Aplikasi Telefon Android)**: Pasang [**`release/glass-tv-installer.apk`**](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-installer.apk) di telefon pintar anda. Sambung ke Wi-Fi sama, dan tekan *Pasang Terus ke TV* untuk menetapkan Glass TV sebagai Home tanpa komputer. Pada sesetengah TV, pelancar asal masih perlu di-disable supaya Home kekal (lihat [AGENTS.md](AGENTS.md) langkah 5).
 
 > 📦 **Official APK Downloads**:
-> - 📺 **Android TV / Google TV Launcher**: [**`release/glass-tv-home.apk`**](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-home.apk) (**v6.0.0** • ~1.8 MB)
-> - 📱 **Phone / Tablet Companion Installer**: [**`release/glass-tv-installer.apk`**](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-installer.apk) (**v1.1.0** • ~6.9 MB) — Kunci butang Home TV terus dari telefon tanpa sebarang PC!
+> - 📺 **Android TV / Google TV Launcher**: [**`release/glass-tv-home.apk`**](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-home.apk) (**v7.0.0** • ~1.8 MB)
+> - 📱 **Phone / Tablet Companion Installer**: [**`release/glass-tv-installer.apk`**](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-installer.apk) (**v1.1.0** • ~6.9 MB) — Tetapkan Glass TV sebagai Home dari telefon, tanpa PC. Pada sesetengah TV, stock launcher perlu di-disable supaya Home kekal.
 >
 > 🤖 **AI Prompt & Audit Guide**:
 > - ⚡ **[AI_INSTALL_PROMPT.md](AI_INSTALL_PROMPT.md)**: Arahan lengkap AI untuk audit TV (1080p vs 4K, DPI, IP LAN, stock launcher), debloat, dan kunci butang Home.
@@ -273,6 +273,7 @@ Install directly from your Android phone or tablet without any computer or cable
 1. Turn ON **USB debugging** on TV (*Settings ⚙️ $\rightarrow$ About $\rightarrow$ click Build 7 times $\rightarrow$ Developer options*).
 2. Install [**`release/glass-tv-installer.apk`**](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-installer.apk) on your Android phone.
 3. Open the app, tap **`🔍 Imbas Android TV di Rangkaian Wi-Fi`**, then tap **`🚀 Pasang Terus ke Android TV`** and press **Allow** on your TV screen!
+4. The app sets Glass TV as Home. If the TV's own launcher takes Home back after a reboot, use Priority 2 to disable it; sideloading alone does not keep it.
 
 ### 💻 Priority 2: If No Android Phone — Use Laptop or PC (1-Line AI Setup)
 Using a computer with an AI assistant (**Google Antigravity** [Free], **Claude Code** [Paid], **Cursor**)?
@@ -303,6 +304,8 @@ update patch latest glass tv dekat tv rumah saya: https://github.com/muhaafidz/g
 > When a user requests to update/patch Glass TV:
 > 1. Connect to the TV over Wi-Fi (`adb connect <TV_IP>:5555`).
 > 2. Install the latest prebuilt APK without wiping user data (`adb install -r release/glass-tv-home.apk`).
+>    If the push hangs on a large APK, use `TV_HOST=<ip> tools/venv/bin/python -I tools/b64push.py
+>    release/glass-tv-home.apk /data/local/tmp/tvhome.apk`, then `pm install -r` over the shell.
 > 3. Relaunch the launcher (`adb shell am start -n com.gathin.tvhome/.MainActivity`).
 > 4. All personal wallpapers, dock orders, and settings are 100% retained!
 
@@ -328,6 +331,10 @@ tools/disable.sh examples/<your tv>/debloat.txt               # debloat
 launcher/build-and-install.sh                                 # build the launcher and make it Home
 tools/theme.sh themes/<your theme>                            # push your settings and wallpapers
 ```
+
+No JDK or Android SDK? Install the published [`release/glass-tv-home.apk`](release/glass-tv-home.apk) instead
+and follow step 5 in [AGENTS.md](AGENTS.md) to make it Home. Build the launcher only if you want to change
+the code.
 
 Glass TV clears the TV's caches by itself every 15 days ([how](docs/cache-clean.md)). To clean several TVs
 from one computer instead, [`tools/cache-clean.sh`](docs/cache-clean.md) finds the TVs on your network and

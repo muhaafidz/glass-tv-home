@@ -23,10 +23,9 @@ Glass TV Home ialah pengganti skrin utama (*launcher*) untuk Android TV dan Goog
 
 Sila muat turun fail pemasangan rasmi mengikut peranti anda:
 * 📱 **Untuk Telefon / Tablet Android (Aplikasi Pembantu Pemasangan — Disyorkan)**:  
-  [**`glass-tv-installer.apk`** (6.9 MB)](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-installer.apk) — **Pilihan Utama!** Pasang terus ke TV dan kunci butang Home melalui Wi-Fi tanpa perlukan komputer (PC) atau kabel.
-* 📺 **Untuk Android TV / Google TV (Launcher Utama v6.0)**:  
-  [**`glass-tv-home.apk`** (1.8 MB)](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-home.apk) — Versi terkini `v6.0.0` — **Tenang**: warna lembut yang mengikut waktu solat (Malam, Senja, Embun), latar bergerak perlahan dan skrin utama yang lebih tenang; lihat [docs/REVAMP.md](docs/REVAMP.md).
-  Seterusnya, `v7.0.0`: tiga rupa (**Tenang**, **Lautan**, **Sorot**) dengan lima palet warna atau lebih setiap satu, latar milik setiap rupa, dan detik kecil seperti cahaya apabila waktu solat tiba; tukar di Tetapan → Penampilan → Rupa / Warna / Latar.
+  [**`glass-tv-installer.apk`** (6.9 MB)](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-installer.apk) — **Pilihan Utama!** Pasang terus ke TV dan tetapkan sebagai Home melalui Wi-Fi tanpa perlukan komputer (PC) atau kabel. Pada TV yang pelancar asalnya mengambil semula Home, ia masih perlu di-disable sekali (lihat nota selepas langkah 4).
+* 📺 **Untuk Android TV / Google TV (Launcher Utama v7.0)**:  
+  [**`glass-tv-home.apk`** (1.8 MB)](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-home.apk) — Versi terkini `v7.0.0` — **Tiga rupa, latar yang tenang**: tiga rupa (**Tenang**, **Lautan**, **Sorot**) dengan lima palet warna atau lebih setiap satu, latar milik setiap rupa, dan detik kecil seperti cahaya apabila waktu solat tiba; lihat [docs/REVAMP.md](docs/REVAMP.md). Tukar di Tetapan → Penampilan → Rupa / Warna / Latar.
 
 > [!CAUTION]
 > ### ⚠️ JANGAN PASANG APK SECARA SIDELOAD BIASA TANPA INSTALLER / AI!
@@ -68,6 +67,8 @@ Jika anda mempunyai telefon pintar atau tablet Android, ini adalah kaedah **pali
 4. **Lancarkan Paparan Baharu**:
    - Tekan butang **`📺 Buka Glass TV Home di Skrin TV`** di telefon atau tekan butang Home pada remote TV.
    - Selesai! TV anda kini mempunyai paparan kaca moden yang sangat pantas.
+
+> **Jika Home kembali ke skrin asal TV** selepas reboot atau kemas kini sistem, pelancar asal TV masih aktif. Aplikasi telefon hanya menetapkan keutamaan Home dan tidak boleh disable pelancar itu pada semua model. Komputer (atau pembantu AI dengan prompt 1-baris) boleh melengkapkan langkah 5 dalam [AGENTS.md](AGENTS.md) supaya Glass TV kekal sebagai Home.
 
 > 💡 **Pilihan Pelayan Web Tempatan (Jika TV Tiada Debugging)**:  
 > Jika TV anda sukar menghidupkan mod debugging, buka aplikasi di telefon dan tekan butang **`🌐 Pelayan Web TV`**. Kemudian buka aplikasi **Downloader** atau pelayar web di TV dan masukkan alamat IP tempatan yang tertera (cth: `http://192.168.x.x:8080`) untuk muat turun terus ke TV.

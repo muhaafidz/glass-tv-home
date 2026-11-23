@@ -118,7 +118,10 @@ Written so that any model can follow it to the letter:
   options → **USB debugging** on (also "Network/ADB debugging" if shown). No cable is needed; it works over the
   home Wi-Fi. Some TVs show **Wireless debugging** with a pairing code instead; ask the person for the code
   and the `ip:port`, then `adb pair`.
-- Ask for the TV's IP address (Settings → Network & Internet → the Wi-Fi network).
+- Ask for the TV's IP address (Settings → Network & Internet → the Wi-Fi network). If the person does not
+  know it, check the router's client list or the TV's cast name; once debugging is on, port 5555 is the sign
+  and a scan of the home /24 finds it. On the tested Xiaomi MiTV-MOOQ0 the cast name was "Living Room TV"
+  and 5555 opened only after Network debugging was switched on.
 - Set up the Python client once (all the scripts use it; no `adb` program is needed):
   `python3 -m venv tools/venv && tools/venv/bin/pip install -r tools/requirements.txt`
 - Connect: `TV_HOST=<ip> tools/venv/bin/python -I tools/tv.py --probe`. When the "Allow USB debugging?"
@@ -156,10 +159,15 @@ Written so that any model can follow it to the letter:
   must agree to the licence) and `"platforms;android-34" "build-tools;34.0.0"`.
 - **Paths with spaces** (e.g. macOS "Application Support") break `sdkmanager`. Keep the JDK and SDK in a
   path without spaces.
-- Configure in `launcher/app/src/main/res/values/config.xml`, or better with a theme (step 6): ask which four
-  apps go in the dock and in what order, using the package names from `pm list packages -3`.
+- Configure in `launcher/app/src/main/res/values/config.xml`, or better with a theme (step 6): ask which apps
+  go in the dock, and in what order, using the package names from `pm list packages -3`. The dock has the
+  theme's `columns` slots (five by default); extra apps continue in the grid.
 - Build: `cd launcher && ./gradlew testReleaseUnitTest assembleRelease`. The APK must stay under 2.5 MB
   (CI checks it).
+- On an ARM Linux host (Termux/proot, a Raspberry Pi) the Android Gradle plugin's Linux `aapt2` is x86_64
+  only, and the build stops at `AAPT2 … Daemon startup failed`. Point Gradle at a small wrapper that runs
+  the x86_64 binary under qemu with `-Pandroid.aapt2FromMavenOverride=<path>`. See TROUBLESHOOTING,
+  "Building"; do not replace the SDK's `aapt2` blindly.
 - **Check**: `launcher/app/build/outputs/apk/release/app-release.apk` exists and is about 1.5–2 MB.
 
 ### 5. Install and make it Home
@@ -173,6 +181,12 @@ Written so that any model can follow it to the letter:
   - If any check fails, or the connection drops part-way, it removes Glass TV, re-enables the original
     launcher, sets it back as Home and presses Home. The debloat list is not touched; `tools/restore.sh`
     undoes that.
+- The published APK and a build made on another machine carry different debug keys. Installing one over the
+  other fails with `INSTALL_FAILED_UPDATE_INCOMPATIBLE`; pick one source, or uninstall first (the launcher's
+  settings are lost) and reinstall, or sign with the same key. The script stops before touching the stock
+  launcher when the install fails.
+- On the tested Xiaomi MiTV-MOOQ0, the model note in [examples/xiaomi-mitv-mooq0/README.md](examples/xiaomi-mitv-mooq0/README.md)
+  records the developer-options path, the Home claimants and the transfer quirks.
 - Before that, look at the Home list from step 2. Disable any other app there that is neither the stock
   launcher nor this one, after asking (on Xiaomi the factory test app `com.duokan.factorytest`), or the Home
   button can land on it.
@@ -223,7 +237,8 @@ A theme is a folder with `config.json` (and optional `wallpaper.jpg` or `wallpap
 ### 7. Verify and hand over
 
 - Ask before taking screenshots. Use `screencap -p /sdcard/s.png` and pull it; `exec-out screencap` gives
-  broken PNGs on some MediaTek TVs. Screenshots of Live TV, HDMI or Netflix come out black.
+  broken PNGs on some MediaTek TVs. Screenshots of Live TV, HDMI or Netflix come out black — and a 0-byte
+  capture means the same thing, so press Home first before blaming the ADB connection.
 - Check: Home is the new launcher (`cmd package resolve-activity --brief -c android.intent.category.HOME -a
   android.intent.action.MAIN`), System UI and the TV service are running, the dock and grid show the apps.
 - Ask the person to try with the real remote: Home button, Inputs → an HDMI device, playing a video, the mic

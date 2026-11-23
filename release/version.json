@@ -1,7 +1,7 @@
 {
-  "versionCode": 61,
-  "versionName": "6.0.0",
+  "versionCode": 70,
+  "versionName": "7.0.0",
   "apkUrl": "https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-home.apk",
-  "changelog": "✨ Glass TV v6.0.0 — Tenang:\n• Tema baharu yang tenang: Malam, Senja dan Embun bertukar sendiri mengikut waktu solat (Syuruk, Asar, Isyak).\n• Latar kanvas bergerak perlahan (cahaya lembut, bintang, ombak) — lalai, tanpa internet, berhenti bila aplikasi lain dibuka.\n• Skrin utama lebih tenang: jam nipis dengan ucapan, cip cuaca/IPU/amaran, kad ayat dan kad waktu solat dengan kiraan detik.\n• Fokus lembut: satu cincin aksen dengan cahaya halus; jubin naik tanpa melantun.\n• Tetapan → Penampilan: \"Tema Tenang\" dan \"Jangan guna tema cerah\".\n• Fon Outfit sebenar; APK lebih kecil (~1.8 MB).\n• Kemas kini OTA daripada repo fork ini.",
-  "releaseDate": "2026-11-16"
+  "changelog": "✨ Glass TV v7.0.0 — Tiga rupa, latar yang tenang:\n• Tiga rupa: Tenang (menenangkan), Lautan (laut dalam, senarai condong di kiri, waktu solat dan ayat di kanan) dan Sorot (warna aplikasi yang dipilih memenuhi skrin). Tetapan → Penampilan → Rupa.\n• Setiap rupa ada lima palet warna atau lebih (Tenang tujuh termasuk Automatik): Tetapan → Penampilan → Warna, dengan titik warna untuk dipilih.\n• Latar milik setiap rupa: Bergerak, Pegun (paling ringan) atau Foto saya (foto anda di bawah warna lembut palet). Koleksi dalam talian, gambar tempat mingguan, penapis mod gelap, kapsyen dan kesan cuaca pada latar dibuang; fail lama dipadam sekali.\n• Detik kecil: waktu solat tiba (sel solat bercahaya), ucapan Jumaat Mubarak / Selamat berpuasa / Selamat Hari Raya, penyelamat skrin mengikut rupa, aplikasi membesar daripada jubin, rupa bagi setiap profil.\n• Ringan untuk TV 1GB: tiada muat turun untuk latar, tiada blur; animasi berhenti apabila aplikasi lain dibuka.",
+  "releaseDate": "2026-11-22"
 }

@@ -10,7 +10,7 @@ Fail pemasangan rasmi (*Official Release APK*) untuk **Glass TV Home** dan aplik
 Pelancar skrin utama (*home screen launcher*) ultra-ringan dengan rekaan *frosted glass* Apple TV dan susun atur **Quiet Canvas**, cuaca dinamik APIMS Malaysia, waktu solat automatik, RAM cleaner (tekan dua kali Home), dan bebas iklan.
 
 * **Fail APK**: [`glass-tv-home.apk`](glass-tv-home.apk)
-* **Versi Semasa**: `v6.0.0` (Tenang: tiga palet tenang yang mengikut waktu solat, kanvas bergerak perlahan, fokus lembut)
+* **Versi Semasa**: `v7.0.0` (Tiga rupa: Tenang, Lautan dan Sorot, lima palet warna atau lebih setiap satu, latar milik setiap rupa, detik kecil)
 * **Pautan Muat Turun Terus (Direct Link)**:  
   [https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-home.apk](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-home.apk)
 * **Saiz Fail**: ~1.8 MB (ringan, muat turun dalam beberapa saat & jimat memori TV)

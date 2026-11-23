@@ -21,6 +21,22 @@ final class LookType {
 
     static void apply(View home) {
         Arrangement.current().arrange(home);
+        reserveClockOverhang(home);
+    }
+
+    /**
+     * Gives the clock room for the ink its last digit actually needs. Both the slant and the
+     * negative letter spacing push the glyph past the width the text is measured at, and the clock
+     * would cut that edge off. Runs after the arrangement, so it sees the look's final skew, text
+     * size and letter spacing.
+     */
+    private static void reserveClockOverhang(View home) {
+        View v = home.findViewById(R.id.clock);
+        if (!(v instanceof SkewClock)) return;
+        SkewClock clock = (SkewClock) v;
+        float overhang = (Math.abs(clock.getPaint().getTextSkewX()) + Math.abs(clock.getLetterSpacing()))
+                * clock.getTextSize();
+        clock.setOverhang(Math.round(overhang));
     }
 
     /** Lautan's display type: the clock, period, date and greeting slanted, in Outfit Bold. */
@@ -33,7 +49,9 @@ final class LookType {
             TextView t = (TextView) v;
             t.setTypeface(bold);
             t.getPaint().setTextSkewX(Design.TEXT_SKEW);
-            if (id == R.id.clock) t.setLetterSpacing(-0.04f);
+            if (id == R.id.clock) {
+                t.setLetterSpacing(-0.04f);
+            }
             t.invalidate();
         }
     }

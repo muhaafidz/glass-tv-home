@@ -1,7 +1,7 @@
 # Troubleshooting
 
 Things that bit us or contributors, so they don't bite you. Commands use `tools/tv.py`; see the
-[README](../README.md#doing-it-by-hand) for setting it up.
+[README](../README.md#setting-it-up-by-device-priority) for setting it up.
 
 ## Connecting
 
@@ -24,6 +24,28 @@ Things that bit us or contributors, so they don't bite you. Commands use `tools/
   (Back) before testing with key presses.
 - **Git Bash rewrites paths** like `/data/local/tmp` into Windows paths. The scripts set
   `MSYS_NO_PATHCONV=1` for you. Set `JAVA_HOME` and `ANDROID_HOME` before building there.
+
+## Building
+
+- **`AAPT2 … Daemon startup failed` on an ARM Linux host** (Termux/proot, a Raspberry Pi): the Android
+  Gradle plugin ships an x86_64 Linux `aapt2`, and there is no official aarch64 build for it. Do not
+  replace the SDK's `aapt2` globally; give the build its own wrapper instead:
+
+  ```sh
+  sudo apt install qemu-user-static        # provides qemu-x86_64-static
+  mkdir -p "$HOME/aapt2"
+  unzip -o -j "$(find ~/.gradle/caches -name 'aapt2-*-linux.jar' | head -1)" aapt2 -d "$HOME/aapt2"
+  mv "$HOME/aapt2/aapt2" "$HOME/aapt2/aapt2.real"
+  printf '#!/bin/sh\nexec qemu-x86_64-static -L /usr/x86_64-linux-gnu "%s/aapt2.real" "$@"\n' \
+    "$HOME/aapt2" > "$HOME/aapt2/aapt2"
+  chmod +x "$HOME/aapt2/aapt2" "$HOME/aapt2/aapt2.real"
+  cd launcher && ./gradlew testReleaseUnitTest assembleRelease \
+    -Pandroid.aapt2FromMavenOverride="$HOME/aapt2/aapt2"
+  ```
+
+  On a Debian under proot the qemu binary may be named `qemu-x86_64` (without `-static`); use that name
+  in the wrapper. Keep the JDK and SDK paths free of spaces (`sdkmanager` breaks on them). The same
+  override works for every later build; you only need the wrapper once per machine.
 
 ## If Glass TV does not work on a TV
 

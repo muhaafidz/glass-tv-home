@@ -36,10 +36,14 @@ final class SlashDrawable extends Drawable {
         c.skew(-0.21f, 0f);
         float shift = (b.top + b.height() / 2f) * 0.21f;   // undo the skew at the bar's middle
         float edge = 8 * density, top = 3 * density;
+        // The slant moves the top-right corner right by `shift`. Keep the red edge and the white
+        // bar inside the view's width, or the box's right side is cut by a straight vertical line.
+        float whiteRight = b.right - shift - edge;
+        float redRight = b.right - shift;
         paint.setColor(Design.ACCENT);
-        c.drawRect(b.left + shift + edge, b.top + top, b.right + shift + edge, b.bottom, paint);
+        c.drawRect(b.left + shift, b.top + top, redRight, b.bottom, paint);
         paint.setColor(Design.TEXT);   // the bar is the look's text colour (white in Lautan)
-        c.drawRect(b.left + shift, b.top + top, b.right + shift, b.bottom, paint);
+        c.drawRect(b.left + shift, b.top + top, whiteRight, b.bottom, paint);
         c.restore();
     }
 

@@ -1,146 +1,141 @@
-# The Prompt / Arahan AI (v5.0.0)
+# The Prompt / Arahan AI (v7.0.0)
 
 > 💡 **PENTING / CRITICAL**:
-> Jangan pasang atau benarkan pengguna memuat turun APK secara sideload biasa tanpa persediaan! Pada Android TV / Google TV, pemasangan biasa menyebabkan sistem menganggap Glass TV sebagai aplikasi biasa—apabila pengguna menekan butang **HOME** pada remote, skrin tetap akan kembali ke pelancar asal pengeluar.
-> 
-> Gunakan arahan khusus di bawah supaya AI mengkaji TV secara mendalam (OS, 1080p vs 4K, DPI, IP Wi-Fi, & Pelancar Asal) dan mengunci butang Home secara rasmi.
+> Jangan pasang APK secara sideload biasa lalu berharap butang **HOME** berpindah sendiri. Pada
+> Android TV / Google TV, aplikasi biasa akan kalah kepada pelancar asal. Gunakan
+> [launcher/build-and-install.sh](launcher/build-and-install.sh) atau ikut [AGENTS.md](AGENTS.md):
+> pasang dan uji Glass TV dahulu, kemudian barulah disable stock launcher.
+>
+> Playbook penuh ada dalam **[AGENTS.md](AGENTS.md)**. Prompt di bawah hanya memulakan kerja; jika
+> bercanggah, AGENTS.md yang betul.
 
 ---
 
 ### ⚡ 1-Line Quick Prompt (Paling Ringkas)
-Users can simply paste this single prompt into any AI coding agent (Google Antigravity, Claude Code, Cursor):
+
+Paste this single prompt into any AI coding agent (Claude Code, Google Antigravity, Cursor):
 
 ```text
 install ni dekat tv rumah saya: https://github.com/muhaafidz/glass-tv-home
 ```
 *(English alias: `install this on my home tv: https://github.com/muhaafidz/glass-tv-home`)*
 
-When an AI assistant receives this prompt, it **MUST** perform the following 4-Phase Protocol:
-1. **Fasa 1: Kaji TV Terperinci (Pre-Install Environment Audit)**:
-   - Siasat OS Android & API: `adb shell getprop ro.build.version.release` & `ro.build.version.sdk`.
-   - Siasat Resolusi & DPI: `adb shell dumpsys display | grep -E "mBaseDisplayInfo|mode"` & `adb shell wm size` & `adb shell wm density` (Kaji sama ada panel adalah 1080p atau fizikal 4K UHD).
-   - Siasat Rangkaian LAN/Wi-Fi: `adb shell ip -f inet addr show wlan0` (Sahkan IP dalam subnet sama untuk muat naik wallpaper telefon QR tanpa masalah).
-   - Kenal pasti Pelancar Asal: `adb shell cmd package resolve-activity -c android.intent.category.HOME -a android.intent.action.MAIN`.
-2. **Fasa 2: Penyesuaian Kendiri APK (Self-Adapting Capabilities)**:
-   - Quiet Canvas mengekalkan dp-scaling, downsampling memori selamat (inSampleSize & RGB_565), dan failover port HTTP, dengan fon Outfit di seluruh UI serta Amiri Quran untuk teks Arab.
-3. **Fasa 3: Pemasangan & Kunci Butang Home**:
-   - Sandarkan pakej: `adb shell pm list packages -f > backup_packages.txt`.
-   - Pasang APK: `adb install -r release/glass-tv-home.apk`.
-   - Kunci butang Home remote: `adb shell cmd package set-home-activity com.gathin.tvhome/.MainActivity`.
-   - Jika pelancar asal masih memintas butang Home: `adb shell pm disable-user --user 0 <stock_launcher_pkg>`.
-   - Tetapkan lokasi Malaysia (JAS IPU & JAKIM solat): `adb shell am broadcast -a com.gathin.tvhome.SET_LOCATION -p com.gathin.tvhome --es query "<LOCATION>"`.
-4. **Fasa 4: Pengesahan Skrin TV (Visual Verification)**:
-   - Ambil screenshot (`adb shell screencap -p /sdcard/tv.png && adb pull /sdcard/tv.png`).
-   - Sahkan fon Outfit aktif, ikon avatar pengguna bulat terpapar di bar atas, dan butang Home remote berfungsi.
+When an AI assistant receives this prompt, it **must**:
+
+1. **Semak model dahulu** — jenama, model tepat dan versi Android/`ro.build.version.sdk`. Tizen,
+   VIDAA, Roku, Vizio, My Home Screen dan Apple TV tidak disokong; LG webOS guna aplikasi webOS
+   berasingan ([webos/README.md](webos/README.md), pratonton, bukan skrin utama); Fire TV dan
+   Android 5–7 hanya boleh debloat. Jangan mula "untuk mencuba".
+2. **Sambung dengan selamat** — hidupkan USB/Network debugging, cari IP TV, dan sahkan dengan
+   `tools/tv.py --probe`. Minta izin sebelum menekan butang atau mengambil tangkapan skrin.
+3. **Backup dan debloat** — ikut AGENTS.md langkah 2–3; jangan uninstall pakej sistem, jangan sentuh
+   HDMI/remote/Wi-Fi/Play Store, dan uji selepas setiap batch kecil.
+4. **Pasang Glass TV v7** — APK rasmi: `TV_HOST=<ip> tools/venv/bin/python -I tools/b64push.py`
+   untuk push, kemudian `pm install -r`; jika build sendiri: `TV_HOST=<ip> launcher/build-and-install.sh`
+   (build, pasang, sahkan, rollback sendiri). Jangan disable stock launcher sebelum Glass TV terbukti
+   berjalan.
+5. **Sahkan** — Home mesti `com.gathin.tvhome/.MainActivity`; uji Home, Inputs → HDMI, video, mic dan
+   tahan OK → Move. Tetapkan lokasi JAS/JAKIM dan tunjukkan rupa (Tenang / Lautan / Sorot).
 
 ---
 
 ### 📋 Full Detailed Prompt (Detailed Alternative)
-Paste this into Claude Code (or another coding assistant with shell access) on a computer that is
-on the same Wi-Fi as the TV. Works on Android TV / Google TV sets (Xiaomi, TCL, Hisense, Sony,
-OnePlus, Realme, Nvidia Shield and most others). It will not work on Samsung Tizen, LG webOS or
-Fire TV. If you cloned this repo, mention that: the assistant can reuse `tools/` and `launcher/`
-instead of writing them from scratch, and only needs to edit `launcher/.../values/config.xml`.
+
+Paste this into Claude Code (or another coding assistant with shell access) on a computer on the
+same Wi-Fi as the TV. It works on Android TV / Google TV (Xiaomi, TCL, Sony, OnePlus, NVIDIA Shield
+and most others, including Hisense and Toshiba models that run Android TV). It does **not** work on
+Samsung Tizen, Hisense or Toshiba VIDAA, Roku, Vizio, Panasonic My Home Screen, or Apple TV. On Fire
+TV only the debloat steps apply, and LG webOS has its own app instead:
+[webos/README.md](webos/README.md).
 
 Before you start, on the TV: Settings → Device Preferences → About → press OK on "Build" 7 times,
-then go back → Developer options → turn on USB debugging (and Network/ADB debugging if your TV
-shows it). Keep the TV on. Some boxes cut power to their USB port while USB debugging is on, so a
-USB speaker or drive plugged into it goes dead until you switch debugging off again.
+then Developer options → USB debugging on (and Network/ADB debugging if your TV shows it). On the
+tested Xiaomi MiTV-MOOQ0, see [examples/xiaomi-mitv-mooq0/README.md](examples/xiaomi-mitv-mooq0/README.md).
+Keep the TV on. Some boxes cut power to their USB port while USB debugging is on, so a USB speaker or
+drive plugged into it goes dead until you switch debugging off again.
 
 ---
 
-I want to debloat my Android TV and replace its launcher with a flat, vibrant Sinar home screen (Glass TV v5.0.0).
-My TV model is: <MODEL NAME HERE>. Work on the real device, step by step, and verify everything you
-do with screenshots pulled from the TV. Ask me before anything that depends on my preferences.
+I want to install **Glass TV v7** on my Android TV and make it the home screen. Use the launcher in
+this repository; do **not** design or build a new launcher from scratch. My TV model is:
+`<MODEL NAME HERE>`. Work on the real device, step by step, and verify what you do with screenshots
+pulled from the TV. Ask me before anything that depends on my preferences.
 
-Check the model first & Audit Environment
-- Before connecting or downloading anything, check my model: does it run Android TV or Google TV, Android 8
-  or newer? If it runs Samsung Tizen, LG webOS, Hisense VIDAA, Roku, Vizio, Fire OS or anything else that
-  isn't Android TV, tell me first, plainly, that the launcher can't be installed on it (Fire TV: debloat
-  only), suggest a Google TV stick in its HDMI port instead, and stop until I decide.
-- Look up where developer settings are on my exact model before telling me what to press.
-- Audit display resolution (1080p vs 4K display modes with `dumpsys display` and `wm size`) and verify local LAN IP.
-- Identify the active stock launcher package (`cmd package resolve-activity -c android.intent.category.HOME -a android.intent.action.MAIN`).
+**Sources of truth**
+- Read [AGENTS.md](AGENTS.md) and follow steps 1–7. It has the safety rules, model notes and checks.
+- Use [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) before improvising a fix.
 
-Connect
-- Find the TV on my network (hostname, ARP table, or ask me for the IP) and connect over ADB on port 5555.
-- If the stock adb binary fails with "No route to host" on macOS even though the port is open, that is
-  macOS Local Network privacy blocking adb. Don't debug it: use the Python `adb-shell` package in a venv
-  as the ADB client instead. If its file push hangs on larger files, transfer files as base64 chunks
-  through the shell and verify the md5.
-- Tell me when the "Allow USB debugging?" prompt will appear on the TV so I can accept it.
-- If `adb install` hangs on Android 14 it is waiting for an on-screen confirmation; push the APK and run
-  `pm install -r` over the shell instead.
+**Check the model first**
+- Before connecting or downloading anything, check my model and Android version. If it runs Samsung
+  Tizen, VIDAA, Roku, Vizio, My Home Screen or Apple TV, tell me plainly it cannot run this and stop.
+  LG webOS uses its own app (preview), not these steps. Fire TV or Android 5–7: debloat only, no
+  Glass TV home screen; suggest a Google TV stick if I want the full experience.
+- Look up developer settings for my exact model. Do not send me through menus written for another TV.
+- Audit the display (`dumpsys display`, `wm size`, `wm density`) and the local LAN IP.
 
-Back up first
-- Save the full package list, disabled-package list, getprop output and all settings to a backup folder
-  before changing anything, and write a restore script that re-enables everything you disable.
-- Ask me what is plugged into the TV's USB ports. Some devices cut their power while USB debugging
-  is on, so warn me, and remind me to switch debugging off once you're done.
+**Connect**
+- Find the TV on my network (router client list, hostname, cast name, or ask me for the IP). Once
+  debugging is on, TCP 5555 is the sign; scan the subnet if needed.
+- Set up the repo client once:
+  `python3 -m venv tools/venv && tools/venv/bin/pip install -r tools/requirements.txt`, then
+  `TV_HOST=<ip> tools/venv/bin/python -I tools/tv.py --probe`.
+- Tell me when the "Allow USB debugging?" prompt will appear so I can tick Always allow. If the
+  stock `adb` is blocked by macOS Local Network privacy, use `tools/tv.py` (it avoids the binary).
+- If a file push hangs, use `TV_HOST=<ip> tools/venv/bin/python -I tools/b64push.py <apk>
+  /data/local/tmp/tvhome.apk` and verify the md5 it prints. If `adb install` hangs on Android
+  14 (on-screen confirmation), push the APK and run `pm install -r` over the shell.
 
-Debloat
-- List installed packages and sort them into: manufacturer telemetry/analytics, manufacturer content
-  and ad services (PatchWall, recommendation rows, content providers), background services I probably
-  don't need (share/cast duplicates, cleaners), preloaded apps, and streaming apps.
-- Disable the first categories with `pm disable-user --user 0`, never uninstall system packages.
-- Never disable what the TV needs to work: the TV app and input services that play HDMI and the
-  tuner, the input/source menu, remote control and Bluetooth pairing services, the on-screen
-  keyboard, Google Play Store and Play Services. Manufacturer package names often don't say what a
-  package does: check its activities and services with `dumpsys package` first, and ask me if it's
-  still unclear.
-- Before touching streaming apps, voice assistant, Chromecast, Miracast or the update service, ask me
-  which ones I use with a checklist question and disable only what I don't tick.
-- Run `pm` commands one per shell call, chained commands may silently stop after the first.
-- Disable in small batches and screenshot between them: a batch can take something load-bearing with
-  it and you cannot tell which.
-- Offer me ad-blocking DNS as an optional extra: on Android 9 and newer, Private DNS set to an
-  ad-blocking resolver (`settings put global private_dns_specifier dns.adguard-dns.com`, then
-  `settings put global private_dns_mode hostname`). Tell me it doesn't block YouTube ads, check an app
-  still plays afterwards, and note the undo (`private_dns_mode opportunistic`) in the README.
+**Back up first**
+- Save the package list, disabled packages, `getprop`, `settings list system/secure/global`, and every
+  app that claims HOME to `backup/`.
+- Ask what is plugged into the USB ports; some TVs cut their power while debugging is on.
 
-Launcher
-- Check that the TV accepts APKs before building anything. Some China-market sets answer every
-  sideload with `INSTALL_FAILED_VERIFICATION_FAILURE` — `adb install`, `pm install`, a hand-started
-  installer and even the manufacturer's own APKs all fail — and others refuse any package that
-  declares `android.intent.category.HOME` unless it carries the manufacturer's signature. If you
-  hit either, do the debloat half, say plainly that the launcher half is impossible here, and stop
-  retrying installs. The matching `examples/` header says which case your TV is.
-- Don't install a third-party launcher that charges for basics like wallpapers. Build a small native
-  Android TV launcher instead (Java, AndroidX RecyclerView, minSdk matching the TV, debug build is fine),
-  install it over ADB, set it as the default home and disable the stock launcher. If several apps claim
-  the HOME intent, list them with `cmd package query-activities -a android.intent.action.MAIN -c
-  android.intent.category.HOME` and set the default with `cmd package set-home-activity`.
-- Before disabling the stock launcher, check which other apps claim HOME: on Google TV the setup wizard
-  (`com.google.android.tungsten.setupwraith`) takes over even after the stock launcher is disabled, and
-  the matching `examples/` header says what to do.
-- On Android 11 and newer the launcher must declare `<queries>` for `android.intent.category.LEANBACK_LAUNCHER`,
-  or package visibility silently hides every app and the grid comes up empty; target a recent SDK, some
-  Google TV 14 sets refuse older targets at install.
-- Design, Apple TV 4K style: pitch black background; a dock row at the bottom of the screen inside a
-  slightly lighter rounded band holding the four apps I pick (ask me which, and the order); the rest of
-  the apps in a 4-column grid below that scrolls up when I press Down; one translucent "glass" highlight
-  that springs from tile to tile instead of per-tile borders; the focused tile scales up slightly and
-  shows its name underneath; above the dock, the focused dock app's name in large light type with an
-  ambient glow in a colour sampled from its banner; frosted pill buttons top right for Inputs, Wi-Fi
-  (showing the network name) and Settings; a greeting, a large thin clock and the date top left in a
-  downloaded open-licence typeface such as Outfit. Inputs opens a compact glass dropdown under the pill
-  listing the HDMI ports, AV and Live TV, switching via the TV input framework.
-- Make D-pad navigation deterministic: Up/Down move exactly one row, Up from the dock goes to the top
-  bar, the ends of the top bar don't fall through to tiles. Remember the last focused tile.
-- Ask for user location: Ask me where in Malaysia I am located (e.g. Putrajaya, Cheras, Shah Alam, Melaka, JB, Penang, Kuantan, Kuching, KK) so you can configure my local Department of Environment (JAS) haze / IPU monitoring station and JAKIM prayer times zone automatically using:
-  `adb shell am broadcast -a com.gathin.tvhome.SET_LOCATION -p com.gathin.tvhome --es query "<LOCATION>"`
-- Keep it light: the TV has about 1 GB of RAM. No blur, no video, no network polling.
+**Debloat (optional, ask me)**
+- Sort packages into telemetry/analytics, manufacturer content and ad rows, background services,
+  preloaded apps and streaming apps. Only the first groups are candidates without asking.
+- Use `examples/<model>/debloat.txt` when one exists, comment out anything I use, and apply in small
+  batches. Never uninstall system packages; disable for user 0 with `pm disable-user --user 0`.
+- Never disable the TV/tuner, HDMI input services, input/source menu, remote and Bluetooth pairing,
+  on-screen keyboard, Settings, Play Store/Play Services, or the stock launcher until Glass TV is
+  proven to run.
+- On Xiaomi, `com.duokan.factorytest` also claims HOME; handle it before disabling the stock launcher.
+- Run `pm` commands one per shell call and check Home, HDMI, remote and Wi-Fi after each batch.
 
-Verify
-- After each change, inject remote key presses over ADB, take a screenshot from the TV and look at it.
-  Fix what you see before moving on.
-- If a remote button relies on an accessibility helper, check that the service is enabled and bound
-  for the current user, then ask me to press the real button; an injected key is not proof (see
-  `docs/TROUBLESHOOTING.md`).
-- When done, give me a restore script, a build-and-install script, and a README that explains how to
-  re-enable any app and how to change the dock order or the wallpaper.
+**Install Glass TV**
+- Choose **one** source: the published `release/glass-tv-home.apk` (v7, ~1.9 MB, versionCode 70), or
+  a build from this checkout (JDK 17 + SDK 34). Do not mix them: the published APK and a local build
+  use different debug keys, and `pm install -r` fails with `INSTALL_FAILED_UPDATE_INCOMPATIBLE`.
+  Switching sources means uninstalling first (launcher settings are lost) or signing with the same key.
+- On an ARM Linux host, if the build fails with `AAPT2 ... Daemon startup failed`, follow
+  "Building" in `docs/TROUBLESHOOTING.md`; do not replace the SDK's aapt2 blindly.
+- If you build from this checkout (JDK 17 + SDK 34): `TV_HOST=<ip> launcher/build-and-install.sh`.
+  It installs, checks Glass TV is in front and not restarting, then disables the stock launcher and
+  sets Home. On any failure it rolls back.
+- If you use the published APK (no JDK/SDK needed): push it with
+  `TV_HOST=<ip> tools/venv/bin/python -I tools/b64push.py <apk> /data/local/tmp/tvhome.apk`, run
+  `pm install -r`, start it, and prove it stays in front before disabling the stock launcher
+  (AGENTS.md step 5). Do not disable the stock launcher first.
+- Ask my location in Malaysia and configure JAS/IPU + JAKIM:
+  `TV_HOST=<ip> tools/venv/bin/python -I tools/tv.py 'am broadcast -a com.gathin.tvhome.SET_LOCATION -p com.gathin.tvhome --es query "<LOCATION>"'`
+
+**Theme, not wallpapers from the internet**
+- v7 has three looks: Tenang, Lautan and Sorot. Set them in Settings → Appearance → Rupa, Warna and
+  Latar. There are no weekly/online picture downloads; "Foto saya" is my own photos uploaded by QR.
+- On Android 10, the first internet permission can leave sockets failing with EPERM until the TV
+  restarts. Ask me before restarting.
+
+**Verify**
+- Home must be `com.gathin.tvhome/.MainActivity` (`cmd package resolve-activity --brief -c
+  android.intent.category.HOME -a android.intent.action.MAIN`).
+- Screenshot with `screencap -p /sdcard/s.png` and pull the file; `exec-out` breaks on some MediaTek
+  sets. Netflix, HDMI and Live TV screenshots are black or 0 bytes — press Home first.
+- Test with the real remote: Home, Inputs → HDMI, play a video, the mic button, and hold OK on an app
+  to Move it. An injected key is not proof for accessibility-backed buttons.
+- Finish with a restore script, the theme folder, and the debugging choice: leave it on for automatic
+  cache cleaning, or switch it off and cleaning stops.
 
 ---
 
-Expect to answer three or four checklist questions (which apps you use, which four go in the dock,
-whether to keep the voice assistant, Chromecast and firmware updates). Everything is reversible.
+Expect to answer a few checklist questions: which apps you use, which apps go in the dock (as many
+as the theme's `columns`, five by default), whether to keep the voice assistant/Chromecast/firmware
+updates, and where in Malaysia you are. Everything is reversible.

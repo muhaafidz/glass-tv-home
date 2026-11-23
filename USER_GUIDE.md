@@ -24,10 +24,9 @@ Glass TV Home is a modern, lightweight home launcher replacement for Android TV 
 
 Download the official release APKs based on your setup:
 * 📱 **For Android Phones & Tablets (Companion Installer App — Recommended)**:  
-  [**`glass-tv-installer.apk`** (6.9 MB)](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-installer.apk) — **Primary Recommendation!** Install directly to your TV and permanently lock the remote HOME button over Wi-Fi without needing a PC or cables.
-* 📺 **For Android TV & Google TV (Main Launcher v6.0)**:  
-  [**`glass-tv-home.apk`** (1.8 MB)](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-home.apk) — Latest release `v6.0.0` — **Tenang**: calm colours that follow prayer times (Malam, Senja, Embun), a softly moving background and a quieter home; see [docs/REVAMP.md](docs/REVAMP.md).
-  Next, `v7.0.0`: three looks (**Tenang**, **Lautan**, **Sorot**) with five or more palettes each, backgrounds that belong to the look, and small moments such as a glow when a prayer time arrives; switch in Settings → Appearance → Rupa / Warna / Latar.
+  [**`glass-tv-installer.apk`** (6.9 MB)](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-installer.apk) — **Primary Recommendation!** Install directly to your TV and set it as Home over Wi-Fi without needing a PC or cables. On TVs where the stock launcher takes Home back, it still has to be disabled once (see the note after step 4).
+* 📺 **For Android TV & Google TV (Main Launcher v7.0)**:  
+  [**`glass-tv-home.apk`** (1.8 MB)](https://github.com/muhaafidz/glass-tv-home/raw/main/release/glass-tv-home.apk) — Latest release `v7.0.0` — **Tiga rupa, latar yang tenang**: three looks (**Tenang**, **Lautan**, **Sorot**) with five or more palettes each, backgrounds that belong to the look, and small moments such as a glow when a prayer time arrives; see [docs/REVAMP.md](docs/REVAMP.md). Switch in Settings → Appearance → Rupa / Warna / Latar.
 
 > [!CAUTION]
 > ### ⚠️ DO NOT RAW-SIDELOAD THE APK WITHOUT PROPER LAUNCHER SETUP!
@@ -68,6 +67,8 @@ If you have an Android smartphone or tablet, this is the **easiest, fastest, and
    - The app streams and installs Glass TV Home directly to your TV in seconds!
 4. **Launch**:
    - Tap **`📺 Buka Glass TV Home di Skrin TV`** on your phone or press the Home button on your TV remote. Done!
+
+> **If Home goes back to the TV's own screen** after a reboot or a system update, the TV's stock launcher is still enabled. The phone app sets the Home preference but cannot disable that launcher on every model. A computer (or an AI assistant with the 1-line prompt) can finish step 5 of [AGENTS.md](AGENTS.md) and keep Glass TV as Home.
 
 > 💡 **Local Web Server Option (If TV Lacks Debugging)**:  
 > If your TV cannot enable debugging, tap **`🌐 Pelayan Web TV`** inside the phone app, then open **Downloader** or a web browser on your TV and type the local URL displayed (e.g. `http://192.168.x.x:8080`) to download and install directly.

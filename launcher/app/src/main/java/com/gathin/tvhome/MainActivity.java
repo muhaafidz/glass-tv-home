@@ -138,6 +138,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     private AppAdapter adapter;
     private RecyclerView grid;
     private DockDecoration tray;
+    private SorotBandDecoration sorotBand;
     private FrameLayout root;
     private View ambient;
     /** The Tenang background (docs/REVAMP.md P4), shown when the wallpaper category is Tenang. */
@@ -783,6 +784,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
 
             islamicShelf.addOnLayoutChangeListener((v, l, t, r, b, ol, ot, orr, ob) -> {
                 if (infoRailBottom > 0) v.setY(infoRailTop(v.getHeight()));
+                updateSorotBand();
             });
             updateIslamicShelf();
         }
@@ -845,6 +847,11 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         grid.setItemViewCacheSize(12);
         tray = new DockDecoration(COLUMNS, density);
         grid.addItemDecoration(tray);
+        if (arrangement.appSpotlight()) {
+            // Sorot: the rest of the apps start below the hero and the ayah card, never over them.
+            sorotBand = new SorotBandDecoration(COLUMNS);
+            grid.addItemDecoration(sorotBand);
+        }
         // The top-right buttons line up with the dock, which is only known once the tiles are laid out.
         grid.getViewTreeObserver().addOnGlobalLayoutListener(this::alignTopButtons);
         setUpGlider();
@@ -1383,6 +1390,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         boolean changed = !adapter.labelAt(position).contentEquals(title.getText());
         title.setText(adapter.labelAt(position));
         hero.setY(y);
+        updateSorotBand();
         hero.animate().cancel();
         if (changed && !reducedMotion) {
             hero.setAlpha(0f);
@@ -2220,6 +2228,24 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         root.offsetDescendantRectToMyCoords(card, r);
         infoRailBottom = r.top - INFO_RAIL_GAP_DP * density;
         islamicShelf.setY(infoRailTop(islamicShelf.getHeight()));
+        updateSorotBand();
+    }
+
+    /**
+     * Sorot: reserves the room between the app row and the grid's second row for the hero and the
+     * ayah card. The band follows the taller of the two plus the hero's own 20 dp gap, so whichever
+     * is on screen the rows below never draw over it. A look without a band ignores this.
+     */
+    private void updateSorotBand() {
+        if (sorotBand == null) return;
+        View hero = findViewById(R.id.sorotHero);
+        int heroHeight = hero != null && hero.getVisibility() == View.VISIBLE ? hero.getHeight() : 0;
+        int railHeight = islamicShelf != null && islamicShelf.getVisibility() == View.VISIBLE
+                ? islamicShelf.getHeight() : 0;
+        int want = Math.max(heroHeight, railHeight) + Math.round(20 * density);
+        if (want == sorotBand.height()) return;
+        sorotBand.setHeight(want);
+        grid.invalidateItemDecorations();
     }
 
     /**
@@ -2537,6 +2563,9 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
                 }
                 return true;
             }
+            // While the menu is open the D-pad belongs to it: focus steps down its entries instead
+            // of wandering to the buttons and tiles behind the wash.
+            if (lautanMenu.isOpen() && lautanMenu.handleKeyEvent(event)) return true;
             if (!lautanMenu.isOpen() && k == KeyEvent.KEYCODE_MENU) {
                 if (event.getAction() == KeyEvent.ACTION_UP) lautanMenu.open();
                 return true;
