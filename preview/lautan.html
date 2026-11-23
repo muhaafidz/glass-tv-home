@@ -191,6 +191,29 @@ button:focus{outline:none}
 .stage .ayah .ar{font-size:26px;margin:4px 0 10px;line-height:1.5}
 .stage .ayah .tr{font-size:17px}
 
+/* ---------- Lautan menu v2: a full-screen takeover, a staged list ---------- */
+.menu .wash{background:linear-gradient(155deg,#5ee8ff 0%,#19a6f2 34%,#0b58d6 66%,#06208a 100%)}
+.menu .wash::after{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 0 46%,rgba(255,255,255,.12) 46% 58%,transparent 58%)}
+.menu .list{position:absolute;inset:0;display:block}
+.menu .item{position:absolute;left:0;top:0;transform-origin:left center;font-size:58px;letter-spacing:-1.5px;color:#fff;text-shadow:4px 4px 0 rgba(6,32,138,.4);
+  opacity:0;transform:translate(-160px,var(--ty,0px)) rotate(var(--r,-6deg)) skewX(var(--skew)) scale(var(--sc,1));
+  transition:opacity .35s,transform .42s var(--ease),color .15s}
+.menu.open .item{opacity:var(--op,1);transform:translate(var(--tx,0px),var(--ty,0px)) rotate(var(--r,-6deg)) skewX(var(--skew)) scale(var(--sc,1))}
+.menu .item.is-focus{color:#0b0f1e;text-shadow:none}
+.menu .giant{position:absolute;left:-26px;top:-20px;font-weight:700;font-size:330px;line-height:.82;letter-spacing:-14px;color:#0b0f1e;writing-mode:vertical-rl;transform:rotate(180deg) skewY(var(--skew));opacity:0;transition:opacity .4s .1s;white-space:nowrap}
+.menu.open .giant{opacity:.92}
+.menu .infobox{position:absolute;left:150px;top:46px;background:#fff;color:#0b0f1e;border:3px solid #0b0f1e;padding:10px 22px 12px;transform:skewX(var(--skew));opacity:0;transition:opacity .35s .15s}
+.menu.open .infobox{opacity:1}
+.menu .infobox b{display:block;font-size:40px;font-weight:700;line-height:1}
+.menu .infobox small{display:block;font-size:15px;font-weight:500;margin-top:2px}
+.menu .geo2{position:absolute;left:760px;top:-110px;width:900px;height:900px;opacity:0;transition:opacity .5s .1s;mix-blend-mode:normal}
+.menu.open .geo2{opacity:1}
+.menu .geo2 path{fill:rgba(255,255,255,.07);stroke:rgba(255,255,255,.55);stroke-width:2.5;stroke-linejoin:round}
+.menu .shard{position:absolute;width:30px;height:54px;background:rgba(255,255,255,.35);transform:skewX(var(--skew)) rotate(20deg)}
+.menu .desc b{font-size:46px;color:#fff;text-shadow:4px 4px 0 rgba(6,32,138,.4)}
+.menu .desc span{color:#e6f7ff}
+.menu .title{display:none}
+
 /* ---------- Lite tier ---------- */
 .stage.lite .ripple,.stage.lite .shaft,.stage.lite .shard,.stage.lite .dot{animation:none!important}
 .stage.lite .in,.stage.lite .rise{animation:none}
@@ -261,6 +284,10 @@ button:focus{outline:none}
   <!-- Menu: Home's settings and shortcuts as stacked slanted words. -->
   <div class="menu" id="menu">
     <div class="wash"></div>
+    <svg class="geo2" viewBox="-400 -400 800 800" aria-hidden="true"><path id="geoStar" d=""/><path id="geoStar2" d=""/></svg>
+    <i class="shard" style="left:700px;top:140px"></i><i class="shard" style="left:900px;top:700px;width:22px;height:40px"></i><i class="shard" style="left:640px;top:520px;width:18px;height:34px"></i>
+    <div class="giant" id="giant">MENU</div>
+    <div class="infobox"><b>ASAR 16:22</b><small>waktu solat seterusnya · dalam 3j 40m</small></div>
     <div class="title" id="menuTitle">MENU</div>
     <div class="list" id="list"></div>
     <div class="desc"><b id="descT"></b><span id="descS"></span></div>
@@ -328,9 +355,23 @@ button:focus{outline:none}
     });
     focusItem(0);
   }
+  // The staged list: the focused word is large and sits on the slash; the others shrink, fade and fan out along an arc.
+  function layout(){
+    var its=list.children,n=its.length;[].forEach.call(its,function(e,i){
+      var d=i-M;if(d>n/2)d-=n;if(d<-n/2)d+=n;var a=Math.abs(d);
+      var y=450+(d===0?0:(d>0?1:-1)*(46+a*62))-34;
+      var x=d===0?300:250-7*d*d;
+      e.style.setProperty('--ty',y+'px');e.style.setProperty('--tx',x+'px');
+      e.style.setProperty('--sc',d===0?1.45:Math.max(.55,1-.13*a));e.style.setProperty('--r',(-8+d*1.4)+'deg');
+      e.style.setProperty('--op',d===0?1:Math.max(.28,1-.17*a));e.style.zIndex=20-a;});
+  }
   function focusItem(i){var its=list.children;if(!its.length)return;M=(i+its.length)%its.length;
     [].forEach.call(its,function(e){e.classList.remove('is-focus');});its[M].classList.add('is-focus');
+    layout();document.getElementById('giant').textContent=MENUS[cur].title;
     var it=MENUS[cur].items[M];document.getElementById('descT').textContent=it[0];document.getElementById('descS').textContent=it[1];}
+  (function(){function pt(r,a){return (r*Math.cos(a)).toFixed(1)+','+(r*Math.sin(a)).toFixed(1);}
+    function star(n,k,r,rot){var d='';for(var i=0;i<=n;i++){d+=(i?'L':'M')+pt(r,rot+((i*k)%n)*2*Math.PI/n);}return d+'Z';}
+    document.getElementById('geoStar').setAttribute('d',star(8,3,380,0));document.getElementById('geoStar2').setAttribute('d',star(8,3,380,Math.PI/8));})();
   function openMenu(key){render(key||'main');open=true;menu.classList.add('open');stage.classList.add('menu-open');}
   function closeMenu(){open=false;menu.classList.remove('open');stage.classList.remove('menu-open');}
   function back(){var b=MENUS[cur].back;if(b)render(b);else closeMenu();}

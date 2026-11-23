@@ -307,3 +307,13 @@ only, stopped when another app is in front, off with animations off.
 - [x] Palette dots in Warna (`Swatches`), read from the palette blocks.
 - [x] One-off sheen on tile focus (`AppAdapter.Holder.sweep`).
 - Not built (kept as ideas): weather-mood tint, first-of-the-day reveal, original per-look sounds.
+
+## 17. Lautan menu v2: closer to the console-RPG menu (mockup, 2026-11-23)
+
+Same inspiration, not a copy. [preview/lautan.html](../preview/lautan.html) (M opens the menu): a full-screen
+takeover in bright cyan-to-blue with a slanted light band; the focused word large (1.45x) on the white-and-red
+slash; the others shrink (down to 0.55x), fade and fan out along an arc at slightly different angles, and glide
+when focus moves; a giant cropped vertical word on the left (the section name) and a white info box top left (the
+next prayer); an 8-point-star outline on the right where the original has its scene, and a few drifting shards.
+Launcher cost if built: the existing `LautanMenu` rows get per-row scale, alpha and translation computed on focus
+change (translation, scale and alpha only), one big vertical `TextView` and one star path drawn once.
